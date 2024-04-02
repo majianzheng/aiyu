@@ -143,7 +143,6 @@ export default class FileUploadClient {
       return;
     }
     if (this.lastUploadProgress.uploadSize === this.lastUploadProgress.totalSize) {
-      this.finished();
       return;
     }
 
@@ -151,12 +150,15 @@ export default class FileUploadClient {
       const chunkEnd = this.lastUploadProgress.uploadSize + UPLOAD_CHUNK_SIZE;
       const end = chunkEnd >= this.file.size ? this.file.size : chunkEnd;
       if (this.lastUploadProgress.uploadSize >= end) {
-        this.finished();
         return;
       }
       const data = this.file.slice(this.lastUploadProgress.uploadSize, end);
       this.websocket?.send(data);
-      this.lastUploadProgress.uploadSize += data.size;
+      const updateSize = this.lastUploadProgress.uploadSize + data.size;
+      if (this.lastUploadProgress && updateSize >= this.lastUploadProgress.totalSize) {
+        return;
+      }
+      this.lastUploadProgress.uploadSize = updateSize;
       this.triggerProgressChange();
     }
     defer(() => this.sendFile());
@@ -175,6 +177,10 @@ export default class FileUploadClient {
       return;
     }
     if (this.paused) {
+      return;
+    }
+    if (this.lastUploadProgress.uploadSize >= this.lastUploadProgress.totalSize) {
+      this.finished();
       return;
     }
     // 发送下一段数据

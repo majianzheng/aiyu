@@ -115,6 +115,8 @@ export default {
   TIP_UPLOAD_IMG: '请上传图片',
   CONNECT: '连接',
   FILE_NAME: '文件名',
+  FINISHED: '完成',
+  TRANSMITTING: '传输中',
 
   //服务配置
   SERVER_LIST_TITLE: '服务列表',

@@ -4,6 +4,7 @@ import { round } from 'lodash';
 import type { UploadFileInfo } from '@/types';
 import StringUtil from '@/common/StringUtil';
 import { computed } from 'vue';
+import CommonUtils from "@/common/CommonUtils";
 
 const uploadStore = useUploadStore();
 function toggleVisible() {
@@ -17,7 +18,8 @@ function calcPercent(row: UploadFileInfo) {
 }
 
 function uploadSize(row: UploadFileInfo) {
-  return `${StringUtil.formatBytes(row.uploadSize).fileSize} / ${StringUtil.formatBytes(row.totalSize).fileSize}`;
+  const append = row.uploadSize >= row.totalSize ? CommonUtils.translate('FINISHED') : CommonUtils.translate('TRANSMITTING');
+  return `${StringUtil.formatBytes(row.uploadSize).fileSize} / ${StringUtil.formatBytes(row.totalSize).fileSize} (${append})`;
 }
 
 function pauseOrResume(row: UploadFileInfo) {
@@ -31,15 +33,13 @@ const uploadingCount = computed(() => uploadStore.uploadFiles.filter(row => row.
 </script>
 
 <template>
-  <div v-show="uploadStore.uploadFiles.length" class="file-upload-container">
-    <el-popover :visible="uploadStore.visible" width="800" title="上传进度" placement="bottom">
-      <template #reference>
-        <el-badge :value="uploadingCount" :hidden="uploadingCount <= 0">
-          <el-button size="small" link @click="toggleVisible" class="ui-blink">
-            <icon-pro title="文件上传" class="upload-icon" icon="UploadFilled"></icon-pro>
-          </el-button>
-        </el-badge>
-      </template>
+  <div v-if="uploadStore.uploadFiles.length" class="file-upload-container">
+    <el-badge :value="uploadingCount" :hidden="uploadingCount <= 0">
+      <el-button size="small" link @click="toggleVisible" class="ui-blink">
+        <icon-pro title="文件上传" class="upload-icon" icon="UploadFilled"></icon-pro>
+      </el-button>
+    </el-badge>
+    <el-dialog v-model="uploadStore.visible" title="上传进度" width="800" destroy-on-close :modal="false" :draggable="true">
       <div>
         <el-table :data="uploadStore.uploadFiles" :show-header="true">
           <el-table-column property="filename" width="160" :label="$t('FILE_NAME')" show-overflow-tooltip />
@@ -51,11 +51,11 @@ const uploadingCount = computed(() => uploadStore.uploadFiles.filter(row => row.
           <el-table-column width="260" property="uploadSize" :label="$t('STATUS')">
             <template #default="{ row }">
               <el-progress
-                text-inside
-                :percentage="calcPercent(row)"
-                :stroke-width="15"
-                striped
-                :striped-flow="row.uploadSize < row.totalSize" />
+                  text-inside
+                  :percentage="calcPercent(row)"
+                  :stroke-width="15"
+                  striped
+                  :striped-flow="row.uploadSize < row.totalSize" />
             </template>
           </el-table-column>
           <el-table-column width="60" :label="$t('OPERATOR')">
@@ -67,7 +67,7 @@ const uploadingCount = computed(() => uploadStore.uploadFiles.filter(row => row.
           </el-table-column>
         </el-table>
       </div>
-    </el-popover>
+    </el-dialog>
   </div>
 </template>
 

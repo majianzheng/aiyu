@@ -8,6 +8,7 @@ import io.github.majianzheng.jarboot.entity.FileUploadProgress;
 import io.github.majianzheng.jarboot.service.ServerRuntimeService;
 import io.github.majianzheng.jarboot.utils.CommonUtils;
 import io.github.majianzheng.jarboot.utils.SettingUtils;
+import io.github.majianzheng.jarboot.utils.TaskUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +19,12 @@ import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 文件上传服务
@@ -176,6 +178,19 @@ public class UploadFileServer {
         try {
             outputStream.write(message);
             this.fileUploadProgress.setUploadSize(this.fileUploadProgress.getUploadSize() + message.length);
+            if (fileUploadProgress.getUploadSize() >= fileUploadProgress.getTotalSize()) {
+                // 传输完成
+                this.updateProgress(session);
+                TaskUtils.getTaskExecutor().schedule(() -> {
+                    try {
+                        if (session.isOpen()) {
+                            session.close();
+                        }
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                }, 5, TimeUnit.SECONDS);
+            }
         } catch (Exception e) {
             this.fileUploadProgress.setErrorMsg(e.getMessage());
             this.pause = true;
