@@ -114,6 +114,11 @@ export default class Request {
         }
         const msg = `请求发生错误：${error.message || ''}`;
         console.error(msg, error);
+        if (401 === error.response?.status) {
+          //没有授权，跳转到登录界面
+          CommonUtils.deleteToken();
+          return router.push({ name: 'login' }).then(() => console.info('未登陆，跳转到登陆界面...'));
+        }
         CommonNotice.error('请求服务器失败');
         return Promise.reject(error);
       }
