@@ -69,6 +69,7 @@
 		<groovy.version>2.4.21</groovy.version>
 		<rsyntaxtextarea.version>3.3.1</rsyntaxtextarea.version>
 		<commons-logging.version>1.2</commons-logging.version>
+		<jline.version>3.25.1</jline.version>
 
 		<!-- plugin version -->
 		<maven-resources-version>2.6</maven-resources-version>
@@ -215,6 +216,11 @@
 				<groupId>com.fifesoft</groupId>
 				<artifactId>rsyntaxtextarea</artifactId>
 				<version>${rsyntaxtextarea.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jline</groupId>
+				<artifactId>jline</artifactId>
+				<version>${jline.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

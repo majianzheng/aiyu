@@ -259,6 +259,7 @@ const createOption = (title: string, series: any[], subtext: string = '', unit: 
     },
     xAxis: {
       type: 'time',
+      min: 'dataMin',
       axisLabel: {
         color: isDark ? '#dedede' : '#313131',
       },
@@ -434,6 +435,7 @@ function updateMemChart() {
       axisLabel: { interval: 0, rotate: 30, color: isDark ? '#dedede' : '#313131' },
       splitLine: { show: false },
       data: heap.map(r => r.name),
+      min: 'dataMin',
     },
     yAxis: {
       type: 'value',

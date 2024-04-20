@@ -1,4 +1,4 @@
-package io.github.majianzheng.jarboot.client;
+package io.github.majianzheng.jarboot.tools.client;
 
 import io.github.majianzheng.jarboot.api.cmd.annotation.Description;
 import io.github.majianzheng.jarboot.api.cmd.annotation.Option;
@@ -10,6 +10,9 @@ import io.github.majianzheng.jarboot.api.event.TaskLifecycleEvent;
 import io.github.majianzheng.jarboot.api.pojo.ServiceInstance;
 import io.github.majianzheng.jarboot.api.service.ServiceManager;
 import io.github.majianzheng.jarboot.api.service.SettingService;
+import io.github.majianzheng.jarboot.client.ClientProxy;
+import io.github.majianzheng.jarboot.client.ServiceManagerClient;
+import io.github.majianzheng.jarboot.client.SettingClient;
 import io.github.majianzheng.jarboot.client.command.CommandExecutorFactory;
 import io.github.majianzheng.jarboot.client.command.CommandExecutorService;
 import io.github.majianzheng.jarboot.client.command.CommandResult;
@@ -17,9 +20,16 @@ import io.github.majianzheng.jarboot.common.AnsiLog;
 import io.github.majianzheng.jarboot.common.utils.BannerUtils;
 import io.github.majianzheng.jarboot.common.utils.CommandCliParser;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
+import io.github.majianzheng.jarboot.tools.client.command.AbstractClientCommand;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.Future;
 
 /**
@@ -30,6 +40,8 @@ public class JarbootClientCli {
     private String host;
     private String username;
     private String password;
+    private Terminal terminal;
+    private LineReader lineReader;
 
     @Option(shortName = "h", longName = "host")
     @Description("The Jarboot host. ig: 127.0.0.1:9899")
@@ -49,9 +61,8 @@ public class JarbootClientCli {
         this.password = password;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         BannerUtils.print();
-        AnsiLog.info("Jarboot client cli>>>");
         JarbootClientCli clientCli = new JarbootClientCli();
         CommandCliParser commandCliParser = new CommandCliParser(args, clientCli);
         commandCliParser.postConstruct();
@@ -67,8 +78,8 @@ public class JarbootClientCli {
         clientCli.run();
     }
 
-    private void login() {
-        AnsiLog.info("Login to Jarboot server: {}", this.host);
+    private void login() throws IOException {
+        AnsiLog.println("Login to Jarboot server: {}", this.host);
         if (StringUtils.isEmpty(username) && null != System.console()) {
             username = System.console().readLine("username:");
         }
@@ -80,77 +91,39 @@ public class JarbootClientCli {
                 .Factory
                 .createClientProxy(host, username, password)
                 .getVersion();
-        AnsiLog.info("Login success, jarboot server version: {}", version);
+        AnsiLog.println("Login success, jarboot server version: {}", version);
+        terminal = TerminalBuilder
+                .builder()
+                .name("jarboot client terminal")
+                .streams(System.in, System.out)
+                .encoding(StandardCharsets.UTF_8)
+                .color(true)
+                .build();
+
+        lineReader = LineReaderBuilder.builder()
+                .terminal(terminal)
+                .option(LineReader.Option.ERASE_LINE_ON_FINISH, true)
+                .build();
     }
 
     protected void run() {
         //test
-        final String demo = "demo-server";
         ServiceManager client = new ServiceManagerClient(this.host, null, null);
-        List<ServiceInstance> list = client.getServiceList();
-        AnsiLog.info("list:{}", list);
-
-        AnsiLog.info("jvm list: {}", client.getJvmProcesses());
-        client.registerSubscriber(demo, TaskLifecycle.PRE_START, new Subscriber<TaskLifecycleEvent>() {
-            @Override
-            public void onEvent(TaskLifecycleEvent event) {
-                AnsiLog.info("event received:{}", event);
+        final String prefix = ">>> ";
+        final char NULL_MASK = 0;
+        for (;;) {
+            String inputLine = lineReader.readLine(prefix, NULL_MASK);
+            if ("q".equals(inputLine) || "quit".equals(inputLine) || "exit".equals(inputLine) || "bye".equals(inputLine)) {
+                break;
             }
-
-            @Override
-            public Class<? extends JarbootEvent> subscribeType() {
-                return TaskLifecycleEvent.class;
+            if (StringUtils.isEmpty(inputLine)) {
+                continue;
             }
-        });
-        client.registerSubscriber(demo, TaskLifecycle.EXCEPTION_OFFLINE, new Subscriber<TaskLifecycleEvent>() {
-            @Override
-            public void onEvent(TaskLifecycleEvent event) {
-                AnsiLog.info("exception offline:{}", event);
+            // 打印出用户输入的内容
+            AbstractClientCommand command = ClientCommandBuilder.build(inputLine, client, terminal);
+            if (null != command) {
+                command.run();
             }
-
-            @Override
-            public Class<? extends JarbootEvent> subscribeType() {
-                return TaskLifecycleEvent.class;
-            }
-        });
-
-        SettingService setting = new SettingClient(this.host, null, null);
-        AnsiLog.info("system setting: {}", setting.getSystemSetting());
-
-
-        //测试命令执行
-        CommandExecutorService executor = CommandExecutorFactory
-                .createCommandExecutor(demo, host, username, password);
-        try {
-            //执行命令
-            Future<CommandResult> future = executor
-                    .execute("pwd", event -> AnsiLog.info("command notify:{}", event));
-            //使用Future同步获取结果
-            AnsiLog.info("result: {}", future.get());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (Exception e) {
-            AnsiLog.error(e);
-        }
-        //测试取消执行
-        try {
-            //执行命令
-            Future<CommandResult> future = executor
-                    .execute("dashboard", event -> AnsiLog.info("command notify:{}", event));
-            //等待几秒钟
-            Thread.sleep(6000);
-            //取消执行
-            AnsiLog.info("cancel: {}, result:{}", future.cancel(false), future.get());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (Exception e) {
-            AnsiLog.error(e);
-        }
-
-        try {
-            System.in.read();
-        } catch (IOException e) {
-            AnsiLog.error(e);
         }
     }
 }

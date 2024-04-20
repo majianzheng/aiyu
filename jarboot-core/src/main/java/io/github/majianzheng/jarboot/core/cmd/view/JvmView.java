@@ -4,6 +4,8 @@ import io.github.majianzheng.jarboot.api.cmd.session.CommandSession;
 import io.github.majianzheng.jarboot.core.cmd.model.JvmItem;
 import io.github.majianzheng.jarboot.core.cmd.model.JvmModel;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
+import io.github.majianzheng.jarboot.text.ui.BorderStyle;
+import io.github.majianzheng.jarboot.text.util.RenderUtil;
 
 import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
@@ -55,7 +57,7 @@ public class JvmView implements ResultView<JvmModel> {
             row.add(item.getValue().toString());
             rows.add(row);
         });
-        sb.append(ViewRenderUtil.renderTable(null , rows, session.getCol(), 1));
+        sb.append(RenderUtil.renderTable(null , rows, session.getCol(), BorderStyle.DASHED));
     }
 
     private void renderGarbageCollectors(StringBuilder sb, List<JvmModel.GarbageCollectorItem> list) {
@@ -72,7 +74,7 @@ public class JvmView implements ResultView<JvmModel> {
             rows.add(row);
         });
         sb.append("GARBAGE-COLLECTORS\n");
-        sb.append(ViewRenderUtil.renderTable(headers , rows, session.getCol(), 1));
+        sb.append(RenderUtil.renderTable(headers , rows, session.getCol(), BorderStyle.DASHED));
     }
 
     private void renderMemory(StringBuilder sb, JvmModel model) {
@@ -93,6 +95,6 @@ public class JvmView implements ResultView<JvmModel> {
             tail.add(String.valueOf(model.getPendingFinalizationCount()));
             rows.add(tail);
         }
-        sb.append("MEMORY\n").append(ViewRenderUtil.renderTable(null , rows, session.getCol(), 1));
+        sb.append("MEMORY\n").append(RenderUtil.renderTable(null , rows, session.getCol(), BorderStyle.DASHED));
     }
 }
