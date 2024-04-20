@@ -3,22 +3,13 @@ package io.github.majianzheng.jarboot.tools.client;
 import io.github.majianzheng.jarboot.api.cmd.annotation.Description;
 import io.github.majianzheng.jarboot.api.cmd.annotation.Option;
 import io.github.majianzheng.jarboot.api.constant.CommonConst;
-import io.github.majianzheng.jarboot.api.constant.TaskLifecycle;
-import io.github.majianzheng.jarboot.api.event.JarbootEvent;
-import io.github.majianzheng.jarboot.api.event.Subscriber;
-import io.github.majianzheng.jarboot.api.event.TaskLifecycleEvent;
-import io.github.majianzheng.jarboot.api.pojo.ServiceInstance;
 import io.github.majianzheng.jarboot.api.service.ServiceManager;
-import io.github.majianzheng.jarboot.api.service.SettingService;
 import io.github.majianzheng.jarboot.client.ClientProxy;
 import io.github.majianzheng.jarboot.client.ServiceManagerClient;
-import io.github.majianzheng.jarboot.client.SettingClient;
-import io.github.majianzheng.jarboot.client.command.CommandExecutorFactory;
-import io.github.majianzheng.jarboot.client.command.CommandExecutorService;
-import io.github.majianzheng.jarboot.client.command.CommandResult;
 import io.github.majianzheng.jarboot.common.AnsiLog;
 import io.github.majianzheng.jarboot.common.utils.BannerUtils;
 import io.github.majianzheng.jarboot.common.utils.CommandCliParser;
+import io.github.majianzheng.jarboot.common.utils.OSUtils;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
 import io.github.majianzheng.jarboot.tools.client.command.AbstractClientCommand;
 import org.jline.reader.LineReader;
@@ -28,9 +19,6 @@ import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Scanner;
-import java.util.concurrent.Future;
 
 /**
  * 客户端命令行工具
@@ -96,23 +84,25 @@ public class JarbootClientCli {
                 .builder()
                 .name("jarboot client terminal")
                 .streams(System.in, System.out)
+                .system(!OSUtils.isWindows())
                 .encoding(StandardCharsets.UTF_8)
                 .color(true)
                 .build();
 
         lineReader = LineReaderBuilder.builder()
                 .terminal(terminal)
-                .option(LineReader.Option.ERASE_LINE_ON_FINISH, true)
+                .option(LineReader.Option.ERASE_LINE_ON_FINISH, OSUtils.isWindows())
                 .build();
+        AnsiLog.println("width: {}, height: {}", terminal.getWidth(), terminal.getHeight());
     }
 
     protected void run() {
         //test
         ServiceManager client = new ServiceManagerClient(this.host, null, null);
-        final String prefix = ">>> ";
-        final char NULL_MASK = 0;
+        final String prefix = "jarboot$> ";
+        final Character mask = OSUtils.isWindows() ? (char)0 : null;
         for (;;) {
-            String inputLine = lineReader.readLine(prefix, NULL_MASK);
+            String inputLine = lineReader.readLine(prefix, mask);
             if ("q".equals(inputLine) || "quit".equals(inputLine) || "exit".equals(inputLine) || "bye".equals(inputLine)) {
                 break;
             }

@@ -19,7 +19,6 @@ export default [
     component: () => import('@/views/services/service-manager.vue'),
     meta: {
       keepAlive: true,
-      menu: true,
       module: 'SERVICES_MGR',
       code: 'SERVICES_MGR',
     },
@@ -30,7 +29,6 @@ export default [
     component: () => import('@/views/services/service-manager.vue'),
     meta: {
       keepAlive: true,
-      menu: true,
       module: 'ONLINE_DEBUG',
       code: 'ONLINE_DEBUG',
     },

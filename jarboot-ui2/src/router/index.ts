@@ -49,6 +49,7 @@ router.beforeEach(async (to, _from, next) => {
   let permission: any = userStore.permission;
   if (null === permission) {
     permission = await userStore.fetchPrivilege();
+    console.info('fetchPrivilege>>>>', permission);
   }
   if (null === userStore.avatar) {
     await userStore.fetchAvatar();

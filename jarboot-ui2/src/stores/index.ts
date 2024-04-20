@@ -3,7 +3,7 @@ import OAuthService from '@/services/OAuthService';
 import CommonUtils from '@/common/CommonUtils';
 import router from '@/router';
 import ClusterManager from '@/services/ClusterManager';
-import type { ServiceInstance, JvmProcess, ServerRuntimeInfo, UploadFileInfo } from '@/types';
+import type { ServiceInstance, JvmProcess, ServerRuntimeInfo, UploadFileInfo, MenuItem } from '@/types';
 import { PAGE_LOGIN } from '@/common/route-name-constants';
 import PrivilegeService from '@/services/PrivilegeService';
 import {
@@ -40,6 +40,7 @@ export const useBasicStore = defineStore({
     masterHost: '',
     innerHeight: window.innerHeight,
     innerWidth: window.innerWidth,
+    menus: [] as MenuItem[]
   }),
   actions: {
     async update() {
@@ -48,6 +49,9 @@ export const useBasicStore = defineStore({
     async init() {
       const info = await Request.get<ServerRuntimeInfo>(`/api/jarboot/public/serverRuntime`, {});
       this.$patch({ ...info });
+    },
+    setMenus(menus: MenuItem[]) {
+      this.$patch({ menus });
     },
     setVersion(version: string) {
       this.$patch({ version });
@@ -63,7 +67,7 @@ export const useUserStore = defineStore({
     roles: '',
     userDir: '',
     avatar: null as string | null,
-    permission: null as string | null,
+    permission: null as any | null,
   }),
 
   actions: {

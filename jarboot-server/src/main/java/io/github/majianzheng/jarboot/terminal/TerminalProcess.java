@@ -72,6 +72,10 @@ public class TerminalProcess {
         }
     }
 
+    public boolean isAlive() {
+        return process.isAlive();
+    }
+
     public void exec(String cmd) {
         if (!process.isAlive()) {
             logger.error("终端进程已停止！");
@@ -102,6 +106,8 @@ public class TerminalProcess {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        } finally {
+            logger.info("销毁终端");
         }
         readerThread = null;
     }

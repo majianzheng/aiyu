@@ -62,6 +62,9 @@ public class TerminalServer {
         if (null != sessionProxy) {
             sessionProxy.proxyOnClose();
         }
+        if (terminal.isAlive()) {
+            terminal.destroy();
+        }
     }
 
     @OnMessage

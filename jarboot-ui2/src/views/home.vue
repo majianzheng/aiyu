@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { RouterView, useRoute, useRouter } from 'vue-router';
 import { DOCS_URL } from '@/common/CommonConst';
-import { useUserStore } from '@/stores';
+import {useBasicStore, useUserStore} from '@/stores';
 import { onMounted, reactive } from 'vue';
 import { WsManager } from '@/common/WsManager';
-import routesConfig from '@/router/routes-config';
-import StringUtil from '@/common/StringUtil';
 import { pubsub } from '@/views/services/ServerPubsubImpl';
+import type {MenuItem} from "@/types";
+import routesConfig from "@/router/routes-config";
+import StringUtil from "@/common/StringUtil";
 
 const state = reactive({
   dialog: false,
@@ -17,17 +18,62 @@ const openDoc = () => window.open(DOCS_URL);
 const user = useUserStore();
 const route = useRoute();
 const router = useRouter();
+const basic = useBasicStore();
+
+const subNameMap = new Map();
+
+function checkPermission(config: any): boolean {
+  if (!user?.permission) {
+    return false;
+  }
+  if ('jarboot' === user.username) {
+    return true;
+  }
+  if (config?.meta?.code) {
+    return user.permission[config.meta.code] as boolean;
+  }
+  return true;
+}
 
 const filterMenu = (config: any): boolean => {
-  if ('jarboot' !== user.username && config?.meta?.code && user?.permission) {
-    if (!user.permission[config.meta.code]) {
-      return false;
-    }
+  const permission = checkPermission(config);
+  if (!permission) {
+    return false;
   }
-  return config.meta.menu && StringUtil.isNotEmpty(config.meta.module);
+
+  const children = config.children?.filter((c: any) => checkPermission(c));
+  if (config.meta.menu && !children?.length) {
+    return false;
+  }
+  return StringUtil.isNotEmpty(config.meta.module);
 };
 
-const menus = routesConfig.filter(config => filterMenu(config)).map(config => ({ name: config.name, module: config.meta.module }));
+function createMenuData(config: any) {
+  let subName = '';
+  const filtered = config?.children?.filter((c: any) => checkPermission(c));
+  if (filtered?.length) {
+    const first = filtered[0];
+    subName = first.name;
+  }
+
+  const menu: MenuItem = {
+    name: config.name,
+    path: config.path,
+    module: config.meta.module,
+    icon: config.meta.icon,
+    code: config.meta.code,
+    subName,
+  }
+  if (subName) {
+    menu.children = filtered
+        .map((child: any) => {
+          const menuItem = {name: child.name, path: child.path, code: child.meta.code, icon: child.meta.icon};
+          subNameMap.set(menuItem.name, menu)
+          return menuItem;
+        });
+  }
+  return menu;
+}
 
 const welcome = () => {
   console.log(`%c▅▇█▓▒(’ω’)▒▓█▇▅▂`, 'color: magenta');
@@ -37,18 +83,19 @@ const welcome = () => {
   pubsub.init();
 };
 
-const isActive = (name: string, module: string): boolean => {
-  if (route.name === name) {
+const isActive = (menu: MenuItem): boolean => {
+  if (route.name === menu.name) {
     return true;
   }
-  return route.meta.module === module;
+  return route.meta.module === menu.module;
 };
 
-const goTo = (name: string, module: string) => {
-  if (route.name !== name && !isActive(name, module)) {
-    router.push({ name });
+const goTo = (menu: any) => {
+  if (route.name !== menu.name && !isActive(menu)) {
+    router.push({ name: menu.subName || menu.name });
   }
 };
+
 function modifyUser() {
   state.resetPassword = false;
   state.dialog = true;
@@ -59,6 +106,17 @@ function resetPassword() {
 }
 
 onMounted(() => {
+  const menus = routesConfig
+      .filter(config => filterMenu(config))
+      .map(config => createMenuData(config));
+  basic.setMenus(menus);
+  router.afterEach((to, _from) => {
+    const name = to.name;
+    const menu = subNameMap.get(name);
+    if (menu) {
+      menu.subName = name;
+    }
+  });
   welcome();
 });
 </script>
@@ -70,10 +128,10 @@ onMounted(() => {
       <div class="wrapper">
         <nav>
           <a
-            v-for="(menu, i) in menus"
+            v-for="(menu, i) in basic.menus"
             :key="i"
-            :class="{ 'router-link-exact-active': isActive(menu.name, menu.module) }"
-            @click="goTo(menu.name, menu.module)"
+            :class="{ 'router-link-exact-active': isActive(menu) }"
+            @click="goTo(menu)"
             >{{ $t(menu.module) }}</a
           >
         </nav>
@@ -104,7 +162,7 @@ onMounted(() => {
                 <img v-if="user.avatar" :src="user.avatar" height="40" width="40" alt="avatar" />
                 <svg-icon v-else icon="icon-panda" style="width: 26px; height: 26px" />
               </el-avatar>
-              <div style="line-height: 40px; margin-left: 5px">
+              <div class="user-name">
                 <span>{{ user.fullName || user.username }}</span>
                 <icon-pro icon="ArrowDown" class="el-icon--right"></icon-pro>
               </div>
@@ -184,6 +242,14 @@ header {
   }
   ._jarboot_username {
     line-height: 40px;
+  }
+  .user-name {
+    line-height: 40px;
+    margin-left: 5px;
+    :hover {
+      cursor: pointer;
+      color: var(--el-color-primary);
+    }
   }
 }
 </style>

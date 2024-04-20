@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { RouterView, useRoute } from 'vue-router';
+import {RouterView, useRoute} from 'vue-router';
 import { zhCn, zhTw, en } from 'element-plus/es/locale/index';
 import { type I18n, useI18n } from 'vue-i18n';
 import { computed, onMounted, onUnmounted } from 'vue';
-import { useBasicStore } from '@/stores';
+import {useBasicStore} from '@/stores';
 import CommonUtils from '@/common/CommonUtils';
 
 const route = useRoute();
@@ -14,8 +14,9 @@ const basic = useBasicStore();
 const props = defineProps<{
   i18n: I18n;
 }>();
-onMounted(() => {
-  basic.init();
+
+onMounted(async () => {
+  await basic.init();
   window.onresize = () => {
     basic.update();
   };
@@ -35,14 +36,7 @@ onUnmounted(() => {
 
 <template>
   <el-config-provider :locale="language">
-    <router-view v-slot="{ Component }">
-      <transition name="slide-fade">
-        <keep-alive>
-          <component :is="Component" :key="route.path" v-if="route.meta.keepAlive" />
-        </keep-alive>
-      </transition>
-      <component :is="Component" :key="route.path" v-if="!route.meta.keepAlive" />
-    </router-view>
+    <router-view></router-view>
   </el-config-provider>
 </template>
 

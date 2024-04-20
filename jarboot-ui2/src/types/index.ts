@@ -172,3 +172,12 @@ export type UploadFileInfo = {
   uploadSize: number;
   errorMsg?: string;
 };
+export type MenuItem = {
+  name: string;
+  path: string;
+  module?: string;
+  code?: string;
+  icon?: string;
+  subName?: string;
+  children?: MenuItem[];
+};
