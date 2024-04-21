@@ -43,7 +43,7 @@ CUR_DIR=`pwd`
 export JAVA_HOME
 export JAVA="$JAVA_HOME/bin/java"
 export JARBOOT_HOME=$(cd `dirname $0`/../; pwd)
-source $JARBOOT_HOME/bin/common.sh || exit
+
 cd "${JARBOOT_HOME}"
 
 TOOL_JAR="${JARBOOT_HOME}/components/jarboot-tools.jar io.github.majianzheng.jarboot.tools.shell.Shutdown"

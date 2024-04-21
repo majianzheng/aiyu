@@ -93,7 +93,6 @@ public class JarbootClientCli {
                 .terminal(terminal)
                 .option(LineReader.Option.ERASE_LINE_ON_FINISH, OSUtils.isWindows())
                 .build();
-        AnsiLog.println("width: {}, height: {}", terminal.getWidth(), terminal.getHeight());
     }
 
     protected void run() {
