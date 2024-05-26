@@ -33,14 +33,7 @@ public class PrivilegeServiceImpl implements PrivilegeService {
         }
         Set<String> roleSet = Arrays.stream(roles.split(",")).map(String::trim).collect(Collectors.toSet());
         // 权限合并
-        List<Privilege> privileges = new ArrayList<>();
-        for (String role : roleSet) {
-            List<Privilege> temp = privilegeDao.findAllByRole(role);
-            if (null != temp && !temp.isEmpty()) {
-                privileges.addAll(temp);
-            }
-        }
-        return privileges;
+        return privilegeDao.findAllByRoleIn(roleSet);
     }
 
     @Override

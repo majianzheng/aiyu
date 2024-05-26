@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,6 +20,13 @@ public interface PrivilegeDao extends JpaRepository<Privilege, Long> {
      * @return 权限信息
      */
     List<Privilege> findAllByRole(String role);
+
+    /**
+     * 根据角色获取所有权限信息
+     * @param role 角色
+     * @return 权限信息
+     */
+    List<Privilege> findAllByRoleIn(Collection<String> role);
 
     /**
      * 获取角色对某一资源的权限

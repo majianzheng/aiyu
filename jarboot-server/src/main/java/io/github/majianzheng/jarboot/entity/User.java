@@ -1,6 +1,9 @@
 package io.github.majianzheng.jarboot.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.Map;
 
 /**
  * @author majianzheng
@@ -12,11 +15,14 @@ public class User extends AbstractBaseEntity {
     private String username;
 
     private String fullName;
+    @JsonIgnore
     private String password;
 
     private String userDir;
 
     private String roles;
+
+    private Map<String, Boolean> privileges;
 
     public String getUsername() {
         return username;
@@ -56,5 +62,14 @@ public class User extends AbstractBaseEntity {
 
     public void setRoles(String roles) {
         this.roles = roles;
+    }
+
+    @Transient
+    public Map<String, Boolean> getPrivileges() {
+        return privileges;
+    }
+
+    public void setPrivileges(Map<String, Boolean> privileges) {
+        this.privileges = privileges;
     }
 }

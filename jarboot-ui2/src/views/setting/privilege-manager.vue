@@ -72,7 +72,7 @@ async function changePermission(row: any, value: boolean) {
     await PrivilegeService.savePrivilege(row.role, row.authCode, value);
     // 权限修改成功
     if (userStore.roles.includes(row.role)) {
-      userStore.permission = { ...DEFAULT_PRIVILEGE } as any;
+      userStore.privileges = { ...DEFAULT_PRIVILEGE } as any;
       await userStore.fetchPrivilege();
     }
   } catch (error) {
@@ -104,7 +104,10 @@ async function changePermission(row: any, value: boolean) {
         <el-table-column :label="$t('NAME')" prop="authCode" :formatter="(_r, _c, value) => $t(value)"></el-table-column>
         <el-table-column :label="$t('ACCESS_PRIVILEGE')" prop="permission" width="160px">
           <template #default="{ row }">
-            <el-switch :disabled="SYS_ROLE === row.role" v-model="row.permission" @change="value => changePermission(row, value)"></el-switch>
+            <el-switch
+              :disabled="SYS_ROLE === row.role"
+              v-model="row.permission"
+              @change="value => changePermission(row, value as boolean)"></el-switch>
           </template>
         </el-table-column>
       </el-table>

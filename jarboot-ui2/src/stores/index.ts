@@ -40,7 +40,8 @@ export const useBasicStore = defineStore({
     masterHost: '',
     innerHeight: window.innerHeight,
     innerWidth: window.innerWidth,
-    menus: [] as MenuItem[]
+    menus: [] as MenuItem[],
+    subNameMap: new Map(),
   }),
   actions: {
     async update() {
@@ -67,7 +68,7 @@ export const useUserStore = defineStore({
     roles: '',
     userDir: '',
     avatar: null as string | null,
-    permission: null as any | null,
+    privileges: null as any | null,
   }),
 
   actions: {
@@ -89,15 +90,16 @@ export const useUserStore = defineStore({
       await router.push('/');
     },
     setCurrentUser(user: any) {
-      this.$patch({ ...user });
+      const privileges = { ...DEFAULT_PRIVILEGE, ...user.privileges } as any;
+      this.$patch({ ...user, privileges });
     },
     async fetchPrivilege() {
       const privilegeList = (await PrivilegeService.getPrivilegeByRole(this.roles)) || [];
-      const permission = { ...DEFAULT_PRIVILEGE } as any;
+      const privileges = { ...DEFAULT_PRIVILEGE } as any;
       // 多角色权限合并
-      privilegeList.forEach(privilege => (permission[privilege.authCode] = permission[privilege.authCode] || privilege.permission));
-      this.$patch({ permission });
-      return permission;
+      privilegeList.forEach(privilege => (privileges[privilege.authCode] = privileges[privilege.authCode] || privilege.permission));
+      this.$patch({ privileges });
+      return privileges;
     },
     async fetchAvatar() {
       const avatar = await UserService.getAvatar(this.username);

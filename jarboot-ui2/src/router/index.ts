@@ -2,8 +2,9 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import OAuthService from '@/services/OAuthService';
 import StringUtil from '@/common/StringUtil';
 import { useUserStore } from '@/stores';
-import { PAGE_LOGIN, PAGE_SERVICE } from '@/common/route-name-constants';
+import { PAGE_LOGIN } from '@/common/route-name-constants';
 import routesConfig from '@/router/routes-config';
+import CommonNotice from '@/common/CommonNotice';
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -40,19 +41,14 @@ router.beforeEach(async (to, _from, next) => {
     next({ name: PAGE_LOGIN, force: true });
     return;
   }
-  if ('/' === to.path) {
-    next({ name: PAGE_SERVICE, force: true });
-    return;
-  }
   const userStore = useUserStore();
   userStore.setCurrentUser(user);
-  let permission: any = userStore.permission;
-  if (null === permission) {
-    permission = await userStore.fetchPrivilege();
-    console.info('fetchPrivilege>>>>', permission);
-  }
   if (null === userStore.avatar) {
     await userStore.fetchAvatar();
+  }
+  if ('/' === to.path) {
+    next();
+    return;
   }
   if ('jarboot' === userStore.username) {
     // jarboot用户无需校验
@@ -61,14 +57,13 @@ router.beforeEach(async (to, _from, next) => {
   }
   const code = to?.meta?.code as string;
   if (code) {
-    if (!permission[code]) {
+    if (!userStore.privileges[code]) {
       // 无权限
-      next({ name: PAGE_LOGIN, force: true });
+      CommonNotice.warn('无权限');
       return;
     }
   }
   next();
-  // 权限检验
 });
 
 export default router;

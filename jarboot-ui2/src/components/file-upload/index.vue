@@ -4,7 +4,7 @@ import { round } from 'lodash';
 import type { UploadFileInfo } from '@/types';
 import StringUtil from '@/common/StringUtil';
 import { computed } from 'vue';
-import CommonUtils from "@/common/CommonUtils";
+import CommonUtils from '@/common/CommonUtils';
 
 const uploadStore = useUploadStore();
 function toggleVisible() {
@@ -51,11 +51,11 @@ const uploadingCount = computed(() => uploadStore.uploadFiles.filter(row => row.
           <el-table-column width="260" property="uploadSize" :label="$t('STATUS')">
             <template #default="{ row }">
               <el-progress
-                  text-inside
-                  :percentage="calcPercent(row)"
-                  :stroke-width="15"
-                  striped
-                  :striped-flow="row.uploadSize < row.totalSize" />
+                text-inside
+                :percentage="calcPercent(row)"
+                :stroke-width="15"
+                striped
+                :striped-flow="row.uploadSize < row.totalSize" />
             </template>
           </el-table-column>
           <el-table-column width="60" :label="$t('OPERATOR')">

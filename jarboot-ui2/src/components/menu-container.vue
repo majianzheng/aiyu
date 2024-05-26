@@ -15,9 +15,9 @@
 </template>
 
 <script lang="ts" setup>
-import {reactive, watch, onMounted, computed} from 'vue';
+import { reactive, watch, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useUserStore, useBasicStore } from '@/stores';
+import { useBasicStore } from '@/stores';
 
 const props = defineProps<{
   menu: string;
@@ -25,14 +25,16 @@ const props = defineProps<{
 
 const route = useRoute();
 const router = useRouter();
-const user = useUserStore();
 const basic = useBasicStore();
 
 const data = reactive({
   key: '',
 });
 
-watch(() => route.name, (newValue) => data.key = newValue as string);
+watch(
+  () => route.name,
+  newValue => (data.key = newValue as string)
+);
 
 const subMenus = computed(() => basic.menus.find(config => props.menu === config?.module)?.children || ([] as any[]));
 

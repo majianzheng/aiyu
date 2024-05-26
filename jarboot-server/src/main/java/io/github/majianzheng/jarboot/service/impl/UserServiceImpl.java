@@ -4,8 +4,10 @@ import io.github.majianzheng.jarboot.common.JarbootException;
 import io.github.majianzheng.jarboot.common.pojo.PagedList;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
 import io.github.majianzheng.jarboot.constant.AuthConst;
+import io.github.majianzheng.jarboot.dao.PrivilegeDao;
 import io.github.majianzheng.jarboot.dao.RoleDao;
 import io.github.majianzheng.jarboot.dao.UserDao;
+import io.github.majianzheng.jarboot.entity.Privilege;
 import io.github.majianzheng.jarboot.entity.User;
 import io.github.majianzheng.jarboot.service.UserService;
 import io.github.majianzheng.jarboot.utils.PasswordEncoderUtil;
@@ -20,12 +22,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -38,10 +39,12 @@ public class UserServiceImpl implements UserService {
     private static final int FULL_NAME_MAX = 26;
     private static final int PASSWORD_MAX = 17;
     private static final int PASSWORD_MIN = 5;
-    @Autowired
+    @Resource
     private UserDao userDao;
-    @Autowired
+    @Resource
     private RoleDao roleDao;
+    @Resource
+    private PrivilegeDao privilegeDao;
 
     @Override
     @Transactional(rollbackFor = Throwable.class)
@@ -162,6 +165,19 @@ public class UserServiceImpl implements UserService {
             user.setUsername(AuthConst.JARBOOT_USER);
             user.setRoles(AuthConst.ADMIN_ROLE);
             user.setPassword(PasswordEncoderUtil.encode(AuthConst.JARBOOT_USER));
+        }
+        if (null != user) {
+            Set<String> roleSet = Arrays.stream(user.getRoles().split(",")).map(String::trim).collect(Collectors.toSet());
+            List<Privilege> list = privilegeDao.findAllByRoleIn(roleSet);
+            Map<String, Boolean> map = new HashMap<>(16);
+            list.forEach(p -> map.compute(p.getAuthCode(), (k, v) -> {
+                boolean val = Boolean.TRUE.equals(p.getPermission());
+                if (null == v) {
+                    return val;
+                }
+                return Boolean.TRUE.equals(v) || val;
+            }));
+            user.setPrivileges(map);
         }
         return user;
     }

@@ -132,39 +132,6 @@ async function handleDelete(node: Node) {
   CommonNotice.success(`${CommonUtils.translate('SUCCESS')}`);
 }
 
-function handleSuccess(file: File, data: FileNode) {
-  let child = createNode(file, data);
-  child.progress = null;
-  treeRef.value?.updateKeyChildren(child.key, { ...child } as any);
-  CommonNotice.success(`${CommonUtils.translate('UPLOAD_TITLE')} ${file.name} ${CommonUtils.translate('SUCCESS')}`);
-}
-
-function createNode(file: File, data: FileNode): FileNode {
-  const name = file.name;
-  let child = data.children?.find(value => value.name === name) as FileNode;
-  if (child) {
-    if (null === child.progress || undefined === child.progress) {
-      child.progress = 0;
-      child.size = file.size;
-      treeRef.value?.updateKeyChildren(child.key, { ...child } as any);
-    }
-  } else {
-    const key = '' + file.name + Date.now();
-    child = {
-      key,
-      name,
-      directory: false,
-      parent: data.name,
-      progress: 0,
-      size: 0,
-      modifyTime: Date.now(),
-      leaf: true,
-    };
-    treeRef.value?.append(child, data);
-  }
-  return child;
-}
-
 async function addFolder(node: Node) {
   node = getSelectNode(node);
   const nodeData = node.data as FileNode;

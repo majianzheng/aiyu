@@ -65,7 +65,6 @@ public class AuthController {
 
         Authentication authentication = jwtTokenManager.getAuthentication(token);
         User user = userService.findUserByUsername(authentication.getName());
-        user.setPassword(null);
         return HttpResponseUtils.success(user);
     }
 

@@ -26,7 +26,7 @@ const state = reactive({
   active: '',
   loading: false,
   reloading: true,
-  clusterHosts: [] as {host: string, name: string}[],
+  clusterHosts: [] as { host: string; name: string }[],
 });
 
 async function editTab(key: string, action: 'remove' | 'add') {

@@ -53,7 +53,7 @@ const state = reactive({
   width: basicStore.innerWidth - 80,
   height: basicStore.innerHeight - 90,
   terms: [] as TermOptions[],
-  clusterHosts: [] as {host: string, name: string}[],
+  clusterHosts: [] as { host: string; name: string }[],
   selectHost: '',
   active: 0,
   dialog: false,

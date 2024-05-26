@@ -17,22 +17,22 @@
             <el-input v-model="serviceState.search" placeholder="" prefix-icon="Search" size="small" clearable />
             <div class="tree-container">
               <el-tree
-                  ref="treeRef"
-                  :data="treeData"
-                  :props="defaultProps"
-                  default-expand-all
-                  highlight-current
-                  @current-change="data => serviceState.selectClusterHost = data.host"
-                  :filter-node-method="filterService">
+                ref="treeRef"
+                :data="treeData"
+                :props="defaultProps"
+                default-expand-all
+                highlight-current
+                @current-change="data => (serviceState.selectClusterHost = data.host)"
+                :filter-node-method="filterService">
                 <template #default="{ node, data }">
                   <instance-tree-item
-                      :node="node"
-                      :data="data"
-                      @row-click="currentChange"
-                      @edit="editService"
-                      @select="onSelectClick"
-                      :current-node="serviceState.currentNode"
-                      :is-service="isService"></instance-tree-item>
+                    :node="node"
+                    :data="data"
+                    @row-click="currentChange"
+                    @edit="editService"
+                    @select="onSelectClick"
+                    :current-node="serviceState.currentNode"
+                    :is-service="isService"></instance-tree-item>
                 </template>
               </el-tree>
             </div>

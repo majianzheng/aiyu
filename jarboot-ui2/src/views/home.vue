@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { RouterView, useRoute, useRouter } from 'vue-router';
 import { DOCS_URL } from '@/common/CommonConst';
-import {useBasicStore, useUserStore} from '@/stores';
+import { useBasicStore, useUserStore } from '@/stores';
 import { onMounted, reactive } from 'vue';
 import { WsManager } from '@/common/WsManager';
 import { pubsub } from '@/views/services/ServerPubsubImpl';
-import type {MenuItem} from "@/types";
-import routesConfig from "@/router/routes-config";
-import StringUtil from "@/common/StringUtil";
+import type { MenuItem } from '@/types';
+import routesConfig from '@/router/routes-config';
+import StringUtil from '@/common/StringUtil';
 
 const state = reactive({
   dialog: false,
@@ -20,17 +20,23 @@ const route = useRoute();
 const router = useRouter();
 const basic = useBasicStore();
 
-const subNameMap = new Map();
+router.afterEach(to => {
+  const name = to.name;
+  const menu = basic.subNameMap.get(name);
+  if (menu) {
+    menu.subName = name;
+  }
+});
 
 function checkPermission(config: any): boolean {
-  if (!user?.permission) {
+  if (!user?.privileges) {
     return false;
   }
   if ('jarboot' === user.username) {
     return true;
   }
   if (config?.meta?.code) {
-    return user.permission[config.meta.code] as boolean;
+    return user.privileges[config.meta.code] as boolean;
   }
   return true;
 }
@@ -63,14 +69,13 @@ function createMenuData(config: any) {
     icon: config.meta.icon,
     code: config.meta.code,
     subName,
-  }
+  };
   if (subName) {
-    menu.children = filtered
-        .map((child: any) => {
-          const menuItem = {name: child.name, path: child.path, code: child.meta.code, icon: child.meta.icon};
-          subNameMap.set(menuItem.name, menu)
-          return menuItem;
-        });
+    menu.children = filtered.map((child: any) => {
+      const menuItem = { name: child.name, path: child.path, code: child.meta.code, icon: child.meta.icon };
+      basic.subNameMap.set(menuItem.name, menu);
+      return menuItem;
+    });
   }
   return menu;
 }
@@ -105,18 +110,16 @@ function resetPassword() {
   state.dialog = true;
 }
 
-onMounted(() => {
-  const menus = routesConfig
-      .filter(config => filterMenu(config))
-      .map(config => createMenuData(config));
+function updatePrivilegeMenu() {
+  const menus = routesConfig.filter(config => filterMenu(config)).map(config => createMenuData(config));
   basic.setMenus(menus);
-  router.afterEach((to, _from) => {
-    const name = to.name;
-    const menu = subNameMap.get(name);
-    if (menu) {
-      menu.subName = name;
-    }
-  });
+  if (route.path === '/' && menus?.length) {
+    router.push({ name: menus[0].subName || menus[0].name });
+  }
+}
+
+onMounted(() => {
+  updatePrivilegeMenu();
   welcome();
 });
 </script>
@@ -127,13 +130,9 @@ onMounted(() => {
       <img alt="Jarboot logo" class="logo" src="@/assets/logo.png" />
       <div class="wrapper">
         <nav>
-          <a
-            v-for="(menu, i) in basic.menus"
-            :key="i"
-            :class="{ 'router-link-exact-active': isActive(menu) }"
-            @click="goTo(menu)"
-            >{{ $t(menu.module) }}</a
-          >
+          <a v-for="(menu, i) in basic.menus" :key="i" :class="{ 'router-link-exact-active': isActive(menu) }" @click="goTo(menu)">{{
+            $t(menu.module as string)
+          }}</a>
         </nav>
       </div>
       <div style="flex: auto"></div>
