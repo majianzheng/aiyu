@@ -19,7 +19,7 @@ function calcPercent(row: UploadFileInfo) {
 
 function uploadSize(row: UploadFileInfo) {
   const append = row.uploadSize >= row.totalSize ? CommonUtils.translate('FINISHED') : CommonUtils.translate('TRANSMITTING');
-  return `${StringUtil.formatBytes(row.uploadSize).fileSize} / ${StringUtil.formatBytes(row.totalSize).fileSize} (${append})`;
+  return `${StringUtil.formatBytes(row.uploadSize).fileSize} / ${StringUtil.formatBytes(row.totalSize).fileSize} `;
 }
 
 function pauseOrResume(row: UploadFileInfo) {
@@ -45,7 +45,7 @@ const uploadingCount = computed(() => uploadStore.uploadFiles.filter(row => row.
           <el-table-column property="filename" width="160" :label="$t('FILE_NAME')" show-overflow-tooltip />
           <el-table-column :label="$t('SIZE')">
             <template #default="{ row }">
-              <span>{{ uploadSize(row) }}</span>
+              <span>{{ uploadSize(row) }}({{row.uploadSize >= row.totalSize ? $t('FINISHED') : $t('TRANSMITTING')}})</span>
             </template>
           </el-table-column>
           <el-table-column width="260" property="uploadSize" :label="$t('STATUS')">

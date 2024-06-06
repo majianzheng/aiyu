@@ -13,11 +13,13 @@ export default class CommonUtils {
   private static i18n: I18n;
   public static init(i18n: I18n) {
     CommonUtils.i18n = i18n;
-    CommonUtils.t = getCurrentInstance()?.appContext.config.globalProperties.$t;
   }
 
   public static translate(s: string, ...args: any[]) {
-    let msg = (CommonUtils.t ? CommonUtils.t(s) : s) as string;
+    if (!CommonUtils.t) {
+      CommonUtils.t = getCurrentInstance()?.appContext.config.globalProperties.$t;
+    }
+    let msg = CommonUtils.t(s);
     //{size}
     if (!args?.length) {
       return msg;
