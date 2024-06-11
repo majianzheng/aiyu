@@ -1,0 +1,167 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3820706 */
+  src: url('iconfont.woff2?t=1695366869637') format('woff2'),
+       url('iconfont.woff?t=1695366869637') format('woff'),
+       url('iconfont.ttf?t=1695366869637') format('truetype'),
+       url('iconfont.svg?t=1695366869637#iconfont') format('svg');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-json:before {
+  content: "\e7bd";
+}
+
+.icon-less:before {
+  content: "\f1e6";
+}
+
+.icon-debug:before {
+  content: "\e76d";
+}
+
+.icon-css:before {
+  content: "\e618";
+}
+
+.icon-html:before {
+  content: "\e619";
+}
+
+.icon-vue:before {
+  content: "\e79a";
+}
+
+.icon-typescript:before {
+  content: "\e6a3";
+}
+
+.icon-file-manager:before {
+  content: "\e643";
+}
+
+.icon-binary:before {
+  content: "\e61d";
+}
+
+.icon-javascript:before {
+  content: "\e799";
+}
+
+.icon-tar:before {
+  content: "\e617";
+}
+
+.icon-python:before {
+  content: "\e916";
+}
+
+.icon-java:before {
+  content: "\e746";
+}
+
+.icon-jar:before {
+  content: "\e8ae";
+}
+
+.icon-terminal:before {
+  content: "\e861";
+}
+
+.icon-exe:before {
+  content: "\e635";
+}
+
+.icon-golang:before {
+  content: "\e84f";
+}
+
+.icon-config:before {
+  content: "\e615";
+}
+
+.icon-onekey:before {
+  content: "\e616";
+}
+
+.icon-clear:before {
+  content: "\e612";
+}
+
+.icon-to-bottom:before {
+  content: "\e613";
+}
+
+.icon-to-top:before {
+  content: "\e614";
+}
+
+.icon-github:before {
+  content: "\e611";
+}
+
+.icon-dashboard:before {
+  content: "\e60f";
+}
+
+.icon-role:before {
+  content: "\e610";
+}
+
+.icon-export:before {
+  content: "\e608";
+}
+
+.icon-plugin:before {
+  content: "\e609";
+}
+
+.icon-privilege:before {
+  content: "\e60a";
+}
+
+.icon-import:before {
+  content: "\e60b";
+}
+
+.icon-restart:before {
+  content: "\e60c";
+}
+
+.icon-remote:before {
+  content: "\e60d";
+}
+
+.icon-panda:before {
+  content: "\e604";
+}
+
+.icon-delete:before {
+  content: "\e605";
+}
+
+.icon-stopped:before {
+  content: "\e606";
+}
+
+.icon-text-wrap:before {
+  content: "\e607";
+}
+
+.icon-language:before {
+  content: "\e601";
+}
+
+.icon-dark:before {
+  content: "\e602";
+}
+
+.icon-light:before {
+  content: "\e603";
+}
+

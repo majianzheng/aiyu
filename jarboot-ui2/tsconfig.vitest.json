@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.app.json",
+  "exclude": [],
+  "compilerOptions": {
+    "composite": true,
+    "allowJs": true,
+    "lib": [],
+    "types": ["node", "jsdom"]
+  }
+}

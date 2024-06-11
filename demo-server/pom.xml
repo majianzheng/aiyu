@@ -33,7 +33,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.mz.jarboot.demo.DemoServerApplication</mainClass>
+                            <mainClass>io.github.majianzheng.jarboot.demo.DemoServerApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -45,10 +45,29 @@
                 <filtering>true</filtering>
                 <includes>
                     <include>banner.txt</include>
-                    <include>META-INF/services/com.mz.jarboot.api.cmd.spi.CommandProcessor</include>
+                    <include>META-INF/services/io.github.majianzheng.jarboot.api.cmd.spi.CommandProcessor</include>
                 </includes>
             </resource>
         </resources>
     </build>
-
+    <profiles>
+        <profile>
+            <id>release</id>
+            <properties>
+                <maven.install.skip>true</maven.install.skip>
+                <maven.deploy.skip>true</maven.deploy.skip>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

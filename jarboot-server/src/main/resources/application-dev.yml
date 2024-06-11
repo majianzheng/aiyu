@@ -1,0 +1,8 @@
+JARBOOT_HOME: packaging/target/jarboot-bin/jarboot
+spring:
+  web:
+    resources:
+      static-locations:
+        - file:jarboot-server/target/smart-doc/
+        - classpath:/resources/
+        - classpath:/static/

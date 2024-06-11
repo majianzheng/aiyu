@@ -1,0 +1,275 @@
+{
+  "id": "3820706",
+  "name": "jarboot",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "jarboot ui icon project",
+  "glyphs": [
+    {
+      "icon_id": "1444787",
+      "name": "json",
+      "font_class": "json",
+      "unicode": "e7bd",
+      "unicode_decimal": 59325
+    },
+    {
+      "icon_id": "5634746",
+      "name": "less",
+      "font_class": "less",
+      "unicode": "f1e6",
+      "unicode_decimal": 61926
+    },
+    {
+      "icon_id": "11871971",
+      "name": "debug",
+      "font_class": "debug",
+      "unicode": "e76d",
+      "unicode_decimal": 59245
+    },
+    {
+      "icon_id": "521043",
+      "name": "css",
+      "font_class": "css",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "521044",
+      "name": "html",
+      "font_class": "html",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "6496026",
+      "name": "vue",
+      "font_class": "vue",
+      "unicode": "e79a",
+      "unicode_decimal": 59290
+    },
+    {
+      "icon_id": "13304114",
+      "name": "typescript",
+      "font_class": "typescript",
+      "unicode": "e6a3",
+      "unicode_decimal": 59043
+    },
+    {
+      "icon_id": "24849345",
+      "name": "文件管理",
+      "font_class": "file-manager",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
+      "icon_id": "312499",
+      "name": "file-binary",
+      "font_class": "binary",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "7656259",
+      "name": "logo-javascript",
+      "font_class": "javascript",
+      "unicode": "e799",
+      "unicode_decimal": 59289
+    },
+    {
+      "icon_id": "8219249",
+      "name": "tar",
+      "font_class": "tar",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "703054",
+      "name": "language-python-text",
+      "font_class": "python",
+      "unicode": "e916",
+      "unicode_decimal": 59670
+    },
+    {
+      "icon_id": "869802",
+      "name": "java",
+      "font_class": "java",
+      "unicode": "e746",
+      "unicode_decimal": 59206
+    },
+    {
+      "icon_id": "35336021",
+      "name": "jar",
+      "font_class": "jar",
+      "unicode": "e8ae",
+      "unicode_decimal": 59566
+    },
+    {
+      "icon_id": "11249896",
+      "name": "terminal",
+      "font_class": "terminal",
+      "unicode": "e861",
+      "unicode_decimal": 59489
+    },
+    {
+      "icon_id": "13303090",
+      "name": "exe",
+      "font_class": "exe",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "35334891",
+      "name": "golang",
+      "font_class": "golang",
+      "unicode": "e84f",
+      "unicode_decimal": 59471
+    },
+    {
+      "icon_id": "33523001",
+      "name": "icon_config",
+      "font_class": "config",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "33523002",
+      "name": "OneKey",
+      "font_class": "onekey",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "33522995",
+      "name": "clear",
+      "font_class": "clear",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "33522996",
+      "name": "qudibu_to-bottom",
+      "font_class": "to-bottom",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "33522997",
+      "name": "qudingbu_to-top",
+      "font_class": "to-top",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "33408504",
+      "name": "github",
+      "font_class": "github",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "33404260",
+      "name": "dashboard",
+      "font_class": "dashboard",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "33404261",
+      "name": "role",
+      "font_class": "role",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "33402331",
+      "name": "export",
+      "font_class": "export",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "33402332",
+      "name": "plugin",
+      "font_class": "plugin",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "33402333",
+      "name": "privilege",
+      "font_class": "privilege",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "33402334",
+      "name": "import",
+      "font_class": "import",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "33402335",
+      "name": "restart",
+      "font_class": "restart",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "33402336",
+      "name": "remote",
+      "font_class": "remote",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "33401618",
+      "name": "panda",
+      "font_class": "panda",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "33402025",
+      "name": "delete",
+      "font_class": "delete",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "33402028",
+      "name": "stopped",
+      "font_class": "stopped",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "33402029",
+      "name": "text-wrap",
+      "font_class": "text-wrap",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "33401284",
+      "name": "language",
+      "font_class": "language",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "33401398",
+      "name": "dark",
+      "font_class": "dark",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "33401399",
+      "name": "light",
+      "font_class": "light",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    }
+  ]
+}

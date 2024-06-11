@@ -8,22 +8,49 @@
     <format>zip</format>
   </formats>
 
+  <fileSets>
+    <fileSet>
+      <directory>bin</directory>
+      <outputDirectory>bin</outputDirectory>
+      <fileMode>0755</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>script</directory>
+      <outputDirectory>script</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../jarboot-ui2/dist</directory>
+      <outputDirectory>fe/jarboot</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../jarboot-server/target/smart-doc</directory>
+      <outputDirectory>fe/api-doc</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../target/lib</directory>
+      <outputDirectory>components/lib</outputDirectory>
+    </fileSet>
+  </fileSets>
   <files>
     <file>
       <source>../jarboot-agent/target/jarboot-agent-jar-with-dependencies.jar</source>
-      <destName>bin/jarboot-agent.jar</destName>
+      <destName>components/jarboot-agent.jar</destName>
     </file>
     <file>
       <source>../jarboot-spy/target/jarboot-spy.jar</source>
-      <destName>bin/jarboot-spy.jar</destName>
+      <destName>components/jarboot-spy.jar</destName>
     </file>
     <file>
       <source>../jarboot-core/target/jarboot-core.jar</source>
-      <destName>bin/jarboot-core.jar</destName>
+      <destName>components/jarboot-core.jar</destName>
     </file>
     <file>
       <source>../jarboot-server/target/jarboot-server.jar</source>
-      <destName>bin/jarboot-server.jar</destName>
+      <destName>components/jarboot-server.jar</destName>
+    </file>
+    <file>
+      <source>../tools/target/jarboot-tools.jar</source>
+      <destName>components/jarboot-tools.jar</destName>
     </file>
     <file>
       <source>../jarboot-server/src/main/resources/jarboot.properties</source>
@@ -31,37 +58,23 @@
     </file>
     <file>
       <source>../demo-server/target/demo-server.jar</source>
-      <destName>services/demo-server/demo-server.jar</destName>
+      <destName>workspace/default/demo-server/demo-server.jar</destName>
     </file>
     <file>
       <source>../plugins/shell-plugin/target/shell-plugin.jar</source>
       <destName>plugins/agent/shell-plugin.jar</destName>
     </file>
     <file>
-      <source>../plugins/debug-plugin/target/debug-plugin.jar</source>
-      <destName>plugins/server/debug-plugin.jar</destName>
-    </file>
-
-    <file>
-      <source>bin/shutdown.sh</source>
-      <fileMode>0755</fileMode>
+      <source>conf/cluster.conf</source>
+      <destName>conf/cluster.conf</destName>
     </file>
     <file>
-      <source>bin/shutdown.cmd</source>
+      <source>../README.md</source>
+      <destName>README.md</destName>
     </file>
     <file>
-      <source>bin/startup.sh</source>
-      <fileMode>0755</fileMode>
-    </file>
-    <file>
-      <source>bin/startup.cmd</source>
-    </file>
-    <file>
-      <source>bin/jt.sh</source>
-      <fileMode>0755</fileMode>
-    </file>
-    <file>
-      <source>bin/jt.cmd</source>
+      <source>../README_CN.md</source>
+      <destName>README_CN.md</destName>
     </file>
   </files>
 </assembly>

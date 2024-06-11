@@ -3,10 +3,16 @@
 ## Supported Versions（支持的版本）
 
 | Version | Supported          |
-| ------- | ------------------ |
+|---------| ------------------ |
+| 3.x.x   | :white_check_mark: |
 | 2.x.x   | :white_check_mark: |
 | 1.1.x   | :white_check_mark: |
 | < 1.1.0 | :x:                |
+
+Chrome >=87
+Firefox >=78
+Safari >=14
+Edge >=88
 
 ## How to Report bugs（如何提交Bugs）
 

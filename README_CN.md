@@ -24,6 +24,10 @@ English version goes [here](README.md).
 
 🐳 可扩展: 同时支持<code>JDK SPI</code>和<code>Spring SPI</code>，支持插件式开发。
 
+📦 安装包下载: [https://gitee.com/majz0908/jarboot/releases](https://gitee.com/majz0908/jarboot/releases)
+
+📺 视频演示： [哔哩哔哩视频](https://www.bilibili.com/video/BV1KG411e7ip/?share_source=copy_web&vd_source=b901b6d8d17d4922a1229758fa74e46c)
+
 ![overview](https://gitee.com/majz0908/jarboot/raw/develop/doc/overview.png)
 
 ## 技术背景及目标
@@ -43,8 +47,12 @@ English version goes [here](README.md).
 ### 架构简介 
 详细架构设计[查看](jarboot-server/README.md)
 
-前端界面采用<code>React</code>技术，脚手架使用<code>UmiJs</code>，组件库使用UmiJs内置等<code>antd</code>。
-后端服务主要由<code>SpringBoot</code>实现，提供http接口和静态资源代理。通过<code>WebSocket</code>向前端界面实时推送进程信息，同时与启动的Java进程维持一个长连接，以监控其状态。
+前端界面采用<code>Vue3</code>技术。 后端服务主要由<code>SpringBoot</code>实现，提供http接口和静态资源代理。通过<code>WebSocket</code>向前端界面实时推送进程信息，同时与启动的Java进程维持一个长连接，以监控其状态。
+
+Chrome >=87
+Firefox >=78
+Safari >=14
+Edge >=88
 
 ## 安装或编译构建
 ### 下载压缩包文件的方式安装，或者使用<code>Docker</code>
@@ -53,6 +61,11 @@ English version goes [here](README.md).
 
 使用<code>Docker</code>
 ```bash
+# Docker镜像构建
+mvn clean install -P prod
+sh build/docker-push.sh
+
+# 启动容器
 sudo docker run -itd --name jarboot -p 9899:9899 mazheng0908/jarboot
 ```
 
@@ -61,17 +74,8 @@ sudo docker run -itd --name jarboot -p 9899:9899 mazheng0908/jarboot
 
 编译Jarboot源代码
 ```bash
-#首先编译前端
-$ cd jarboot-ui
-#首次时需要先安装依赖，执行yarn或npm install
-$ yarn
-
-#执行编译，yarn build或npm run build，开发模式可执行yarn start或npm run start
-$ yarn build
-
-#切换到代码根目录，编译Java代码
-$ cd ../
-$ mvn clean install
+#首先需要准备JDK17+和nodeJS16+的开发环境，然后执行：
+$ mvn clean install -P prod
 ```
 ### 启动<code>Jarboot</code>服务
 如果是使用的<code>Docker</code>忽略此步骤。
@@ -82,8 +86,6 @@ $ sh startup.sh
 
 ### 浏览器访问<http://127.0.0.1:9899>
 进入登录界面，初始的用户名：<code>jarboot</code>，默认密码：<code>jarboot</code>
-
-![login](https://gitee.com/majz0908/jarboot/raw/develop/doc/login.png)
 
 ## SPI扩展，支持JDK和Spring的SPI
 使用扩展可以自己实现命令，自己定义一个命令如何执行。并且，可以时应用启动完成快速的通知Jarboot服务，不需要等待没有控制台输出的时间。
@@ -161,7 +163,7 @@ public class DemoCommandProcessor implements CommandProcessor {
 3. 创建JDK的spi定义文件
 
 在目录<code>resources</code>/<code>META-INF</code>/<code>services</code>中创建名为
-  <code>com.mz.jarboot.api.cmd.spi.CommandProcessor</code>的文件，内容为类的全名。
+  <code>spi.cmd.io.github.majianzheng.jarboot.api.CommandProcessor</code>的文件，内容为类的全名。
 
 #### 启动成功主动通知Jarboot服务
 ```java
@@ -178,11 +180,18 @@ public class DemoApplication {
 }
 ```
 
+## 工具
+### 文件浏览器
+![file_browse](https://gitee.com/majz0908/jarboot/raw/develop/doc/file-browse.png)
+
+### 终端
+![terminal](https://gitee.com/majz0908/jarboot/raw/develop/doc/terminal.png)
+
 ## 命令列表
 ### bytes
 查看类的字节码，用法：
 ```bash
-jarboot$ bytes com.mz.jarboot.demo.DemoServerApplication
+jarboot$ bytes io.github.majianzheng.jarboot.demo.DemoServerApplication
 ClassLoader: org.springframework.boot.loader.LaunchedURLClassLoader@31221be2
 ------
 getUser
@@ -272,19 +281,19 @@ $ sc -d org.springframework.web.context.support.XmlWebApplicationContext
 ### trace
 方法执行监控 
 ```bash
-jarboot$ trace com.mz.jarboot.demo.DemoServerApplication add 
+jarboot$ trace io.github.majianzheng.jarboot.demo.DemoServerApplication add 
 Affect(class count: 2 , method count: 1) cost in 63 ms, listenerId: 2
 `---ts=2021-06-15 23:34:20;thread_name=http-nio-9900-exec-3;id=13;is_daemon=true;priority=5;TCCL=org.springframework.boot.web.embedded.tomcat.TomcatEmbeddedWebappClassLoader@4690b489
-    `---[0.053485ms] com.mz.jarboot.demo.DemoServerApplication:add()
+    `---[0.053485ms] io.github.majianzheng.jarboot.demo.DemoServerApplication:add()
 ```
   
 ### watch
 方法执行数据监测
     
-观察方法 `com.mz.jarboot.demo.DemoServerApplicatio#add` 执行的入参，仅当方法抛出异常时才输出。
+观察方法 `io.github.majianzheng.jarboot.demo.DemoServerApplicatio#add` 执行的入参，仅当方法抛出异常时才输出。
 
 ```bash
-jarboot$ watch com.mz.jarboot.demo.DemoServerApplicatio add {params[0], throwExp} -e
+jarboot$ watch io.github.majianzheng.jarboot.demo.DemoServerApplicatio add {params[0], throwExp} -e
 Press Ctrl+C to abort.
 Affect(class-cnt:1 , method-cnt:1) cost in 65 ms.
 ts=2018-09-18 10:26:28;result=@ArrayList[
@@ -301,12 +310,12 @@ jarboot$ thread -n 3
 "nioEventLoopGroup-2-1" Id=31 cpuUsage=0.37% deltaTime=0ms time=880ms RUNNABLE
     at sun.management.ThreadImpl.dumpThreads0(Native Method)
     at sun.management.ThreadImpl.getThreadInfo(ThreadImpl.java:448)
-    at com.mz.jarboot.core.cmd.impl.ThreadCommand.processTopBusyThreads(ThreadCommand.java:209)
-    at com.mz.jarboot.core.cmd.impl.ThreadCommand.run(ThreadCommand.java:120)
-    at com.mz.jarboot.core.basic.EnvironmentContext.runCommand(EnvironmentContext.java:162)
-    at com.mz.jarboot.core.cmd.CommandRequestSubscriber.execute(CommandDispatcher.java:35)
-    at com.mz.jarboot.core.server.JarbootBootstrap$1.onText(JarbootBootstrap.java:94)
-    at com.mz.jarboot.core.ws.WebSocketClientHandler.channelRead0(WebSocketClientHandler.java:83)
+    at impl.cmd.io.github.majianzheng.jarboot.core.ThreadCommand.processTopBusyThreads(ThreadCommand.java:209)
+    at impl.cmd.io.github.majianzheng.jarboot.core.ThreadCommand.run(ThreadCommand.java:120)
+    at basic.io.github.majianzheng.jarboot.core.EnvironmentContext.runCommand(EnvironmentContext.java:162)
+    at cmd.io.github.majianzheng.jarboot.core.CommandRequestSubscriber.execute(CommandDispatcher.java:35)
+    at server.io.github.majianzheng.jarboot.core.JarbootBootstrap$1.onText(JarbootBootstrap.java:94)
+    at io.github.majianzheng.jarboot.core.ws.WebSocketClientHandler.channelRead0(WebSocketClientHandler.java:83)
     at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
 
 "C2 CompilerThread1" [Internal] cpuUsage=3.14% deltaTime=6ms time=4599ms
@@ -324,7 +333,7 @@ jarboot$ classloader
 name	                                                numberOfInstances	loadedCountTotal
 org.springframework.boot.loader.LaunchedURLClassLoader	1	                3929
 BootstrapClassLoader	                                1                	2623
-com.mz.jarboot.agent.JarbootClassLoader             	1               	1780
+io.github.majianzheng.jarboot.agent.JarbootClassLoader             	1               	1780
 sun.misc.Launcher$AppClassLoader                    	1               	59
 sun.reflect.DelegatingClassLoader                 	58                	58
 sun.misc.Launcher$ExtClassLoader                     	1	                18
@@ -356,10 +365,18 @@ jarboot$ sysprop user.home
 * [bytekit](https://github.com/alibaba/bytekit) Java Bytecode Kit.
 * [Arthas](https://github.com/alibaba/arthas) 部分命令在<code>Arthas</code>源码的基础上二次开发。
 
+## 致谢
+我们使用Jetbrains tools开发和构建项目.
+
+![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)
+
 ## 联系
 - 邮箱: 282295811@qq.com
 - QQ群: 663881845
+- QQ群已满，微信群二维码会过期，大家关注下抖音吧，关注后加入抖音的粉丝群
+- 抖音号：1077242754
 
+![抖音](https://gitee.com/majz0908/jarboot/raw/develop/doc/douyin.jpg)
 ![QQ group](https://gitee.com/majz0908/jarboot/raw/develop/doc/qq-group.png)
 
 ## 仓库镜像

@@ -1,0 +1,44 @@
+// import dark theme
+@use "element-plus/theme-chalk/src/dark/css-vars.scss" as *;
+
+:root {
+  --color-hight: #000;
+  --toolbar-bg-color: #f5f5f5;
+  --side-bg-color: #ffffff;
+  --tool-button-hover-color: #d4d4d4;
+  --panel-header-bg-color: #eaeaea87;
+  --board-panel-body-color: #ffffff;
+}
+:root.dark {
+  --color-hight: #fff;
+  --toolbar-bg-color: #4e4e4e;
+  --side-bg-color: #212121;
+  --tool-button-hover-color: #717171;
+  --panel-header-bg-color: #2f2d3191;
+  --board-panel-body-color: rgba(41,52,65,1);
+}
+
+.el-tabs--card>.el-tabs__header {
+  height: 28px !important;
+  margin: 0 !important;
+}
+.el-tabs__new-tab {
+  margin: 2px;
+}
+.el-tabs__item {
+  height: 28px !important;
+  line-height: 28px !important;
+}
+.el-tabs__nav-next, .el-tabs__nav-prev {
+  line-height: 28px !important;
+}
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+a {
+  color: var(--ep-color-primary);
+}

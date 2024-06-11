@@ -42,12 +42,13 @@ export SERVER="jarboot-server"
 CUR_DIR=`pwd`
 export JAVA_HOME
 export JAVA="$JAVA_HOME/bin/java"
-export JARBOOT_HOME=`cd $(dirname $0); pwd`
+export JARBOOT_HOME=$(cd `dirname $0`/../; pwd)
+
 cd "${JARBOOT_HOME}"
 #===========================================================================================
 # JVM Configuration
 #===========================================================================================
-JAVA_OPT="${JAVA_OPT} -Xms256m -Xmx256m -XX:+UseG1GC -XX:MaxGCPauseMillis=500"
+JAVA_OPT="${JAVA_OPT} -Xms512m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=500"
 JAVA_OPT="${JAVA_OPT} -XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=logs/java_heapdump.hprof"
 JAVA_OPT="${JAVA_OPT} -XX:-UseLargePages"
 
@@ -58,9 +59,9 @@ else
   JAVA_OPT="${JAVA_OPT} -Djava.ext.dirs=${JAVA_HOME}/jre/lib/ext:${JAVA_HOME}/lib/ext"
   JAVA_OPT="${JAVA_OPT} -Xloggc:logs/jarboot_gc.log -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M"
 fi
-JAVA_OPT="${JAVA_OPT} -Djdk.attach.allowAttachSelf=true -Dloader.path=plugins/server -Dfile.encoding=UTF-8"
+JAVA_OPT="${JAVA_OPT} -Djdk.attach.allowAttachSelf=true -Dloader.path=components/lib,plugins/server -Dfile.encoding=UTF-8"
 
-JAR_FILE=bin/${SERVER}.jar
+JAR_FILE=components/${SERVER}.jar
 
 JAVA_OPT="${JAVA_OPT} -jar ${JAR_FILE}"
 
@@ -72,12 +73,12 @@ echo "$JAVA ${JAVA_OPT}"
 
 echo "jarboot is starting"
 
-# check the start.out log output file
-if [ ! -f "${JARBOOT_HOME}/logs/start.out" ]; then
-  touch "${JARBOOT_HOME}/logs/start.out"
-fi
 # start
-echo "$JAVA ${JAVA_OPT}" > logs/start.out 2>&1 &
-nohup $JAVA ${JAVA_OPT} jarboot.jarboot >> logs/start.out 2>&1 &
-echo "jarboot is starting，you can check the ${JARBOOT_HOME}/logs/start.out"
-cd "${CUR_DIR}"
+echo "$JAVA ${JAVA_OPT}"
+nohup $JAVA ${JAVA_OPT} jarboot.jarboot >/dev/null &
+echo "jarboot is starting，you can check the ${JARBOOT_HOME}/logs/jarboot.log"
+echo "Starting jarboot server daemon..."
+TOOL_JAR="${JARBOOT_HOME}/components/jarboot-tools.jar io.github.majianzheng.jarboot.tools.daemon.ServerDaemon"
+DAEMON_VM="-Xms10m -Xmx10m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 -DJARBOOT_HOME=$JARBOOT_HOME"
+nohup $JAVA $DAEMON_VM -cp ${TOOL_JAR} jarboot.daemon >/dev/null &
+echo "daemon started."

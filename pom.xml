@@ -29,26 +29,27 @@
 	<groupId>io.github.majianzheng</groupId>
 	<artifactId>jarboot-all</artifactId>
 	<version>${revision}</version>
-	<name>Jarboot ${project.version}</name>
+	<name>Jarboot</name>
 	<description>Top Jarboot project pom.xml</description>
 	<url>https://github.com/majianzheng/jarboot</url>
 
 	<modules>
 		<module>jarboot-api</module>
 		<module>jarboot-common</module>
+		<module>text-ui</module>
 		<module>jarboot-spy</module>
 		<module>jarboot-core</module>
 	    <module>jarboot-agent</module>
 		<module>jarboot-server</module>
 		<module>spring-boot-starter-jarboot</module>
-		<module>plugins/debug-plugin</module>
 		<module>plugins/shell-plugin</module>
 		<module>demo-server</module>
+		<module>tools</module>
 		<module>packaging</module>
 		<module>jarboot-client</module>
-	</modules>
+    </modules>
 	<properties>
-		<revision>2.3.0</revision>
+		<revision>3.1.0</revision>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
@@ -58,15 +59,24 @@
 		<sonar.exclusions>file:**/generated-sources/**,**/test/**</sonar.exclusions>
 
 		<!-- dependency version -->
-		<spring.version>2.6.2</spring.version>
+		<spring.version>2.7.10</spring.version>
 		<bytekit.version>0.0.5</bytekit.version>
 		<commons-io.version>2.11.0</commons-io.version>
 		<jjwt.version>0.11.2</jjwt.version>
 		<cfr.version>0.151</cfr.version>
 		<olgn.version>3.1.19</olgn.version>
+		<pty4j.version>0.12.5</pty4j.version>
+		<groovy.version>2.4.21</groovy.version>
+		<rsyntaxtextarea.version>3.3.1</rsyntaxtextarea.version>
+		<commons-logging.version>1.2</commons-logging.version>
+		<jline.version>3.25.1</jline.version>
 
 		<!-- plugin version -->
+		<maven-resources-version>2.6</maven-resources-version>
+		<maven-compiler-version>3.11.0</maven-compiler-version>
 		<maven-flatten-version>1.2.7</maven-flatten-version>
+		<maven-shade-plugin-version>3.4.1</maven-shade-plugin-version>
+		<maven-jar-plugin-version>2.4</maven-jar-plugin-version>
 		<dependency-mediator-maven-plugin.version>1.0.2</dependency-mediator-maven-plugin.version>
 		<maven-enforcer-plugin.version>1.4.1</maven-enforcer-plugin.version>
 		<lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
@@ -79,6 +89,8 @@
 		<nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
 		<findbugs-maven-plugin.version>3.0.4</findbugs-maven-plugin.version>
 		<sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
+		<smart-doc-maven-plugin.version>2.6.7</smart-doc-maven-plugin.version>
+		<maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
 		<!-- dependency version related to plugin -->
 		<extra-enforcer-rules.version>1.0-beta-4</extra-enforcer-rules.version>
 		<p3c-pmd.version>1.3.0</p3c-pmd.version>
@@ -141,12 +153,22 @@
 				<artifactId>spring-boot-starter-jarboot</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>text-ui</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
 			<!-- Apache commons -->
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
 				<version>${commons-io.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>${commons-logging.version}</version>
 			</dependency>
 
 			<!-- Third-party libs -->
@@ -159,13 +181,11 @@
 				<groupId>io.jsonwebtoken</groupId>
 				<artifactId>jjwt-impl</artifactId>
 				<version>${jjwt.version}</version>
-				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>io.jsonwebtoken</groupId>
 				<artifactId>jjwt-jackson</artifactId>
 				<version>${jjwt.version}</version>
-				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.alibaba</groupId>
@@ -181,6 +201,26 @@
 				<groupId>ognl</groupId>
 				<artifactId>ognl</artifactId>
 				<version>${olgn.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jetbrains.pty4j</groupId>
+				<artifactId>pty4j</artifactId>
+				<version>${pty4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.codehaus.groovy</groupId>
+				<artifactId>groovy-all</artifactId>
+				<version>${groovy.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fifesoft</groupId>
+				<artifactId>rsyntaxtextarea</artifactId>
+				<version>${rsyntaxtextarea.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jline</groupId>
+				<artifactId>jline</artifactId>
+				<version>${jline.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -206,6 +246,37 @@
 	<build>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${maven-resources-version}</version>
+					<configuration>
+						<delimiters>
+							<delimiter>@</delimiter>
+						</delimiters>
+						<useDefaultDelimiters>false</useDefaultDelimiters>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven-compiler-version}</version>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+						<encoding>UTF-8</encoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>${maven-shade-plugin-version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>${maven-jar-plugin-version}</version>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
@@ -269,6 +340,46 @@
 					<artifactId>exec-maven-plugin</artifactId>
 					<version>${exec-maven-plugin.version}</version>
 				</plugin>
+				<plugin>
+					<groupId>com.github.shalousun</groupId>
+					<artifactId>smart-doc-maven-plugin</artifactId>
+					<version>${smart-doc-maven-plugin.version}</version>
+					<configuration>
+						<!--指定项目名称-->
+						<projectName>${project.name}</projectName>
+						<!--smart-doc实现自动分析依赖树加载第三方依赖的源码，如果一些框架依赖库加载不到导致报错，这时请使用excludes排除掉-->
+						<excludes>
+							<!--格式为：groupId:artifactId;参考如下-->
+							<!--也可以支持正则式如：com.alibaba:.* -->
+							<exclude>com.alibaba:fastjson</exclude>
+						</excludes>
+						<!--includes配置用于配置加载外部依赖源码,配置后插件会按照配置项加载外部源代码而不是自动加载所有，因此使用时需要注意-->
+						<!--smart-doc能自动分析依赖树加载所有依赖源码，原则上会影响文档构建效率，因此你可以使用includes来让插件加载你配置的组件-->
+						<includes>
+							<!--格式为：groupId:artifactId;参考如下-->
+							<!--也可以支持正则式如：com.alibaba:.* -->
+							<!-- 如果配置了includes的情况下， 使用了jpa的分页需要include所使用的源码包 -->
+							<include>org.springframework.data:spring-data-commons</include>
+						</includes>
+					</configuration>
+					<executions>
+						<execution>
+							<!--如果不需要在执行编译时启动smart-doc，则将phase注释掉-->
+							<phase>compile</phase>
+							<goals>
+								<!--smart-doc提供了html、openapi、markdown等goal，可按需配置-->
+								<goal>html</goal>
+								<goal>markdown</goal>
+								<goal>postman</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>${maven-dependency-plugin.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -324,6 +435,7 @@
 						<exclude>**/core/cmd/**/*.java</exclude>
 						<exclude>**/jarboot/agent/*.java</exclude>
 						<exclude>**/java/jarboot/*.java</exclude>
+						<exclude>**/jarboot/text/**/*.java</exclude>
 					</excludes>
 				</configuration>
 				<executions>
@@ -419,6 +531,23 @@
 
 	<profiles>
 		<profile>
+			<!-- 本地开发环境 -->
+			<id>dev</id>
+			<properties>
+				<env>dev</env>
+			</properties>
+			<activation>
+				<!-- 设置默认激活这个配置 -->
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<env>prod</env>
+			</properties>
+		</profile>
+		<profile>
 			<id>release</id>
 			<build>
 				<plugins>
@@ -488,4 +617,25 @@
 			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
+	<repositories>
+		<repository>
+			<id>maven-ali</id>
+			<url>https://maven.aliyun.com/nexus/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://maven.aliyun.com/repository/spring</url>
+		</repository>
+		<repository>
+			<id>maven_central</id>
+			<name>Maven Central</name>
+			<url>https://repo.maven.apache.org/maven2/</url>
+		</repository>
+		<repository>
+			<id>jetbrains</id>
+			<name>jetbrains</name>
+			<url>https://packages.jetbrains.team/maven/p/jcs/maven/</url>
+		</repository>
+	</repositories>
 </project>

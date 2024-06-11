@@ -24,6 +24,10 @@ In the test environment and daily built integrated environment, a series of jar 
 
 🐳 Extensible: Support both <code>JDK SPI</code> and <code>Spring SPI</code>, support plugins develop.
 
+📦 Installation package Download: [https://gitee.com/majz0908/jarboot/releases](https://gitee.com/majz0908/jarboot/releases)
+
+📺 视频演示： [哔哩哔哩视频](https://www.bilibili.com/video/BV1KG411e7ip/?share_source=copy_web&vd_source=b901b6d8d17d4922a1229758fa74e46c)
+
 ![overview](https://gitee.com/majz0908/jarboot/raw/develop/doc/overview.png)
 
 ## Background and objectives
@@ -44,8 +48,12 @@ as acquiring JVM information, monitoring thread status, acquiring thread stack i
 ### Architecture brief introduction
 Detailed architecture design [view](jarboot-server/README.md)
 
-Front-end interface adopts <code>React</code> technology, scaffold uses <code>UmiJs</code>, component library uses
-<code>UmiJs</code> built-in <code>antd</code>. The back-end service is mainly implemented by <code>SpringBoot</code>, which provides HTTP interface and static resource broker. The process information is pushed through <code>websocket</code> to the front-end interface in real time, and a long connection is maintained with the started java process to monitor its status.
+Front-end interface adopts <code>Vue3</code> technology. The back-end service is mainly implemented by <code>SpringBoot</code>, which provides HTTP interface and static resource broker. The process information is pushed through <code>websocket</code> to the front-end interface in real time, and a long connection is maintained with the started java process to monitor its status.
+
+Chrome >=87
+Firefox >=78
+Safari >=14
+Edge >=88
 
 ## Install or build
 ### Download the zip package to install or using docker.
@@ -54,6 +62,11 @@ Front-end interface adopts <code>React</code> technology, scaffold uses <code>Um
 
 Use <code>docker</code>
 ```bash
+# Docker image build
+mvn clean install -P prod
+sh build/docker-push.sh
+
+# Start container
 sudo docker run -itd --name jarboot -p 9899:9899 mazheng0908/jarboot
 ```
 
@@ -62,17 +75,8 @@ Ignore this when using zip package or <code>docker</code>.
 
 Build the jarboot code.
 ```bash
-#At first build ui
-$ cd jarboot-ui
-#First time, execute yarn or npm install
-$ yarn
-
-#execute compile, yarn build or npm run build, execute yarn start or npm run start at development mode.
-$ yarn build
-
-#Switch to the code root directory and compile the Java code
-$ cd ../
-$ mvn clean install
+#At first prepare JDK17+ and nodeJs16+, then
+$ mvn clean install -P prod
 ```
 ### Start <code>jarboot</code> server
 Ignore this when using <code>docker</code>.
@@ -83,8 +87,6 @@ $ sh startup.sh
 
 ### Browser access <http://127.0.0.1:9899>
 Enter the login page. Initial username: <code>jarboot</code>, default password: <code>jarboot</code>
-
-![login](https://gitee.com/majz0908/jarboot/raw/develop/doc/login.png)
 
 ## SPI Extension, support both JDK and Spring SPI
 Use SPI extension can implement your own command, define a command how to execute. And，also can notify stated event to Jarboot server
@@ -164,7 +166,7 @@ public class DemoCommandProcessor implements CommandProcessor {
 3. Create spi define file
 
 Then create a file in <code>resources</code>/<code>META-INF</code>/<code>services</code> named 
- <code>com.mz.jarboot.api.cmd.spi.CommandProcessor</code> the content is class full name.
+ <code>spi.cmd.io.github.majianzheng.jarboot.api.CommandProcessor</code> the content is class full name.
 
 #### Proactive notification of startup completion
 ```java
@@ -181,12 +183,20 @@ public class DemoApplication {
 }
 ```
 
+## Tools
+### File browse
+![file_browse](https://gitee.com/majz0908/jarboot/raw/develop/doc/file-browse.png)
+
+### Terminal
+![terminal](https://gitee.com/majz0908/jarboot/raw/develop/doc/terminal.png)
+
+
 ## Command list
 ### bytes
 View the class bytes，Usage：
 
 ```bash
-jarboot$ bytes com.mz.jarboot.demo.DemoServerApplication
+jarboot$ bytes io.github.majianzheng.jarboot.demo.DemoServerApplication
 ClassLoader: org.springframework.boot.loader.LaunchedURLClassLoader@31221be2
 ------
 getUser
@@ -280,19 +290,19 @@ $ sc -d org.springframework.web.context.support.XmlWebApplicationContext
 method calling path, and output the time cost for each node in the path.
 
 ```bash
-jarboot$ trace com.mz.jarboot.demo.DemoServerApplication add 
+jarboot$ trace io.github.majianzheng.jarboot.demo.DemoServerApplication add 
 Affect(class count: 2 , method count: 1) cost in 63 ms, listenerId: 2
 `---ts=2021-06-15 23:34:20;thread_name=http-nio-9900-exec-3;id=13;is_daemon=true;priority=5;TCCL=org.springframework.boot.web.embedded.tomcat.TomcatEmbeddedWebappClassLoader@4690b489
-    `---[0.053485ms] com.mz.jarboot.demo.DemoServerApplication:add()
+    `---[0.053485ms] io.github.majianzheng.jarboot.demo.DemoServerApplication:add()
 ```
   
 ### watch
 methods in data aspect including return values, exceptions and parameters
     
-Watch the first parameter and thrown exception of `com.mz.jarboot.demo.DemoServerApplicatio#add` only if it throws exception.
+Watch the first parameter and thrown exception of `io.github.majianzheng.jarboot.demo.DemoServerApplicatio#add` only if it throws exception.
 
 ```bash
-jarboot$ watch com.mz.jarboot.demo.DemoServerApplicatio add {params[0], throwExp} -e
+jarboot$ watch io.github.majianzheng.jarboot.demo.DemoServerApplicatio add {params[0], throwExp} -e
 Press x to abort.
 Affect(class-cnt:1 , method-cnt:1) cost in 65 ms.
 ts=2018-09-18 10:26:28;result=@ArrayList[
@@ -309,12 +319,12 @@ jarboot$ thread -n 3
 "nioEventLoopGroup-2-1" Id=31 cpuUsage=0.37% deltaTime=0ms time=880ms RUNNABLE
     at sun.management.ThreadImpl.dumpThreads0(Native Method)
     at sun.management.ThreadImpl.getThreadInfo(ThreadImpl.java:448)
-    at com.mz.jarboot.core.cmd.impl.ThreadCommand.processTopBusyThreads(ThreadCommand.java:209)
-    at com.mz.jarboot.core.cmd.impl.ThreadCommand.run(ThreadCommand.java:120)
-    at com.mz.jarboot.core.basic.EnvironmentContext.runCommand(EnvironmentContext.java:162)
-    at com.mz.jarboot.core.cmd.CommandRequestSubscriber.execute(CommandDispatcher.java:35)
-    at com.mz.jarboot.core.server.JarbootBootstrap$1.onText(JarbootBootstrap.java:94)
-    at com.mz.jarboot.core.ws.WebSocketClientHandler.channelRead0(WebSocketClientHandler.java:83)
+    at impl.cmd.io.github.majianzheng.jarboot.core.ThreadCommand.processTopBusyThreads(ThreadCommand.java:209)
+    at impl.cmd.io.github.majianzheng.jarboot.core.ThreadCommand.run(ThreadCommand.java:120)
+    at basic.io.github.majianzheng.jarboot.core.EnvironmentContext.runCommand(EnvironmentContext.java:162)
+    at cmd.io.github.majianzheng.jarboot.core.CommandRequestSubscriber.execute(CommandDispatcher.java:35)
+    at server.io.github.majianzheng.jarboot.core.JarbootBootstrap$1.onText(JarbootBootstrap.java:94)
+    at io.github.majianzheng.jarboot.core.ws.WebSocketClientHandler.channelRead0(WebSocketClientHandler.java:83)
     at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
 
 "C2 CompilerThread1" [Internal] cpuUsage=3.14% deltaTime=6ms time=4599ms
@@ -332,7 +342,7 @@ jarboot$ classloader
 name	                                                numberOfInstances	loadedCountTotal
 org.springframework.boot.loader.LaunchedURLClassLoader	1	                3929
 BootstrapClassLoader	                                1                	2623
-com.mz.jarboot.agent.JarbootClassLoader             	1               	1780
+io.github.majianzheng.jarboot.agent.JarbootClassLoader             	1               	1780
 sun.misc.Launcher$AppClassLoader                    	1               	59
 sun.reflect.DelegatingClassLoader                 	58                	58
 sun.misc.Launcher$ExtClassLoader                     	1	                18
@@ -365,11 +375,19 @@ jarboot$ sysprop user.home
 * [bytekit](https://github.com/alibaba/bytekit) Java Bytecode Kit.
 * [Arthas](https://github.com/alibaba/arthas) Some command is developed on the source of <code>Arthas</code>.
 
+## Thanks
+We used JetBrains tools for developing and building.
+
+![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)
 ## Contact
 - Mail: 282295811@qq.com
 - QQ group: 663881845
+- QQ群已满，微信群二维码会过期，大家关注下抖音吧，关注后加入抖音的粉丝群
+- 抖音号：1077242754
 
+![抖音](https://gitee.com/majz0908/jarboot/raw/develop/doc/douyin.jpg)
 ![QQ group](https://gitee.com/majz0908/jarboot/raw/develop/doc/qq-group.png)
+
 
 ## 仓库镜像
 
