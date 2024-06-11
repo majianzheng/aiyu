@@ -373,9 +373,11 @@ jarboot$ sysprop user.home
 ## 联系
 - 邮箱: 282295811@qq.com
 - QQ群: 663881845
+- QQ群已满，微信群二维码会过期，大家关注下抖音吧，关注后加入抖音的粉丝群
+- 抖音号：1077242754
 
+![抖音](https://gitee.com/majz0908/jarboot/raw/develop/doc/douyin.jpg)
 ![QQ group](https://gitee.com/majz0908/jarboot/raw/develop/doc/qq-group.png)
-![微信群](https://gitee.com/majz0908/jarboot/raw/develop/doc/wx-group.jpg)
 
 ## 仓库镜像
 
