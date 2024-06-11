@@ -384,6 +384,7 @@ We used JetBrains tools for developing and building.
 - QQ group: 663881845
 
 ![QQ group](https://gitee.com/majz0908/jarboot/raw/develop/doc/qq-group.png)
+![WinXin group](https://gitee.com/majz0908/jarboot/raw/develop/doc/wx-group.jpg)
 
 ## 仓库镜像
 

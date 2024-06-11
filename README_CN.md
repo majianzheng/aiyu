@@ -375,6 +375,7 @@ jarboot$ sysprop user.home
 - QQ群: 663881845
 
 ![QQ group](https://gitee.com/majz0908/jarboot/raw/develop/doc/qq-group.png)
+![微信群](https://gitee.com/majz0908/jarboot/raw/develop/doc/wx-group.jpg)
 
 ## 仓库镜像
 
