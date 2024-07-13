@@ -151,7 +151,7 @@ class WsManager {
       handle && handle.close();
       const duration = 0;
       const message = body.substring(index + 1);
-      WsManager.LOADING_MAP.set(key, ElMessage({ message, icon: 'Loading', key, duration }));
+      WsManager.LOADING_MAP.set(key, ElMessage({ message, icon: 'IconLoading', key, duration }));
     }
   };
 
@@ -230,7 +230,7 @@ class WsManager {
     if (null !== WsManager.fd) {
       return;
     }
-    msg = ElMessage({ message: 'reconnecting...', duration: 0, icon: 'Loading' });
+    msg = ElMessage({ message: 'reconnecting...', duration: 0, icon: 'IconLoading' });
     WsManager.fd = setInterval(() => {
       if (null === WsManager.fd) {
         //已经进入连onOpen
