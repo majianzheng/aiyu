@@ -19,12 +19,18 @@ set JARBOOT_OPTS=-Djdk.attach.allowAttachSelf=true -Dloader.path="%JARBOOT_HOME%
 set COMMAND="%JAVA%" %JARBOOT_JVM_OPTS% %JARBOOT_OPTS% -jar "%SERVER%" jarboot.jarboot %*
 
 rem start jarboot command
-echo "Starting jarboot server %COMMAND%"
+echo Starting jarboot server...
 start "" %COMMAND%
+echo Jarboot server started.
+
 set "TOOL_JAR=%JARBOOT_HOME%/components/jarboot-tools.jar io.github.majianzheng.jarboot.tools.daemon.ServerDaemon"
 set "DAEMON_VM=-Xms10m -Xmx10m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 -DJARBOOT_HOME=%JARBOOT_HOME%"
 set "DAEMON_CMD="%JAVA%" %DAEMON_VM% -cp %TOOL_JAR% jarboot.daemon %*"
-echo "Starting jarboot server daemon..."
-echo "%DAEMON_CMD%"
+
+echo Starting jarboot daemon...
 start "" %DAEMON_CMD%
-echo "Start finished."
+echo Jarboot daemon started.
+echo Start Jarboot success.
+
+echo You can check %JARBOOT_HOME%/logs/jarboot.log
+pause

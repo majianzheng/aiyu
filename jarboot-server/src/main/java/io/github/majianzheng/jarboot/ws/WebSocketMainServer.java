@@ -138,7 +138,9 @@ public class WebSocketMainServer {
             public void onEvent(BroadcastMessageEvent event) {
                 if (event.getSessionIds().isEmpty()) {
                     SESSIONS.values().forEach(operator -> operator.newMessage(event));
-                    ClusterClientManager.getInstance().notifyToOtherClusterFront(event);
+                    FromOtherClusterServerMessageEvent messageEvent = new FromOtherClusterServerMessageEvent();
+                    messageEvent.setMessage(event.message());
+                    ClusterClientManager.getInstance().notifyToOtherCluster(messageEvent);
                     return;
                 }
                 // 定点广播
@@ -180,7 +182,7 @@ public class WebSocketMainServer {
             }
             return;
         }
-        ClusterClientManager.getInstance().notifyToOtherClusterFront(host, event, sessionId);
+        ClusterClientManager.getInstance().notifyToOtherCluster(host, new FromOtherClusterServerMessageEvent(event.getSid(), sessionId, event.message()));
     }
 
     private static void broadToDirect(BroadcastMessageEvent event, String sessionId) {
@@ -196,7 +198,7 @@ public class WebSocketMainServer {
                 }
                 return;
             }
-            ClusterClientManager.getInstance().notifyToOtherClusterFront(host, event, sessionId);
+            ClusterClientManager.getInstance().notifyToOtherCluster(host, new FromOtherClusterServerMessageEvent(event.getSid(), sessionId, event.message()));
         } else {
             SessionOperator operator = SESSIONS.getOrDefault(sessionId, null);
             if (null != operator) {

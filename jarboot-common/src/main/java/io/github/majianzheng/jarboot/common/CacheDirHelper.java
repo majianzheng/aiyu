@@ -22,6 +22,14 @@ public class CacheDirHelper {
     private static final String SERVER_LOCK = "jarboot-server.lock";
 
     /**
+     * 获取缓存文件夹
+     * @return 缓存文件夹
+     */
+    public static File getCacheDir() {
+        return FileUtils.getFile(getJarbootHome(), CACHE_DIR);
+    }
+
+    /**
      * 获取pid缓存文件夹
      * @return pid文件夹
      */

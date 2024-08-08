@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView, useRoute, useRouter } from 'vue-router';
-import { DOCS_URL } from '@/common/CommonConst';
+import { LOGO_URL } from '@/common/CommonConst';
 import { useBasicStore, useUserStore } from '@/stores';
 import { onMounted, reactive } from 'vue';
 import { WsManager } from '@/common/WsManager';
@@ -12,9 +12,9 @@ import StringUtil from '@/common/StringUtil';
 const state = reactive({
   dialog: false,
   resetPassword: false,
+  logoUrl: LOGO_URL,
 });
 
-const openDoc = () => window.open(DOCS_URL);
 const user = useUserStore();
 const route = useRoute();
 const router = useRouter();
@@ -127,7 +127,7 @@ onMounted(() => {
 <template>
   <main>
     <header>
-      <img alt="Jarboot logo" class="logo" src="@/assets/logo.png" />
+      <img alt="Jarboot logo" class="logo" :src="state.logoUrl" />
       <div class="wrapper">
         <nav>
           <a v-for="(menu, i) in basic.menus" :key="i" :class="{ 'router-link-exact-active': isActive(menu) }" @click="goTo(menu)">{{
@@ -143,9 +143,6 @@ onMounted(() => {
           </div>
           <div class="menu-button">
             <jarboot-version></jarboot-version>
-          </div>
-          <div class="menu-button">
-            <el-button size="small" link @click="openDoc">{{ $t('MENU_DOCS') }}</el-button>
           </div>
           <div class="menu-button">
             <theme-switch></theme-switch>

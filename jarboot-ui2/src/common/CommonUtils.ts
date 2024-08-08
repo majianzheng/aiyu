@@ -77,6 +77,15 @@ export default class CommonUtils {
     return token;
   }
 
+  public static getHeaderWithToken(params?: Map<string, string>): Headers {
+    const header = new Headers();
+    if (params) {
+      params.forEach((value, key) => header.set(key, value));
+    }
+    header.set('Authorization', CommonUtils.getToken());
+    return header;
+  }
+
   public static exportServer(name: string, clusterHost: string): void {
     const a = document.createElement('a');
     const token = CommonUtils.getRawToken();

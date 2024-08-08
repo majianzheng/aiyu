@@ -261,8 +261,8 @@ public class JarbootShell {
             if (!cmdFile.setExecutable(true)) {
                 AnsiLog.error("set executable failed.");
             }
-            List<String> cmd = OSUtils.isWindows() ? Collections.singletonList(cmdFile.getAbsolutePath()) : Arrays.asList("sh", cmdFile.getAbsolutePath());
-            Process process = new ProcessBuilder().command(cmd).start();
+            List<String> cmd = OSUtils.isWindows() ? Collections.singletonList(cmdFile.getAbsolutePath()) : Arrays.asList("bash", cmdFile.getAbsolutePath());
+            Process process = new ProcessBuilder().command(Boolean.TRUE.equals(this.shell) ? command : cmd).start();
             final Thread hook = JarbootThreadFactory.createThreadFactory("jarboot-hook").newThread(() -> exitHook(process, cmdFile));
             Runtime.getRuntime().addShutdownHook(hook);
             if (Boolean.TRUE.equals(this.sync)) {

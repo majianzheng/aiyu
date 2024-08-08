@@ -13,3 +13,4 @@ echo killing jarboot server
 for /f "tokens=1" %%i in ('jps -m ^| find "jarboot.jarboot"') do ( taskkill /F /PID %%i )
 
 echo Done!
+pause

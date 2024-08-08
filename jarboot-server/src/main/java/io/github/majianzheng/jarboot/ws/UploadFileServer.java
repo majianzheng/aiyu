@@ -24,7 +24,6 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 文件上传服务
@@ -34,6 +33,10 @@ import java.util.concurrent.atomic.AtomicLong;
 @RestController
 public class UploadFileServer {
     private static final Logger logger = LoggerFactory.getLogger(UploadFileServer.class);
+    private static final long INTERVAL_UPDATE_THRESHOLD = 160 * 1024 * 1024;
+    private static final String EVENT_STATUS = "status";
+    private static final String EVENT_PROGRESS = "progress";
+    private static final String EVENT_SEND = "send";
     private static final Map<String, SessionProxy> SESSION_PROXY_MAP = new ConcurrentHashMap<>(16);
     private static FileUploadProgressDao fileUploadProgressDao;
     private static ServerRuntimeService serverRuntimeService;
@@ -43,6 +46,10 @@ public class UploadFileServer {
     private boolean pause = false;
     private boolean importService = false;
     private File dstFile;
+    private long writeTimes = 0;
+    private long lastUpdateTime = 0;
+    private long sendCountOnce;
+    private boolean intervalUpdate = false;
 
     @Autowired
     public void setFileUploadProgressDao(FileUploadProgressDao dao) {
@@ -59,26 +66,41 @@ public class UploadFileServer {
             SESSION_PROXY_MAP.put(clusterHost, new SessionProxy(session, clusterHost));
             return;
         }
-        String md5 = CommonUtils.getSessionParam("md5", session);
+        if (StringUtils.isEmpty(clusterHost)) {
+            clusterHost = "localhost";
+        }
         String filename = CommonUtils.getSessionParam("filename", session);
         String relativePath = CommonUtils.getSessionParam("relativePath", session);
         long totalSize = Long.parseLong(CommonUtils.getSessionParam("totalSize", session));
         String baseDir = CommonUtils.getSessionParam("baseDir", session);
         String dstPath = CommonUtils.getSessionParam("dstPath", session);
-        this.importService = StringUtils.isNotEmpty(CommonUtils.getSessionParam("importService", session));
-        if (StringUtils.isEmpty(baseDir)) {
-            baseDir = SettingUtils.getHomePath();
-        } else {
-            baseDir = AesUtils.decrypt(baseDir);
+        String sendCountOnce = CommonUtils.getSessionParam("sendCountOnce", session);
+        this.sendCountOnce = Long.parseLong(sendCountOnce);
+        this.intervalUpdate = totalSize < INTERVAL_UPDATE_THRESHOLD;
+        // home、service、 workspace
+        String uploadMode = CommonUtils.getSessionParam("uploadMode", session);
+        switch (uploadMode) {
+            case "service":
+                baseDir = SettingUtils.getHomePath();
+                this.importService = true;
+                break;
+            case "workspace":
+                baseDir = SettingUtils.getWorkspace();
+                break;
+            case "home":
+                baseDir = SettingUtils.getHomePath();
+                break;
+            default:
+                baseDir = StringUtils.isEmpty(baseDir) ? SettingUtils.getHomePath() : AesUtils.decrypt(baseDir);
         }
         boolean append = true;
         dstFile = FileUtils.getFile(baseDir, dstPath);
-        fileUploadProgress = fileUploadProgressDao.getFileUploadProgressByClusterHostAndDstPath(clusterHost, dstFile.getAbsolutePath());
+        fileUploadProgress = fileUploadProgressDao.getByClusterHostAndAbsolutePath(clusterHost, dstFile.getAbsolutePath());
         if (null == fileUploadProgress) {
             FileUploadProgress temp = new FileUploadProgress();
             temp.setClusterHost(clusterHost);
-            temp.setMd5(md5);
-            temp.setDstPath(dstFile.getAbsolutePath());
+            temp.setDstPath(dstPath);
+            temp.setAbsolutePath(dstFile.getAbsolutePath());
             temp.setFilename(filename);
             temp.setRelativePath(relativePath);
             temp.setTotalSize(totalSize);
@@ -96,10 +118,7 @@ public class UploadFileServer {
                         dstFile.length(),
                         fileUploadProgress.getUploadSize(),
                         fileUploadProgress.getTotalSize());
-                if (Objects.equals(dstFile.length(), fileUploadProgress.getUploadSize())) {
-                    // 已经上传的文件实际大小与上传大小一致
-                    append = Objects.equals(md5, fileUploadProgress.getMd5());
-                } else {
+                if (!Objects.equals(dstFile.length(), fileUploadProgress.getUploadSize())) {
                     append = false;
                 }
             } else {
@@ -109,17 +128,17 @@ public class UploadFileServer {
         if (!append) {
             fileUploadProgress.setUploadSize(0L);
             fileUploadProgress.setTotalSize(totalSize);
-            fileUploadProgress.setMd5(md5);
             fileUploadProgressDao.save(fileUploadProgress);
         }
         try {
             outputStream = FileUtils.openOutputStream(dstFile, append);
             logger.info("开始上传文件：{}，append：{}, total: {}，uploadSize：{}", filename, append, totalSize, fileUploadProgress.getUploadSize());
-            this.updateProgress(session);
+            this.lastUpdateTime = System.currentTimeMillis();
+            this.updateProgress(session, EVENT_PROGRESS);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             this.fileUploadProgress.setErrorMsg(e.getMessage());
-            this.updateProgress(session);
+            this.updateProgress(session, EVENT_STATUS);
         }
     }
     @OnClose
@@ -128,10 +147,12 @@ public class UploadFileServer {
         if (CommonUtils.needProxy(clusterHost)) {
             SessionProxy sessionProxy = SESSION_PROXY_MAP.remove(clusterHost);
             if (null != sessionProxy) {
+                logger.info("代理关闭，代理clusterHost: {}", clusterHost);
                 sessionProxy.proxyOnClose();
             }
             return;
         }
+        logger.debug("关闭上传文件：{}", session.getId());
         try {
             if (null != fileUploadProgress && null != fileUploadProgress.getId()) {
                 fileUploadProgressDao.save(fileUploadProgress);
@@ -147,6 +168,8 @@ public class UploadFileServer {
             outputStream.close();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            outputStream = null;
         }
     }
     @OnError
@@ -155,13 +178,21 @@ public class UploadFileServer {
         String clusterHost = CommonUtils.getSessionClusterHost(session);
         SessionProxy sessionProxy = SESSION_PROXY_MAP.remove(clusterHost);
         if (null != sessionProxy) {
+            logger.warn("代理上传异常，clusterHost: {}", clusterHost, error);
             sessionProxy.proxyOnClose();
+        } else {
+            logger.warn("上传异常，sessionId: {}", session.getId(), error);
         }
         this.onClose(session);
     }
 
     @OnMessage
     public void onBinaryMessage(byte[] message, Session session) {
+        String clusterHost = CommonUtils.getSessionClusterHost(session);
+        if (CommonUtils.needProxy(clusterHost)) {
+            SESSION_PROXY_MAP.get(clusterHost).proxyBinary(message);
+            return;
+        }
         if (null == outputStream || message.length == 0) {
             logger.info("已经传输完成，message size: {}", message.length);
             return;
@@ -170,17 +201,15 @@ public class UploadFileServer {
             logger.info("已经发生了异常，暂停");
             return;
         }
-        String clusterHost = CommonUtils.getSessionClusterHost(session);
-        if (CommonUtils.needProxy(clusterHost)) {
-            SESSION_PROXY_MAP.get(clusterHost).proxyBinary(message);
-            return;
-        }
         try {
             outputStream.write(message);
+            writeTimes++;
             this.fileUploadProgress.setUploadSize(this.fileUploadProgress.getUploadSize() + message.length);
             if (fileUploadProgress.getUploadSize() >= fileUploadProgress.getTotalSize()) {
                 // 传输完成
-                this.updateProgress(session);
+                logger.info("上传文件完成：{}", fileUploadProgress.getFilename());
+                outputStream.flush();
+                this.updateProgress(session, EVENT_PROGRESS);
                 TaskUtils.getTaskExecutor().schedule(() -> {
                     try {
                         if (session.isOpen()) {
@@ -188,16 +217,33 @@ public class UploadFileServer {
                         }
                     } catch (Exception e) {
                         // ignore
+                    } finally {
+                        fileUploadProgressDao.deleteFinished();
                     }
                 }, 5, TimeUnit.SECONDS);
+            } else {
+                if (writeTimes % this.sendCountOnce == 0) {
+                    this.updateProgress(session, EVENT_SEND);
+                    return;
+                }
+                final long interval = 200;
+                if (this.intervalUpdate && writeTimes % interval == 0) {
+                    long current = System.currentTimeMillis();
+                    final long maxTimeout = 500;
+                    if (current - this.lastUpdateTime > maxTimeout) {
+                        this.lastUpdateTime = current;
+                        this.updateProgress(session, EVENT_PROGRESS);
+                    }
+                }
             }
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             this.fileUploadProgress.setErrorMsg(e.getMessage());
             this.pause = true;
-            this.updateProgress(session);
+            this.updateProgress(session, EVENT_STATUS);
         }
     }
-    private void updateProgress(Session session) {
+    private void updateProgress(Session session, String event) {
         if (scheduling.compareAndSet(false, true)) {
             try {
                 if (null != outputStream) {
@@ -208,7 +254,9 @@ public class UploadFileServer {
                         outputStream.flush();
                     }
                 }
+                this.fileUploadProgress.setEvent(event);
                 session.getBasicRemote().sendText(JsonUtils.toJsonString(this.fileUploadProgress));
+                this.fileUploadProgress.setEvent(StringUtils.EMPTY);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             } finally {

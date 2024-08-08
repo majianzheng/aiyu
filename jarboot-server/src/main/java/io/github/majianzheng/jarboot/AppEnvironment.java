@@ -69,6 +69,9 @@ public class AppEnvironment implements SpringApplicationRunListener {
             CacheDirHelper.init();
             // 进程单实例加锁
             this.lock = CacheDirHelper.singleInstanceTryLock();
+            if (null == this.lock) {
+                throw new JarbootRunException("Jarboot server is already started!");
+            }
             PidFileHelper.writeServerPid();
         } catch (Exception e) {
             AnsiLog.error(e);

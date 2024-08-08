@@ -1,4 +1,4 @@
-package io.github.majianzheng.jarboot.cluster;
+package io.github.majianzheng.jarboot.api.constant;
 
 /**
  * 集群服务状态

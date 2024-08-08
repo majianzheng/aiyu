@@ -32,6 +32,7 @@ public class CommonConst {
     public static final String HTTP = "http://";
     public static final String HTTPS = "https://";
     public static final String WS = "ws://";
+    public static final String WSS = "wss://";
     /** 心跳ping */
     public static final String PING = "ping";
 
@@ -88,6 +89,8 @@ public class CommonConst {
     public static final String POST_EXCEPTION_TASK_SUFFIX = "后置脚本启动";
 
     public static final String DOCKER = "docker";
+
+    public static final long SESSION_EXPIRED_TIME = 300000L;
 
     private CommonConst(){}
 }

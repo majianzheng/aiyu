@@ -9,10 +9,11 @@ export default {
   PLUGINS: '插件',
   SETTING: '设置',
   ABOUT: '关于',
-  MENU_DOCS: '文档',
+  MENU_DOCS: '使用手册',
   TERMINAL: '终端',
   TOOLS: '工具',
   FILE_MGR: '文件管理',
+  PREFERENCES_CONFIG: '偏好设置',
 
   //服务管理
   ONE_KEY_START: '一键启动',
@@ -151,6 +152,18 @@ export default {
   MAX_EXIT_TIME: '服务优雅退出最长等待时间（毫秒）',
   AFTER_OFFLINE_EXEC: '服务异常退出后执行的脚本',
   FILE_SHAKE_TIME: '服务文件变更监控抖动时间（秒）',
+  SYS_ICON: '系统ICON',
+  SYS_ICON_PREVIEW: '系统ICON预览',
+  SYS_LOGO: '系统LOGO',
+  SYS_LOGO_PREVIEW: '系统LOGO预览',
+  SYS_NAME: '系统名称',
+  SYS_VER: '系统版本',
+  CLI_DOWNLOAD: '命令行工具下载',
+  CLUSTER_MODE: '集群模式',
+  CUR_HOST: '当前主机',
+  MACHINE_CODE: '机器码',
+  YES: '是',
+  NO: '否',
 
   //用户登录
   USER_NAME: '用户',

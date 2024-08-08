@@ -121,7 +121,7 @@ public class FileController {
      * @param path 文件相对于工作目录的路径
      * @return
      */
-    @PostMapping("file/delete")
+    @DeleteMapping("file/delete")
     public ResponseVo<String> deleteFile(
             @RequestParam(required = false) String clusterHost,
             @RequestParam("path") String path) {

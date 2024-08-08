@@ -2,8 +2,9 @@
   <div v-loading="serviceStore.loading" class="__container-wrapper server-mgr">
     <two-sides-pro
       :show-header="false"
-      :left-width="LEFT_SIDE_WIDTH + 'px'"
-      :body-height="basic.innerHeight - 50 + 'px'"
+      :left-width="LEFT_SIDE_WIDTH"
+      :body-height="basic.innerHeight - 63"
+      :total-width="basic.innerWidth - 80"
       v-model:collapsed="serviceState.collapsed">
       <template #left-content>
         <div class="server-side">
@@ -13,7 +14,7 @@
             :current-node="serviceState.currentNode"
             @new-service="newService"
             @dashboard="doDashboardCmd"></service-toolbar>
-          <div style="flex: auto; padding: 3px 1px">
+          <div class="server-tree">
             <el-input v-model="serviceState.search" placeholder="" prefix-icon="Search" size="small" clearable />
             <div class="tree-container">
               <el-tree
@@ -330,19 +331,24 @@ onUnmounted(() => {
   padding: 2px 0;
   .server-side {
     display: flex;
-    height: calc(100% - 13px);
+    height: calc(100% - 10px);
     background: var(--side-bg-color);
+    .server-tree {
+      flex: 1 1 auto;
+      padding: 3px 1px;
+    }
     .el-tree {
       width: 100%;
       background: var(--side-bg-color);
     }
     .tree-container {
-      height: calc(100% - 22px);
+      height: calc(100% - 17px);
       overflow: auto;
     }
   }
   .server-content {
     flex: auto;
+    height: calc(100% - 10px);
   }
 }
 </style>

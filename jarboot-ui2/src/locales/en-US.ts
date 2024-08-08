@@ -9,10 +9,11 @@ export default {
   PLUGINS: 'Plugins',
   SETTING: 'Setting',
   ABOUT: 'About',
-  MENU_DOCS: 'DOCS',
+  MENU_DOCS: "User's guide",
   TERMINAL: 'Terminal',
   TOOLS: 'Tool',
   FILE_MGR: 'File manager',
+  PREFERENCES_CONFIG: 'Preferences config',
 
   //服务管理
   ONE_KEY_START: 'Start All',
@@ -151,6 +152,18 @@ export default {
   MAX_EXIT_TIME: 'Wait service graceful exit max time (ms)',
   AFTER_OFFLINE_EXEC: 'Shell to execute after service offline',
   FILE_SHAKE_TIME: 'File change shake time (s)',
+  SYS_ICON: 'System icon',
+  SYS_ICON_PREVIEW: 'System icon preview',
+  SYS_LOGO: 'System logo',
+  SYS_LOGO_PREVIEW: 'System logo preview',
+  SYS_NAME: 'System name',
+  SYS_VER: 'System version',
+  CLI_DOWNLOAD: 'Client tools download',
+  CLUSTER_MODE: 'Cluster mode',
+  CUR_HOST: 'Current host',
+  MACHINE_CODE: 'Machine code',
+  YES: 'Yes',
+  NO: 'No',
 
   //用户登录
   USER_NAME: 'User',

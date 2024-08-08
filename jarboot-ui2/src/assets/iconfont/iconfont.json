@@ -6,6 +6,13 @@
   "description": "jarboot ui icon project",
   "glyphs": [
     {
+      "icon_id": "39030515",
+      "name": "偏好设置",
+      "font_class": "preferences",
+      "unicode": "e65b",
+      "unicode_decimal": 58971
+    },
+    {
       "icon_id": "1444787",
       "name": "json",
       "font_class": "json",

@@ -57,7 +57,6 @@ Edge >=88
 ## 安装或编译构建
 ### 下载压缩包文件的方式安装，或者使用<code>Docker</code>
 - <a href="https://github.com/majianzheng/jarboot/releases" target="_blank">从Github下载</a>
-- 🐳 Docker Hub: <https://registry.hub.docker.com/r/mazheng0908/jarboot>
 
 使用<code>Docker</code>
 ```bash
@@ -377,7 +376,6 @@ jarboot$ sysprop user.home
 - 抖音号：1077242754
 
 ![抖音](https://gitee.com/majz0908/jarboot/raw/develop/doc/douyin.jpg)
-![QQ group](https://gitee.com/majz0908/jarboot/raw/develop/doc/qq-group.png)
 
 ## 仓库镜像
 

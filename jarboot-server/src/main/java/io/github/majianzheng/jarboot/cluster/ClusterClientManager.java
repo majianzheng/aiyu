@@ -1,14 +1,13 @@
 package io.github.majianzheng.jarboot.cluster;
 
 import io.github.majianzheng.jarboot.api.constant.CommonConst;
+import io.github.majianzheng.jarboot.api.event.ClusterEvent;
 import io.github.majianzheng.jarboot.api.pojo.ServerRuntimeInfo;
-import io.github.majianzheng.jarboot.event.FromOtherClusterServerMessageEvent;
 import io.github.majianzheng.jarboot.common.ConcurrentWeakKeyHashMap;
 import io.github.majianzheng.jarboot.common.JarbootThreadFactory;
 import io.github.majianzheng.jarboot.common.utils.JsonUtils;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
 import io.github.majianzheng.jarboot.constant.AuthConst;
-import io.github.majianzheng.jarboot.event.AbstractMessageEvent;
 import io.github.majianzheng.jarboot.event.FuncReceivedEvent;
 import io.github.majianzheng.jarboot.utils.CommonUtils;
 import io.github.majianzheng.jarboot.utils.SettingUtils;
@@ -27,9 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.*;
@@ -90,36 +87,44 @@ public class ClusterClientManager {
         return hosts.get(host);
     }
 
-    public void notifyToOtherClusterFront(String clusterHost, AbstractMessageEvent event, String sessionId) {
+    public void notifyToOtherCluster(String clusterHost, ClusterEvent event) {
         ClusterClient client = getClient(clusterHost);
         if (!enabled || null == client || !client.isOnline()) {
             return;
         }
-        ClusterEventMessage req = new ClusterEventMessage();
-        req.setName(ClusterEventName.NOTIFY_TO_FRONT.name());
-        req.setType(ClusterEventMessage.REQ_TYPE);
-        FromOtherClusterServerMessageEvent messageEvent = new FromOtherClusterServerMessageEvent();
-        messageEvent.setMessage(event.message());
-        messageEvent.setSessionId(sessionId);
-        messageEvent.setSid(event.getSid());
-        req.setBody(JsonUtils.toJsonString(messageEvent));
-        client.sendMessage(req);
+        if (event.canNotify()) {
+            event.marked();
+            notifyToCluster(event, client);
+        }
     }
-    public void notifyToOtherClusterFront(AbstractMessageEvent event) {
-        if (enabled) {
+    public void notifyToOtherCluster(ClusterEvent event) {
+        if (enabled && event.canNotify()) {
+            event.marked();
             hosts.forEach((k, client) -> {
                 if (Objects.equals(selfHost, client.getHost()) || !client.isOnline()) {
                     return;
                 }
-                ClusterEventMessage req = new ClusterEventMessage();
-                req.setName(ClusterEventName.NOTIFY_TO_FRONT.name());
-                req.setType(ClusterEventMessage.REQ_TYPE);
-                FromOtherClusterServerMessageEvent messageEvent = new FromOtherClusterServerMessageEvent();
-                messageEvent.setMessage(event.message());
-                req.setBody(JsonUtils.toJsonString(messageEvent));
-                client.sendMessage(req);
+                notifyToCluster(event, client);
             });
         }
+    }
+
+    private void notifyToCluster(ClusterEvent event, ClusterClient client) {
+        ClusterEventMessage req = new ClusterEventMessage();
+        req.setName(ClusterEventName.NOTIFY_TO_CLUSTER.name());
+        req.setType(ClusterEventMessage.REQ_TYPE);
+
+        try (ByteArrayOutputStream bao = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(bao)) {
+            oos.writeObject(event);
+            bao.toByteArray();
+            byte[] bytes = org.apache.commons.codec.binary.Base64.encodeBase64(bao.toByteArray());
+            String body = new String(bytes, StandardCharsets.UTF_8);
+            req.setBody(body);
+        } catch (Exception e) {
+            logger.warn(e.getMessage(), e);
+        }
+        client.sendMessage(req);
     }
 
     public void execClusterFunc(FuncReceivedEvent funcEvent) {

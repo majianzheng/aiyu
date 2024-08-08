@@ -31,6 +31,7 @@ import FileUploadClient from '@/components/file-upload/FileUploadClient';
 export const useBasicStore = defineStore({
   id: 'basic',
   state: () => ({
+    productName: 'Jarboot',
     version: '',
     uuid: '',
     host: '',
@@ -38,6 +39,10 @@ export const useBasicStore = defineStore({
     clusterInitialized: false,
     inDocker: false,
     masterHost: '',
+    os: '',
+    jdk: '',
+    dev: false,
+    machineCode: '',
     innerHeight: window.innerHeight,
     innerWidth: window.innerWidth,
     menus: [] as MenuItem[],
@@ -49,7 +54,13 @@ export const useBasicStore = defineStore({
     },
     async init() {
       const info = await Request.get<ServerRuntimeInfo>(`/api/jarboot/public/serverRuntime`, {});
-      this.$patch({ ...info });
+      const productName = await Request.get<string>('/jarboot/preferences/productName', {});
+      document.title = productName;
+      const icon = document.head.querySelector('link[rel="icon"]');
+      if (icon) {
+        icon.setAttribute('href', `/jarboot/preferences/image/favicon.ico`);
+      }
+      this.$patch({ productName, ...info });
     },
     setMenus(menus: MenuItem[]) {
       this.$patch({ menus });
@@ -265,24 +276,24 @@ export const useUploadStore = defineStore({
     },
     async upload(
       file: File,
+      uploadMode: 'home' | 'service' | 'workspace' | '',
       baseDir: string,
       path: string,
       clusterHost: string,
-      finishCallback?: (info: UploadFileInfo) => void,
-      importServer?: string
+      finishCallback?: (info: UploadFileInfo) => void
     ) {
-      let client = new FileUploadClient(file, baseDir, path, clusterHost);
+      let client = new FileUploadClient(file, uploadMode, baseDir, path, clusterHost);
       if (finishCallback) {
         client.addFinishedEventHandler(finishCallback);
       }
-      client.setImportService(importServer || '');
-      if (this.clients.has(client.getDstPath())) {
-        client = this.clients.get(client.getDstPath()) as FileUploadClient;
+      if (this.clients.has(client.getKey())) {
+        client = this.clients.get(client.getKey()) as FileUploadClient;
         await client.upload();
         return;
       }
       client.addUploadEventHandler(info => this.update(info));
-      this.clients.set(client.getDstPath(), client);
+      client.addFinishedEventHandler(() => this.clients.delete(client.getKey()));
+      this.clients.set(client.getKey(), client);
       await client.upload();
     },
     pause(dstPath: string) {

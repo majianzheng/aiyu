@@ -1,6 +1,5 @@
 package io.github.majianzheng.jarboot.ws;
 
-import io.github.majianzheng.jarboot.cluster.ClusterClientManager;
 import io.github.majianzheng.jarboot.common.JarbootException;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
 import io.github.majianzheng.jarboot.constant.AuthConst;
@@ -29,7 +28,7 @@ public class SessionProxy {
         String accessClusterHost = CommonUtils.getSessionParam(AuthConst.ACCESS_CLUSTER_HOST, client);
         String query = clientUri.getQuery();
         if (StringUtils.isEmpty(accessClusterHost)) {
-            query += String.format("&%s=%s", AuthConst.ACCESS_CLUSTER_HOST, ClusterClientManager.getInstance().getSelfHost());
+            query += String.format("&%s=%s", AuthConst.ACCESS_CLUSTER_HOST, accessClusterHost);
         }
         int port = Integer.parseInt(targetClusterHost.substring(index + 1));
         try {
@@ -65,7 +64,7 @@ public class SessionProxy {
         try {
             targetSession.close();
         } catch (Exception e) {
-            // ignore
+            logger.warn(e.getMessage(), e);
         }
     }
 

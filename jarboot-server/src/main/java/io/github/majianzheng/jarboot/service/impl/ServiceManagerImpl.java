@@ -319,14 +319,19 @@ public class ServiceManagerImpl implements ServiceManager, Subscriber<ServiceOff
     /**
      * 注册事件处理
      *
+     * @param host        主机名
      * @param serviceName 服务名称
      * @param lifecycle   任务生命周期 {@link TaskLifecycle}
      * @param subscriber  任务处理 {@link Subscriber}
      */
     @Override
-    public void registerSubscriber(String serviceName,
+    public void registerSubscriber(String host,
+                                   String serviceName,
                                    TaskLifecycle lifecycle,
                                    Subscriber<TaskLifecycleEvent> subscriber) {
+        if (StringUtils.isNotEmpty(host)) {
+            serviceName = serviceName + "@" + host;
+        }
         final String topic = eventRegistry.createTopic(TaskLifecycleEvent.class, serviceName, lifecycle.name());
         eventRegistry.registerSubscriber(topic, subscriber);
     }
@@ -334,14 +339,19 @@ public class ServiceManagerImpl implements ServiceManager, Subscriber<ServiceOff
     /**
      * 反注册事件处理
      *
+     * @param host        主机名
      * @param serviceName 服务名称
      * @param lifecycle   任务生命周期 {@link TaskLifecycle}
      * @param subscriber  任务处理 {@link Subscriber}
      */
     @Override
-    public void deregisterSubscriber(String serviceName,
+    public void deregisterSubscriber(String host,
+                                     String serviceName,
                                      TaskLifecycle lifecycle,
                                      Subscriber<TaskLifecycleEvent> subscriber) {
+        if (StringUtils.isNotEmpty(host)) {
+            serviceName = serviceName + "@" + host;
+        }
         final String topic = eventRegistry.createTopic(TaskLifecycleEvent.class, serviceName, lifecycle.name());
         eventRegistry.deregisterSubscriber(topic, subscriber);
     }

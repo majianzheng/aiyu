@@ -103,7 +103,8 @@ function createSocket() {
   if (props.host) {
     query += `&clusterHost=${props.host}`;
   }
-  const url = `ws://${getDefaultHost()}/jarboot/main/terminal/ws?${token}&${query}`;
+  const protocol = 'https:' === window.location.protocol ? 'wss' : 'ws';
+  const url = `${protocol}://${getDefaultHost()}/jarboot/main/terminal/ws?${token}&${query}`;
   console.info('terminal connect to ' + url);
   termOption.websocket = new WebSocket(url);
   termOption.websocket.onopen = () => {
@@ -195,12 +196,16 @@ defineExpose({
 
 onMounted(init);
 onUnmounted(() => {
-  console.info('onUnmounted terminal.');
+  console.info('终端关闭！');
   try {
-    termOption.term?.dispose();
     termOption.websocket?.close();
   } catch (error) {
     console.error(error);
+  }
+  try {
+    termOption.term?.dispose();
+  } catch (error) {
+    console.debug(error);
   }
 });
 </script>

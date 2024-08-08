@@ -19,6 +19,10 @@
       <outputDirectory>script</outputDirectory>
     </fileSet>
     <fileSet>
+      <directory>data</directory>
+      <outputDirectory>data</outputDirectory>
+    </fileSet>
+    <fileSet>
       <directory>../jarboot-ui2/dist</directory>
       <outputDirectory>fe/jarboot</outputDirectory>
     </fileSet>

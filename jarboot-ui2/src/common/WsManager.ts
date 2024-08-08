@@ -117,9 +117,10 @@ class WsManager {
       }
     }
     const token = `${CommonUtils.ACCESS_TOKEN}=${CommonUtils.getRawToken()}`;
+    const protocol = 'https:' === window.location.protocol ? 'wss' : 'ws';
     let url = import.meta.env.DEV
-      ? `ws://${window.location.hostname}:9899/jarboot/main/service/ws?${token}`
-      : `ws://${window.location.host}/jarboot/main/service/ws?${token}`;
+      ? `${protocol}://${window.location.hostname}:9899/jarboot/main/service/ws?${token}`
+      : `${protocol}://${window.location.host}/jarboot/main/service/ws?${token}`;
     const host = CommonUtils.getCurrentHost();
     if (host) {
       url += `&${ACCESS_CLUSTER_HOST}=${host}`;
@@ -222,7 +223,8 @@ class WsManager {
   private static ping = () => {
     if (WsManager.websocket && WebSocket.OPEN === WsManager.websocket.readyState) {
       WsManager.websocket.send('ping');
-      setTimeout(WsManager.ping, 300000);
+      WsManager.RECONNECT_SUCCESS_HANDLER.forEach(handler => handler());
+      setTimeout(WsManager.ping, 50000);
     }
   };
 

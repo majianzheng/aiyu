@@ -42,6 +42,7 @@ public class HttpUtils {
     public static final String CONTENT_TYPE_JSON = "application/json;charset=UTF-8";
     public static final String CONTENT_TYPE_FORM = "application/x-www-form-urlencoded";
     private static final int SUCCESS_STATUS = 200;
+    public static final SSLContext SSL_CONTEXT;
     private static final CloseableHttpClient HTTP_CLIENT;
 
     public static JsonNode get(String url, Map<String, String> header) {
@@ -278,7 +279,7 @@ public class HttpUtils {
         // create an SSL Socket Factory to use the SSLContext with the trust self signed certificate strategy
         // and allow all hosts verifier.
         SSLConnectionSocketFactory connectionFactory = new SSLConnectionSocketFactory(sslContext, allowAllHosts);
-
+        SSL_CONTEXT = sslContext;
         HTTP_CLIENT = HttpClients.custom().setSSLSocketFactory(connectionFactory).build();
     }
 

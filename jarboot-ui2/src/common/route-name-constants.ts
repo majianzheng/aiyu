@@ -20,6 +20,8 @@ export const PAGE_SETTING = 'setting';
 /** 通用配置 */
 export const PAGE_COMMON = 'common';
 
+export const PAGE_PREFERENCES = 'preferences';
+
 /** 用户管理 */
 export const PAGE_USER = 'user';
 

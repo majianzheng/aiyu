@@ -15,3 +15,4 @@ set "DAEMON_CMD="%JAVA%" %DAEMON_VM% -cp %TOOL_JAR% jarboot.shutdown %*"
 
 %DAEMON_CMD%
 echo Done.
+pause

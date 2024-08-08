@@ -2,6 +2,7 @@ import {
   FILE_MGR,
   PAGE_COMMON,
   PAGE_JVM,
+  PAGE_PREFERENCES,
   PAGE_PRIVILEGE,
   PAGE_ROLE,
   PAGE_SERVICE,
@@ -79,6 +80,17 @@ export default [
       code: 'SETTING',
     },
     children: [
+      {
+        path: 'preference',
+        name: PAGE_PREFERENCES,
+        component: () => import('@/views/setting/preferences-config.vue'),
+        meta: {
+          keepAlive: true,
+          module: 'SETTING',
+          icon: 'icon-preferences',
+          code: 'PREFERENCES_CONFIG',
+        },
+      },
       {
         path: 'common',
         name: PAGE_COMMON,

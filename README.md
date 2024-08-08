@@ -58,7 +58,6 @@ Edge >=88
 ## Install or build
 ### Download the zip package to install or using docker.
 - <a href="https://github.com/majianzheng/jarboot/releases" target="_blank">Download from Github</a>
-- 🐳 Docker Hub: <https://registry.hub.docker.com/r/mazheng0908/jarboot>
 
 Use <code>docker</code>
 ```bash
@@ -386,7 +385,6 @@ We used JetBrains tools for developing and building.
 - 抖音号：1077242754
 
 ![抖音](https://gitee.com/majz0908/jarboot/raw/develop/doc/douyin.jpg)
-![QQ group](https://gitee.com/majz0908/jarboot/raw/develop/doc/qq-group.png)
 
 
 ## 仓库镜像

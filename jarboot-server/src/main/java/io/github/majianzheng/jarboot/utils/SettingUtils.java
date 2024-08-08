@@ -38,6 +38,7 @@ public class SettingUtils {
     private static final SystemSetting GLOBAL_SETTING = new SystemSetting();
     /** Jarboot配置文件名字 */
     private static final String BOOT_PROPERTIES = "boot.json";
+    private static final String PRODUCT_NAME = "product-name";
     /** 工作空间属性key */
     private static final String ROOT_DIR_KEY = "jarboot.services.workspace";
     private static final String DEFAULT_JDK_PATH = "jarboot.jdk.path";
@@ -48,6 +49,7 @@ public class SettingUtils {
     private static final String AFTER_OFFLINE_EXEC = "jarboot.after-server-error-offline";
     private static final String FILE_SHAKE_TIME = "jarboot.file-shake-time";
     private static final String SERVICES_AUTO_START = "jarboot.services.enable-auto-start-after-start";
+    private static String productName;
     /** 默认的工作空间路径 */
     private static String defaultWorkspace;
     /** Jarboot配置文件路径 */
@@ -179,6 +181,30 @@ public class SettingUtils {
             } catch (Exception e) {
                 // ignore
             }
+        }
+        final String defaultName = "Jarboot";
+        productName = properties.getProperty(PRODUCT_NAME, defaultName);
+        if (StringUtils.isEmpty(productName)) {
+            productName = defaultName;
+        }
+    }
+
+    public static String getProductName() {
+        return productName;
+    }
+
+    public static void setProductName(String productName) {
+        if (StringUtils.isEmpty(productName)) {
+            return;
+        }
+        HashMap<String, String> props = new HashMap<>(8);
+        props.put(PRODUCT_NAME, productName);
+        try {
+            File file = FileUtils.getFile(jarbootConf);
+            PropertyFileUtils.writeProperty(file, props);
+            SettingUtils.productName = productName;
+        } catch (Exception e) {
+            logger.error("Update product name error.", e);
         }
     }
 

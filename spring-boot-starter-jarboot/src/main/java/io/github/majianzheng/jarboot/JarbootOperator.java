@@ -67,21 +67,27 @@ public interface JarbootOperator {
 
     /**
      * 注册事件处理
+     * @param host 主机
      * @param serviceName 服务名称
      * @param lifecycle 任务生命周期 {@link TaskLifecycle}
      * @param subscriber 任务处理 {@link Subscriber}
      */
-    void registerTaskLifecycleSubscriber(String serviceName,
-                            TaskLifecycle lifecycle,
-                            Subscriber<TaskLifecycleEvent> subscriber);
+    void registerTaskLifecycleSubscriber(
+            String host,
+            String serviceName,
+            TaskLifecycle lifecycle,
+            Subscriber<TaskLifecycleEvent> subscriber);
 
     /**
      * 反注册事件处理
+     * @param host 主机
      * @param serviceName 服务名称
      * @param lifecycle 任务生命周期 {@link TaskLifecycle}
      * @param subscriber 任务处理 {@link Subscriber}
      */
-    void deregisterTaskLifecycleSubscriber(String serviceName,
-                              TaskLifecycle lifecycle,
-                              Subscriber<TaskLifecycleEvent> subscriber);
+    void deregisterTaskLifecycleSubscriber(
+            String host,
+            String serviceName,
+            TaskLifecycle lifecycle,
+            Subscriber<TaskLifecycleEvent> subscriber);
 }

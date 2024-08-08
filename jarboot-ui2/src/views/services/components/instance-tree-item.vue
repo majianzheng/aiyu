@@ -8,7 +8,7 @@ import { WsManager } from '@/common/WsManager';
 import { FuncCode } from '@/common/EventConst';
 import { computed, reactive } from 'vue';
 import ClusterManager from '@/services/ClusterManager';
-import { ServerSetting } from '@/types';
+import type { ServerSetting } from '@/types';
 const props = defineProps<{
   isService: boolean;
   data: ServiceInstance;

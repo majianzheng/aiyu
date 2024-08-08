@@ -1,9 +1,14 @@
 package io.github.majianzheng.jarboot.client.utlis;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.github.majianzheng.jarboot.api.constant.CommonConst;
 import io.github.majianzheng.jarboot.api.exception.JarbootRunException;
 import io.github.majianzheng.jarboot.common.pojo.ResultCodeConst;
+import io.github.majianzheng.jarboot.common.utils.JsonUtils;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author majianzheng
@@ -29,6 +34,18 @@ public class ResponseUtils {
                     api, jsonNode.get("").asText(StringUtils.EMPTY));
             throw new JarbootRunException(msg);
         }
+    }
+
+    public static <T> List<T> getListResult(JsonNode response, Class<T> cls) {
+        JsonNode result = ResponseUtils.parseResult(response, CommonConst.SERVICE_MGR_CONTEXT);
+        List<T> list = new ArrayList<>();
+        final int size = result.size();
+        for (int i = 0; i < size; ++i) {
+            JsonNode node = result.get(i);
+            T serviceInstance = JsonUtils.treeToValue(node, cls);
+            list.add(serviceInstance);
+        }
+        return list;
     }
 
     private ResponseUtils() {}

@@ -1,9 +1,9 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3820706 */
-  src: url('iconfont.woff2?t=1695366869637') format('woff2'),
-       url('iconfont.woff?t=1695366869637') format('woff'),
-       url('iconfont.ttf?t=1695366869637') format('truetype'),
-       url('iconfont.svg?t=1695366869637#iconfont') format('svg');
+  src: url('iconfont.woff2?t=1722569183468') format('woff2'),
+       url('iconfont.woff?t=1722569183468') format('woff'),
+       url('iconfont.ttf?t=1722569183468') format('truetype'),
+       url('iconfont.svg?t=1722569183468#iconfont') format('svg');
 }
 
 .iconfont {
@@ -11,6 +11,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-preferences:before {
+  content: "\e65b";
 }
 
 .icon-json:before {

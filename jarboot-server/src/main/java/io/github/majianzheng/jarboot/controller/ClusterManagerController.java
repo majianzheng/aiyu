@@ -5,7 +5,6 @@ import io.github.majianzheng.jarboot.api.pojo.*;
 import io.github.majianzheng.jarboot.cluster.ClusterClient;
 import io.github.majianzheng.jarboot.cluster.ClusterClientManager;
 import io.github.majianzheng.jarboot.cluster.ClusterClientProxy;
-import io.github.majianzheng.jarboot.cluster.ClusterServerState;
 import io.github.majianzheng.jarboot.common.pojo.ResponseSimple;
 import io.github.majianzheng.jarboot.common.pojo.ResponseVo;
 import io.github.majianzheng.jarboot.common.utils.HttpResponseUtils;
@@ -222,35 +221,6 @@ public class ClusterManagerController {
             } else {
                 serverRuntimeService.downloadAnyFile(file, os);
             }
-        }
-    }
-
-    public static class HostInfo {
-        private String host;
-        private String name;
-        private ClusterServerState state;
-        public String getHost() {
-            return host;
-        }
-
-        public void setHost(String host) {
-            this.host = host;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public ClusterServerState getState() {
-            return state;
-        }
-
-        public void setState(ClusterServerState state) {
-            this.state = state;
         }
     }
 }

@@ -296,7 +296,8 @@ public class CommandExecutor implements CommandExecutorService, MessageListener 
         if (-1 != index) {
             token = token.substring(index + 1);
         }
-        final String url = new ApiStringBuilder(CommonConst.WS + host, CommonConst.MAIN_WS_CONTEXT)
+        String wsBaseUrl = ClientProxy.genWsBaseUrl(host);
+        final String url = new ApiStringBuilder(wsBaseUrl, CommonConst.MAIN_WS_CONTEXT)
                 .add("accessToken", token)
                 .build();
         Session client = ClientProxy.connectToServer(listener, url);

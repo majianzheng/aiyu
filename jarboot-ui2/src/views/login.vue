@@ -2,7 +2,7 @@
   <div>
     <canvas class="bg-canvas" ref="bgRef"></canvas>
     <div class="login-top-header">
-      <img alt="Jarboot logo" class="logo" src="@/assets/logo.png" />
+      <img alt="Jarboot logo" class="logo" :src="logoUrl" />
       <div class="header-right">
         <div class="header-tools">
           <div class="menu-button">
@@ -71,6 +71,7 @@ const loginForm = reactive({
   username: '',
   password: '',
 });
+const logoUrl = '/jarboot/preferences/image/logo.png';
 
 const userStore = useUserStore();
 const rules = reactive({

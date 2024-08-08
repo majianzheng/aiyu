@@ -21,13 +21,14 @@ function uploadSize(row: UploadFileInfo) {
 }
 
 function pauseOrResume(row: UploadFileInfo) {
+  const key = `${row.clusterHost || 'localhost'}://${row.dstPath}`;
   if (row.pause) {
-    uploadStore.resume(row.dstPath);
+    uploadStore.resume(key);
   } else {
-    uploadStore.pause(row.dstPath);
+    uploadStore.pause(key);
   }
 }
-const uploadingCount = computed(() => uploadStore.uploadFiles.filter(row => row.uploadSize < row.totalSize).length);
+const uploadingCount = computed(() => uploadStore.uploadFiles.filter(row => (row?.uploadSize || 0) < (row?.totalSize || 0)).length);
 </script>
 
 <template>

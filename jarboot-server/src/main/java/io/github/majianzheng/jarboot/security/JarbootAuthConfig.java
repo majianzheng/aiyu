@@ -48,7 +48,7 @@ public class JarbootAuthConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().requestMatchers(
-                Stream.of( "/**/*.png", "/**/*.ico", "/**/*.html", "/**/*.js", "/**/*.css", "/**/*.md", "/**/*.map", "/**/*.svg", "/**/*.woff2")
+                Stream.of( "/**/*.png", "/**/*.ico", "/**/*.html", "/**/*.js", "/**/*.css", "/**/*.md", "/**/*.map", "/**/*.svg", "/**/*.woff2", "/jarboot/preferences/productName")
                         .map(this::createStaticMatcher).toArray(RequestMatcher[]::new)
         ).requestMatchers(
                 new AntPathRequestMatcher(TOKEN_BASED_AUTH_ENTRY_POINT),

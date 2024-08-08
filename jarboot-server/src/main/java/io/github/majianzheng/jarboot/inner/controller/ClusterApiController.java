@@ -152,7 +152,7 @@ public class ClusterApiController {
      * @param path 文件相对于工作目录的路径
      * @return
      */
-    @PostMapping("file/delete")
+    @DeleteMapping("file/delete")
     public ResponseVo<String> deleteFile(@RequestParam("path") String path) {
         fileService.deleteFile(path);
         return HttpResponseUtils.success();

@@ -119,8 +119,8 @@ onMounted(() => {
       </el-form-item>
       <el-form-item :label="$t('APP_TYPE')" prop="applicationType">
         <el-radio-group v-model="state.form.applicationType">
-          <el-radio label="java">Java</el-radio>
-          <el-radio label="shell">Shell</el-radio>
+          <el-radio value="java">Java</el-radio>
+          <el-radio value="shell">Shell</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item :label="$t('COMMAND_LABEL')" prop="command">
@@ -166,9 +166,9 @@ onMounted(() => {
       </el-form-item>
       <el-form-item :label="$t('SCHEDULE_TYPE')" prop="daemon">
         <el-radio-group v-model="state.form.scheduleType">
-          <el-radio label="once">{{ $t('SCHEDULE_ONCE') }}</el-radio>
-          <el-radio label="long-times">{{ $t('SCHEDULE_LONE_TIME') }}</el-radio>
-          <el-radio label="cron">{{ $t('SCHEDULE_CRON') }}</el-radio>
+          <el-radio value="once">{{ $t('SCHEDULE_ONCE') }}</el-radio>
+          <el-radio value="long-times">{{ $t('SCHEDULE_LONE_TIME') }}</el-radio>
+          <el-radio value="cron">{{ $t('SCHEDULE_CRON') }}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item v-show="'long-times' === state.form.scheduleType" :label="$t('DAEMON_LABEL')" prop="daemon">

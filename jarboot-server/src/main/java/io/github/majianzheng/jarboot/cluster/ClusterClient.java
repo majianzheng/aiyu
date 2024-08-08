@@ -1,11 +1,12 @@
 package io.github.majianzheng.jarboot.cluster;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.github.majianzheng.jarboot.api.constant.ClusterServerState;
 import io.github.majianzheng.jarboot.api.constant.CommonConst;
+import io.github.majianzheng.jarboot.api.event.ClusterEvent;
 import io.github.majianzheng.jarboot.api.pojo.*;
 import io.github.majianzheng.jarboot.common.pojo.ResponseSimple;
 import io.github.majianzheng.jarboot.common.utils.HttpResponseUtils;
-import io.github.majianzheng.jarboot.event.FromOtherClusterServerMessageEvent;
 import io.github.majianzheng.jarboot.common.JarbootException;
 import io.github.majianzheng.jarboot.common.notify.NotifyReactor;
 import io.github.majianzheng.jarboot.common.utils.HttpUtils;
@@ -313,8 +314,8 @@ public class ClusterClient {
         ClusterEventName eventName = ClusterEventName.valueOf(eventMessage.getName());
         String resp = StringUtils.EMPTY;
         switch (eventName) {
-            case NOTIFY_TO_FRONT:
-                handleNotifyToFront(eventMessage);
+            case NOTIFY_TO_CLUSTER:
+                handleNotifyToCluster(eventMessage);
                 break;
             case EXEC_FUNC:
                 execFunc(eventMessage);
@@ -403,10 +404,14 @@ public class ClusterClient {
         NotifyReactor.getInstance().publishEvent(event);
     }
 
-    private static void handleNotifyToFront(ClusterEventMessage eventMessage) {
-        FromOtherClusterServerMessageEvent event = JsonUtils
-                .readValue(eventMessage.getBody(), FromOtherClusterServerMessageEvent.class);
-        NotifyReactor.getInstance().publishEvent(event);
+    private static void handleNotifyToCluster(ClusterEventMessage eventMessage) {
+        try (ObjectInputStream ois = new ObjectInputStream(
+                new ByteArrayInputStream(java.util.Base64.getDecoder().decode(eventMessage.getBody().getBytes(StandardCharsets.UTF_8))))) {
+            ClusterEvent event = (ClusterEvent) ois.readObject();
+            NotifyReactor.getInstance().publishEvent(event);
+        } catch (Exception e) {
+            logger.warn(e.getMessage(), e);
+        }
     }
 
     private String formatUrl(String api) {

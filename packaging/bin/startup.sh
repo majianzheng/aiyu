@@ -69,16 +69,16 @@ if [ ! -d "${JARBOOT_HOME}/logs" ]; then
   mkdir "${JARBOOT_HOME}/logs"
 fi
 
-echo "$JAVA ${JAVA_OPT}"
-
-echo "jarboot is starting"
+echo "jarboot will start......"
 
 # start
-echo "$JAVA ${JAVA_OPT}"
-nohup $JAVA ${JAVA_OPT} jarboot.jarboot >/dev/null &
-echo "jarboot is starting，you can check the ${JARBOOT_HOME}/logs/jarboot.log"
+$JAVA ${JAVA_OPT} jarboot.jarboot >/dev/null &
+echo "jarboot is started，you can check the ${JARBOOT_HOME}/logs/jarboot.log"
 echo "Starting jarboot server daemon..."
 TOOL_JAR="${JARBOOT_HOME}/components/jarboot-tools.jar io.github.majianzheng.jarboot.tools.daemon.ServerDaemon"
 DAEMON_VM="-Xms10m -Xmx10m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 -DJARBOOT_HOME=$JARBOOT_HOME"
-nohup $JAVA $DAEMON_VM -cp ${TOOL_JAR} jarboot.daemon >/dev/null &
+$JAVA $DAEMON_VM -cp ${TOOL_JAR} jarboot.daemon >/dev/null &
+
 echo "daemon started."
+
+echo "Jarboot start success!"

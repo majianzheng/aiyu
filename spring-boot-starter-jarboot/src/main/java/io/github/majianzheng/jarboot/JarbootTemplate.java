@@ -97,13 +97,13 @@ public class JarbootTemplate implements JarbootOperator {
     }
 
     @Override
-    public void registerTaskLifecycleSubscriber(String serviceName, TaskLifecycle lifecycle, Subscriber<TaskLifecycleEvent> subscriber) {
-        serviceManager.registerSubscriber(serviceName, lifecycle, subscriber);
+    public void registerTaskLifecycleSubscriber(String host, String serviceName, TaskLifecycle lifecycle, Subscriber<TaskLifecycleEvent> subscriber) {
+        serviceManager.registerSubscriber(host, serviceName, lifecycle, subscriber);
     }
 
     @Override
-    public void deregisterTaskLifecycleSubscriber(String serviceName, TaskLifecycle lifecycle, Subscriber<TaskLifecycleEvent> subscriber) {
-        serviceManager.deregisterSubscriber(serviceName, lifecycle, subscriber);
+    public void deregisterTaskLifecycleSubscriber(String host, String serviceName, TaskLifecycle lifecycle, Subscriber<TaskLifecycleEvent> subscriber) {
+        serviceManager.deregisterSubscriber(host, serviceName, lifecycle, subscriber);
     }
 
     public CommandExecutorService executorInstance() {
