@@ -118,6 +118,7 @@ public class PropertyFileUtils {
         //判定文件是否更新
         ServiceSetting setting = getServiceSettingBySid(sid);
         if (null != setting && file.lastModified() == setting.getLastModified()) {
+            setting.setName(name);
             return setting;
         }
         if (file.exists()) {
@@ -130,6 +131,8 @@ public class PropertyFileUtils {
         }
         if (null == setting) {
             setting = new ServiceSetting(name);
+        } else {
+            setting.setName(name);
         }
         setting.setSid(sid);
         setting.setLastModified(file.lastModified());

@@ -42,7 +42,7 @@ goto Win9xApp
 :endInit
 
 set CLASS_PATH=%JARBOOT_HOME%\components\jarboot-tools.jar
-set "VM_OPT=-DJARBOOT_HOME=%JARBOOT_HOME% -Xms5m -Xmx15m -XX:+UseG1GC -XX:MaxGCPauseMillis=500"
+set "VM_OPT=-DJARBOOT_HOME=%JARBOOT_HOME% -Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=500"
 
 set COMMAND="%JAVA%" %VM_OPT% -jar "%CLASS_PATH%" %CMD_LINE_ARGS%
 

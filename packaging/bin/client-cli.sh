@@ -47,7 +47,7 @@ export JARBOOT_HOME=$(cd `dirname $0`/../; pwd)
 cd "${JARBOOT_HOME}"
 
 TOOL_JAR="${JARBOOT_HOME}/components/jarboot-tools.jar io.github.majianzheng.jarboot.tools.client.JarbootClientCli"
-DAEMON_VM="-Xms10m -Xmx10m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 -DJARBOOT_HOME=$JARBOOT_HOME"
+DAEMON_VM="-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 -DJARBOOT_HOME=$JARBOOT_HOME"
 
 $JAVA $DAEMON_VM -cp ${TOOL_JAR} "$@"
 echo "Bye."

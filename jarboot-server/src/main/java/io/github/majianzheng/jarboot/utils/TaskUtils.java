@@ -81,8 +81,8 @@ public class TaskUtils {
 
         cmdBuilder
                 .append(StringUtils.SPACE)
-                //忽略字节码校验，提高启动速度；彩色日志启动
-                .append("-noverify -Dspring.output.ansi.enabled=always")
+                //提高启动速度；彩色日志启动
+                .append("-Dspring.output.ansi.enabled=always")
                 .append(StringUtils.SPACE)
                 // Java agent
                 .append(SettingUtils.getAgentStartOption(setting.getUserDir(), setting.getName(), sid))

@@ -42,6 +42,6 @@ export JAVA_HOME
 export JAVA="$JAVA_HOME/bin/java"
 export JARBOOT_HOME=$(cd `dirname $0`/../; pwd)
 CLASS_PATH="${JARBOOT_HOME}/components/jarboot-tools.jar"
-VM_OPT="-DJARBOOT_HOME=$JARBOOT_HOME -Xms5m -Xmx15m -XX:+UseG1GC -XX:MaxGCPauseMillis=500"
+VM_OPT="-DJARBOOT_HOME=$JARBOOT_HOME -Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=500"
 # start
 $JAVA $VM_OPT -jar "${CLASS_PATH}" "$@"

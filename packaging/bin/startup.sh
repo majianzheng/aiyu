@@ -48,7 +48,7 @@ cd "${JARBOOT_HOME}"
 #===========================================================================================
 # JVM Configuration
 #===========================================================================================
-JAVA_OPT="${JAVA_OPT} -Xms512m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=500"
+JAVA_OPT="${JAVA_OPT} -Xms512m -Xmx1g -XX:+UseG1GC -XX:MaxGCPauseMillis=500"
 JAVA_OPT="${JAVA_OPT} -XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=logs/java_heapdump.hprof"
 JAVA_OPT="${JAVA_OPT} -XX:-UseLargePages"
 
@@ -76,7 +76,7 @@ $JAVA ${JAVA_OPT} jarboot.jarboot >/dev/null &
 echo "jarboot is started，you can check the ${JARBOOT_HOME}/logs/jarboot.log"
 echo "Starting jarboot server daemon..."
 TOOL_JAR="${JARBOOT_HOME}/components/jarboot-tools.jar io.github.majianzheng.jarboot.tools.daemon.ServerDaemon"
-DAEMON_VM="-Xms10m -Xmx10m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 -DJARBOOT_HOME=$JARBOOT_HOME"
+DAEMON_VM="-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 -DJARBOOT_HOME=$JARBOOT_HOME"
 $JAVA $DAEMON_VM -cp ${TOOL_JAR} jarboot.daemon >/dev/null &
 
 echo "daemon started."
