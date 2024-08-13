@@ -116,7 +116,32 @@ function runTerminal() {
   term.writeln(banner());
   term.writeln('  Jarboot console, docs: [36mhttps://www.yuque.com/jarboot/usage/quick-start[0m');
   term.writeln('  Diagnose command, try running `help`.');
-
+  term.attachCustomKeyEventHandler((event: KeyboardEvent) => {
+    if (event.type === 'keydown') {
+      let ctl = false;
+      if (window.navigator.userAgent.includes('Mac OS')) {
+        ctl = event.metaKey;
+      } else {
+        ctl = event.ctrlKey;
+      }
+      if (ctl) {
+        if ('KeyC' === event.code) {
+          const str = termOption.term?.getSelection();
+          // 复制到剪贴板
+          navigator.clipboard.writeText(str ?? '');
+          return false;
+        }
+        if ('KeyV' === event.code) {
+          // 从剪贴板粘贴
+          navigator.clipboard.readText().then(text => {
+            console.info('粘贴', text);
+          });
+          return false;
+        }
+      }
+    }
+    return true;
+  });
   term.onData((e: string) => {
     switch (e) {
       case '\u0003': // Ctrl+C

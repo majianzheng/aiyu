@@ -172,9 +172,24 @@ function init() {
       } else {
         ctl = event.ctrlKey;
       }
-      if (ctl && 'KeyF' === event.code) {
-        state.dialog = true;
-        return false;
+      if (ctl) {
+        if ('KeyF' === event.code) {
+          state.dialog = true;
+          return false;
+        }
+        if ('KeyC' === event.code) {
+          const str = termOption.term?.getSelection();
+          // 复制到剪贴板
+          navigator.clipboard.writeText(str ?? '');
+          return false;
+        }
+        if ('KeyV' === event.code) {
+          // 从剪贴板粘贴
+          navigator.clipboard.readText().then(text => {
+            console.info('粘贴', text);
+          });
+          return false;
+        }
       }
     }
     return true;
