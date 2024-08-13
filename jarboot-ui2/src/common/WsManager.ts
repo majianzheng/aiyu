@@ -40,6 +40,7 @@ class WsManager {
   /** 重连setInterval的句柄 */
   private static fd: any = null;
   private static RECONNECT_SUCCESS_HANDLER: (() => void)[] = [];
+  private static PING_HANDLER: (() => void)[] = [];
 
   /**
    * 添加消息处理
@@ -59,7 +60,13 @@ class WsManager {
   public static clearReconnectSuccessHandler() {
     WsManager.RECONNECT_SUCCESS_HANDLER = [];
   }
+  public static addPingHandler(handler: () => void) {
+    WsManager.PING_HANDLER.push(handler);
+  }
 
+  public static clearPingHandler() {
+    WsManager.PING_HANDLER = [];
+  }
   /**
    * 清理所有消息处理句柄
    */
@@ -220,10 +227,10 @@ class WsManager {
     WsManager.reconnect();
   };
 
-  private static ping = () => {
+  public static ping = () => {
     if (WsManager.websocket && WebSocket.OPEN === WsManager.websocket.readyState) {
       WsManager.websocket.send('ping');
-      WsManager.RECONNECT_SUCCESS_HANDLER.forEach(handler => handler());
+      WsManager.PING_HANDLER.forEach(handler => handler());
       setTimeout(WsManager.ping, 50000);
     }
   };

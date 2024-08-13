@@ -9,6 +9,8 @@ import type { MenuItem } from '@/types';
 import routesConfig from '@/router/routes-config';
 import StringUtil from '@/common/StringUtil';
 import OAuthService from '@/services/OAuthService';
+import { PAGE_JVM, PAGE_SERVICE } from '@/common/route-name-constants';
+import { defer } from 'lodash';
 
 const state = reactive({
   dialog: false,
@@ -28,6 +30,7 @@ router.afterEach(to => {
   if (menu) {
     menu.subName = name;
   }
+  defer(reload);
 });
 
 function checkPermission(config: any): boolean {
@@ -82,9 +85,18 @@ function createMenuData(config: any) {
   return menu;
 }
 
+async function reload() {
+  if (PAGE_SERVICE === route.name) {
+    await service.reload();
+    return;
+  }
+  if (PAGE_JVM === route.name) {
+    await service.reloadJvmList();
+  }
+}
+
 async function visibilitychange() {
   if (document.visibilityState === 'visible') {
-    console.log('计算机被唤醒了');
     // 这里可以执行唤醒后的操作
     const curUser = await OAuthService.getCurrentUser();
     if (StringUtil.isEmpty(curUser?.username)) {
@@ -92,11 +104,15 @@ async function visibilitychange() {
       location.reload();
       return;
     }
-    await service.reload();
-    await service.reloadJvmList();
+    user.setCurrentUser(curUser);
+    const curTimestamp = Date.now();
+    if (curTimestamp - basic.latestWeak > 10000) {
+      await reload();
+    }
+    basic.latestWeak = curTimestamp;
     WsManager.ping();
   } else {
-    console.log('计算机被休眠了');
+    basic.latestWeak = Date.now();
   }
 }
 

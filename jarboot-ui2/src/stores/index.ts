@@ -47,6 +47,7 @@ export const useBasicStore = defineStore({
     innerWidth: window.innerWidth,
     menus: [] as MenuItem[],
     subNameMap: new Map(),
+    latestWeak: Date.now(),
   }),
   actions: {
     async update() {

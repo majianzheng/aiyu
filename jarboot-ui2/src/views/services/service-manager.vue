@@ -312,6 +312,7 @@ onMounted(() => {
   pubsub.submit(PUB_TOPIC.ROOT, PUB_TOPIC.ONLINE_DEBUG_EVENT, onStatusChange);
   pubsub.submit(PUB_TOPIC.ROOT, PUB_TOPIC.NOT_TRUSTED, onNotTrusted);
   WsManager.addReconnectSuccessHandler(onReconnect);
+  WsManager.addPingHandler(onReconnect);
 });
 onUnmounted(() => {
   pubsub.unSubmit(PUB_TOPIC.ROOT, PUB_TOPIC.RECONNECTED, reload);
@@ -320,6 +321,7 @@ onUnmounted(() => {
   pubsub.unSubmit(PUB_TOPIC.ROOT, PUB_TOPIC.ONLINE_DEBUG_EVENT, onStatusChange);
   pubsub.unSubmit(PUB_TOPIC.ROOT, PUB_TOPIC.NOT_TRUSTED, onNotTrusted);
   WsManager.clearReconnectSuccessHandler();
+  WsManager.clearPingHandler();
 });
 </script>
 
