@@ -4,7 +4,6 @@ package io.github.majianzheng.jarboot.controller;
 import io.github.majianzheng.jarboot.utils.SettingUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import io.github.majianzheng.jarboot.common.pojo.ResponseVo;

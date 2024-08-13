@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { RouterView, useRoute, useRouter } from 'vue-router';
 import { LOGO_URL } from '@/common/CommonConst';
-import { useBasicStore, useUserStore } from '@/stores';
+import { useBasicStore, useServiceStore, useUserStore } from '@/stores';
 import { onMounted, reactive } from 'vue';
 import { WsManager } from '@/common/WsManager';
 import { pubsub } from '@/views/services/ServerPubsubImpl';
 import type { MenuItem } from '@/types';
 import routesConfig from '@/router/routes-config';
 import StringUtil from '@/common/StringUtil';
+import OAuthService from '@/services/OAuthService';
 
 const state = reactive({
   dialog: false,
@@ -19,6 +20,7 @@ const user = useUserStore();
 const route = useRoute();
 const router = useRouter();
 const basic = useBasicStore();
+const service = useServiceStore();
 
 router.afterEach(to => {
   const name = to.name;
@@ -80,12 +82,31 @@ function createMenuData(config: any) {
   return menu;
 }
 
+async function visibilitychange() {
+  if (document.visibilityState === 'visible') {
+    console.log('计算机被唤醒了');
+    // 这里可以执行唤醒后的操作
+    const curUser = await OAuthService.getCurrentUser();
+    if (StringUtil.isEmpty(curUser?.username)) {
+      // 登录认证过期
+      location.reload();
+      return;
+    }
+    await service.reload();
+    await service.reloadJvmList();
+    WsManager.ping();
+  } else {
+    console.log('计算机被休眠了');
+  }
+}
+
 const welcome = () => {
   console.log(`%c▅▇█▓▒(’ω’)▒▓█▇▅▂`, 'color: magenta');
   console.log(`%c(灬°ω°灬) `, 'color:magenta');
   console.log(`%c（づ￣3￣）づ╭❤～`, 'color:red');
   WsManager.initWebsocket();
   pubsub.init();
+  document.onvisibilitychange = visibilitychange;
 };
 
 const isActive = (menu: MenuItem): boolean => {

@@ -17,7 +17,7 @@ export default class CommonNotice {
     }
     ElNotification({
       title: msg,
-      message: description || '',
+      message: description ?? '',
       type: 'success',
     });
   }

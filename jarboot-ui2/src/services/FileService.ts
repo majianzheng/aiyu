@@ -64,7 +64,7 @@ export default class FileService {
    * @param clusterHost
    */
   public static deleteFile(path: string, clusterHost?: string) {
-    return Request.delete<string>(`${urlBase}/file/delete?path=${path}&clusterHost=${clusterHost || ''}`, {});
+    return Request.delete<string>(`${urlBase}/file/delete?path=${path}&clusterHost=${clusterHost ?? ''}`, {});
   }
 
   /**

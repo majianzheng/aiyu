@@ -43,7 +43,6 @@ public class InfoCommand extends AbstractClientCommand {
     }
 
     @Override
-    public void cancel() {
-
+    public void cancel() {// default implementation ignored
     }
 }

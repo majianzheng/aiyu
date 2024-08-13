@@ -37,7 +37,7 @@ public class ClientHelpCommand extends AbstractClientCommand {
 
     @Override
     public void cancel() {
-
+        // default implementation ignored
     }
 
     private void showAll() {

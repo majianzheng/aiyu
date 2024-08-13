@@ -25,6 +25,7 @@ public class ClientCommandBuilder {
         CMDS.put("help", ClientHelpCommand.class);
         CMDS.put("info", InfoCommand.class);
     }
+    private ClientCommandBuilder() {}
 
     public static AbstractClientCommand build(String commandLine, ClusterOperator client, Terminal terminal, ServerRuntimeInfo runtimeInfo) {
         int p = commandLine.indexOf(' ');

@@ -8,7 +8,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +16,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class JwtTokenManager {
 
     @Value("${jarboot.token.secret.key:SecretKey012345678901234567899876543210012345678901234567890123456789}")
     private String secretKey;
-    @Autowired
+    @Resource
     private UserDao userDao;
     private byte[] secretKeyBytes;
 

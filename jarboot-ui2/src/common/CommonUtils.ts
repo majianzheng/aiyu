@@ -20,7 +20,6 @@ export default class CommonUtils {
       CommonUtils.t = getCurrentInstance()?.appContext.config.globalProperties.$t;
     }
     let msg = CommonUtils.t(s);
-    //{size}
     if (!args?.length) {
       return msg;
     }
@@ -59,7 +58,7 @@ export default class CommonUtils {
   }
 
   public static getCurrentHost() {
-    return localStorage.getItem(ACCESS_CLUSTER_HOST) || '';
+    return localStorage.getItem(ACCESS_CLUSTER_HOST) ?? '';
   }
 
   public static deleteToken() {

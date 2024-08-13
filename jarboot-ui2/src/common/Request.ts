@@ -47,7 +47,7 @@ export default class Request {
       form.append('file', file);
     } else {
       Logger.error('file is null.', file);
-      return Promise.reject('file is null');
+      return Promise.reject(new Error('file is null'));
     }
     if (params) {
       params.forEach((value, key) => form.append(key, value));

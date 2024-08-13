@@ -624,7 +624,7 @@ public class AgentManager {
     }
 
     private static class AgentManagerHolder {
-        static final AgentManager INSTANCE = new AgentManager();
+        private static final AgentManager INSTANCE = new AgentManager();
     }
 
     private void onFuncReceivedEvent(FuncReceivedEvent event) {

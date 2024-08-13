@@ -134,5 +134,3 @@ onMounted(async () => {
   state.clusterHosts = await ClusterManager.getOnlineClusterHosts();
 });
 </script>
-
-<style scoped></style>

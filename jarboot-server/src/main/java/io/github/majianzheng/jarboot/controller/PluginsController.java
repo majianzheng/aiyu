@@ -5,10 +5,10 @@ import io.github.majianzheng.jarboot.api.pojo.PluginInfo;
 import io.github.majianzheng.jarboot.common.pojo.ResponseVo;
 import io.github.majianzheng.jarboot.common.utils.HttpResponseUtils;
 import io.github.majianzheng.jarboot.service.PluginsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping(value = CommonConst.PLUGINS_CONTEXT)
 @RestController
 public class PluginsController {
-    @Autowired
+    @Resource
     private PluginsService pluginsService;
 
     /**
@@ -28,7 +28,6 @@ public class PluginsController {
      * @return 执行结果
      */
     @PostMapping
-    @ResponseBody
     public ResponseVo<String> uploadPlugin(@RequestParam("file") MultipartFile file,
                                            @RequestParam("type") String type) {
         pluginsService.uploadPlugin(file, type);
@@ -40,7 +39,6 @@ public class PluginsController {
      * @return 执行结果
      */
     @GetMapping
-    @ResponseBody
     public ResponseVo<List<PluginInfo>> getAgentPlugins() {
         return HttpResponseUtils.success(pluginsService.getAgentPlugins());
     }
@@ -52,7 +50,6 @@ public class PluginsController {
      * @return 执行结果
      */
     @DeleteMapping
-    @ResponseBody
     public ResponseVo<String> removePlugin(String type, String filename) {
         pluginsService.removePlugin(type, filename);
         return HttpResponseUtils.success();

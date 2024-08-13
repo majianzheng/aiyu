@@ -72,7 +72,7 @@ public class ClusterManagerController {
     /**
      * 启动服务
      * @param services 服务实例
-     * @return
+     * @return 执行结果
      */
     @PostMapping("startServices")
     public ResponseSimple startService(@RequestBody List<ServiceInstance> services) {
@@ -83,7 +83,7 @@ public class ClusterManagerController {
     /**
      * 停止服务
      * @param services 服务实例
-     * @return
+     * @return 执行结果
      */
     @PostMapping("stopServices")
     public ResponseSimple stopService(@RequestBody List<ServiceInstance> services) {
@@ -94,7 +94,7 @@ public class ClusterManagerController {
     /**
      * 重启服务
      * @param services 服务实例
-     * @return
+     * @return 执行结果
      */
     @PostMapping("restartServices")
     public ResponseSimple restartService(@RequestBody List<ServiceInstance> services) {
@@ -106,7 +106,7 @@ public class ClusterManagerController {
      * attach
      * @param host host
      * @param pid pid
-     * @return
+     * @return 执行结果
      */
     @PostMapping("attach")
     public ResponseSimple attach(String host, String pid) {
@@ -117,7 +117,7 @@ public class ClusterManagerController {
     /**
      * 删除服务
      * @param instances 实例
-     * @return
+     * @return 执行结果
      */
     @PostMapping("deleteService")
     public ResponseSimple deleteService(@RequestBody List<ServiceInstance> instances) {

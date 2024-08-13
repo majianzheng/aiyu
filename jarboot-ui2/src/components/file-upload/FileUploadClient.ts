@@ -1,4 +1,3 @@
-import SparkMD5 from 'spark-md5';
 import CommonUtils from '@/common/CommonUtils';
 import { ACCESS_CLUSTER_HOST } from '@/common/CommonConst';
 import type { UploadFileInfo } from '@/types';
@@ -166,7 +165,6 @@ export default class FileUploadClient {
       }
       this.lastUploadProgress.uploadSize = updateSize;
     }
-    // setTimeout(() => this.sendFile(), 500);
   }
 
   private getDefaultHost() {
@@ -197,7 +195,7 @@ export default class FileUploadClient {
   }
 
   private triggerProgressChange(lastUploadProgress: UploadFileInfo) {
-    this.progressHandlers.forEach(callback => callback(lastUploadProgress as UploadFileInfo));
+    this.progressHandlers.forEach(callback => callback(lastUploadProgress));
   }
 
   private finished() {
@@ -206,37 +204,5 @@ export default class FileUploadClient {
     Logger.log(`传输完成，耗时：${costTime / 1000} 秒`);
     this.websocket?.close();
     this.websocket = null;
-  }
-
-  getFileMd5(file: File): Promise<string> {
-    const fileReader = new FileReader();
-    const chunkSize1 = 102400;
-    const chunks = Math.ceil(file.size / chunkSize1);
-    let currentChunk = 0;
-    const spark = new SparkMD5();
-    return new Promise(resolve => {
-      fileReader.onload = function (e) {
-        if (!e.target?.result) {
-          return;
-        }
-        spark.appendBinary(e.target.result as string);
-        currentChunk++;
-        if (currentChunk < chunks) {
-          loadNext();
-        } else {
-          resolve(spark.end());
-        }
-      };
-      fileReader.onerror = () => {
-        console.log('文件读取失败，无法上传该文件');
-      };
-
-      function loadNext() {
-        const start = currentChunk * chunkSize1;
-        const end = start + chunkSize1 >= file.size ? file.size : start + chunkSize1;
-        fileReader.readAsBinaryString(file.slice(start, end));
-      }
-      loadNext();
-    });
   }
 }

@@ -5,13 +5,9 @@ import io.github.majianzheng.jarboot.api.event.Subscriber;
 import io.github.majianzheng.jarboot.api.exception.JarbootRunException;
 import io.github.majianzheng.jarboot.common.notify.AbstractEventRegistry;
 import io.github.majianzheng.jarboot.common.notify.NotifyReactor;
-import io.github.majianzheng.jarboot.common.utils.JsonUtils;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
-import io.github.majianzheng.jarboot.security.JwtTokenManager;
-import io.github.majianzheng.jarboot.utils.SettingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;

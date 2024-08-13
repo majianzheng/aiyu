@@ -8,10 +8,10 @@ import io.github.majianzheng.jarboot.common.pojo.ResponseSimple;
 import io.github.majianzheng.jarboot.common.utils.HttpResponseUtils;
 import io.github.majianzheng.jarboot.service.FileService;
 import io.github.majianzheng.jarboot.utils.CommonUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +26,7 @@ import java.util.List;
 @RequestMapping(value = "/api/jarboot/file-manager")
 @RestController
 public class FileController {
-    @Autowired
+    @Resource
     private FileService fileService;
 
     /**
@@ -37,7 +37,6 @@ public class FileController {
      * @return 执行结果
      */
     @PostMapping("file")
-    @ResponseBody
     public ResponseSimple upload(
             @RequestParam("file") MultipartFile file,
             @RequestParam(required = false) String clusterHost,

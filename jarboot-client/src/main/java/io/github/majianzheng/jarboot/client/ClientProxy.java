@@ -109,8 +109,8 @@ public class ClientProxy implements AbstractEventRegistry {
     @ClientEndpoint
     public static class WsClient {
         private Session session;
-        private String host;
-        private String username;
+        private final String host;
+        private final String username;
         private CountDownLatch latch;
 
         public boolean send(byte[] data) {

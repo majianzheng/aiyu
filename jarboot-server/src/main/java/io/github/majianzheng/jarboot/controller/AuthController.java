@@ -12,16 +12,15 @@ import io.github.majianzheng.jarboot.entity.User;
 import io.github.majianzheng.jarboot.security.JarbootUser;
 import io.github.majianzheng.jarboot.security.JwtTokenManager;
 import io.github.majianzheng.jarboot.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -29,17 +28,17 @@ import javax.servlet.http.HttpServletRequest;
  * @author majianzheng
  */
 @RequestMapping(value = CommonConst.AUTH_CONTEXT)
-@Controller
+@RestController
 public class AuthController {
     private static final String PARAM_USERNAME = "username";
 
     private static final String PARAM_PASSWORD = "password";
 
-    @Autowired
+    @Resource
     private JwtTokenManager jwtTokenManager;
-    @Autowired
+    @Resource
     private AuthenticationManager authenticationManager;
-    @Autowired
+    @Resource
     private UserService userService;
 
     @Value("${jarboot.token.expire.seconds:7776000}")
@@ -51,7 +50,6 @@ public class AuthController {
      * @return 结果
      */
     @GetMapping(value="/getCurrentUser")
-    @ResponseBody
     public ResponseVo<User> getCurrentUser(HttpServletRequest request) {
         String token;
         try {
@@ -74,7 +72,6 @@ public class AuthController {
      * @return 结果
      */
     @PostMapping(value="/login")
-    @ResponseBody
     public ResponseVo<JarbootUser> login(HttpServletRequest request) {
         String token = getToken(request);
         String username = request.getParameter(PARAM_USERNAME);
@@ -110,7 +107,6 @@ public class AuthController {
      * @return token
      */
     @PostMapping(value="/openApiToken")
-    @ResponseBody
     public ResponseVo<String> createOpenApiToken(String username, String password) {
         try {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,

@@ -13,7 +13,6 @@ import io.github.majianzheng.jarboot.utils.SettingUtils;
 import io.github.majianzheng.jarboot.utils.TaskUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -29,9 +28,9 @@ import java.util.stream.Collectors;
 public class ClusterClientProxy {
     private static final Logger logger = LoggerFactory.getLogger(ClusterClientProxy.class);
 
-    @Autowired
+    @Resource
     private ServiceManager serviceManager;
-    @Autowired
+    @Resource
     private SettingService settingService;
     @Resource(name = "taskExecutorService")
     private ExecutorService executorService;

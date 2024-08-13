@@ -33,4 +33,3 @@ function download() {
   CommonUtils.download(url, 'heapdump.hprof');
 }
 </script>
-

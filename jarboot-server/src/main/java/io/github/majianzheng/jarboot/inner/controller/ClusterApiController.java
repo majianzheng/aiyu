@@ -15,11 +15,11 @@ import io.github.majianzheng.jarboot.service.ServerRuntimeService;
 import io.github.majianzheng.jarboot.task.TaskRunCache;
 import io.github.majianzheng.jarboot.utils.CommonUtils;
 import io.github.majianzheng.jarboot.utils.SettingUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
@@ -37,58 +37,51 @@ import java.util.List;
 @RestController
 @PreAuthorize("hasRole('CLUSTER')")
 public class ClusterApiController {
-    @Autowired
+    @Resource
     private TaskRunCache taskRunCache;
-    @Autowired
+    @Resource
     private ServiceManager serviceManager;
-    @Autowired
+    @Resource
     private ServerRuntimeService serverRuntimeService;
-    @Autowired
+    @Resource
     private SettingService settingService;
-    @Autowired
+    @Resource
     private FileService fileService;
 
     @GetMapping("/group")
-    @ResponseBody
     public ServiceInstance getServiceGroup() {
         return taskRunCache.getServiceGroup(SettingUtils.getCurrentUserDir());
     }
 
     @GetMapping("/jvmGroup")
-    @ResponseBody
     public JvmProcess getJvmGroup() {
         return serviceManager.getJvmGroup();
     }
 
     @GetMapping("/serviceSetting")
-    @ResponseBody
     public ServiceSetting getServiceSetting(String serviceName) {
         return settingService.getServiceSetting(serviceName);
     }
 
     @PostMapping("/serviceSetting")
-    @ResponseBody
     public ResponseSimple saveServiceSetting(@RequestBody ServiceSetting setting) {
         settingService.submitServiceSetting(setting);
         return HttpResponseUtils.success();
     }
 
     @DeleteMapping("/service")
-    @ResponseBody
     public ResponseSimple deleteService(String serviceName) {
         serviceManager.deleteService(serviceName);
         return HttpResponseUtils.success();
     }
 
     @GetMapping("/attach")
-    @ResponseBody
     public ResponseSimple attach(String pid) {
         serviceManager.attach(pid);
         return HttpResponseUtils.success();
     }
 
     @PostMapping("/handleMessage/{host}")
-    @ResponseBody
     public ResponseSimple handleMessage(@RequestBody ClusterEventMessage eventMessage, @PathVariable("host") String host) {
         ClusterClient client = ClusterClientManager.getInstance().getClient(host);
         if (null == client) {
@@ -99,7 +92,6 @@ public class ClusterApiController {
     }
 
     @PostMapping("file")
-    @ResponseBody
     public ResponseSimple upload(
             @RequestParam("file") MultipartFile file,
             @RequestParam("path") String path) throws IOException {
@@ -212,7 +204,6 @@ public class ClusterApiController {
      * @return 执行结果
      */
     @PostMapping("/importService")
-    @ResponseBody
     public ResponseVo<String> importService(@RequestParam("file") MultipartFile file) {
         try (InputStream is = file.getInputStream()) {
             serverRuntimeService.importService(file.getOriginalFilename(), is);

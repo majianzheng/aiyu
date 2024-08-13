@@ -157,8 +157,7 @@ public class JarbootClientCli implements Subscriber<TaskLifecycleEvent> {
     @Override
     public void onEvent(TaskLifecycleEvent event) {
         String name = StringUtils.isEmpty(event.getSetting().getHost()) ? event.getSetting().getName() : (event.getSetting().getName() + "@" + event.getSetting().getHost());
-        terminal.writer().format("%s: %s\n", name, event.getStatus());
-        terminal.writer().flush();
+        AnsiLog.println("{}: {}\n", name, event.getStatus());
     }
 
     @Override

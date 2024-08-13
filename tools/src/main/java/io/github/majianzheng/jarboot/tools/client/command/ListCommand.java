@@ -55,7 +55,7 @@ public class ListCommand extends AbstractClientCommand {
     }
 
     @Override
-    public void cancel() {
+    public void cancel() { // default implementation ignored
 
     }
 }

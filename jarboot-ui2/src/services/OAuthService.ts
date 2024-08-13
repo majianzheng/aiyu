@@ -10,7 +10,7 @@ export default class OAuthService {
    * 获取当前用户
    */
   public static getCurrentUser() {
-    return Request.get(`${urlBase}/getCurrentUser`, {});
+    return Request.get<any>(`${urlBase}/getCurrentUser`, {});
   }
 
   /**
