@@ -10,7 +10,6 @@ import io.github.majianzheng.jarboot.common.pojo.ResponseVo;
 import io.github.majianzheng.jarboot.common.utils.HttpResponseUtils;
 import io.github.majianzheng.jarboot.service.ServerRuntimeService;
 import io.github.majianzheng.jarboot.utils.CommonUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,14 +30,13 @@ import java.util.List;
 public class ClusterManagerController {
     @Resource
     private ClusterClientProxy clusterClientProxy;
-    @Autowired
+    @Resource
     private ServerRuntimeService serverRuntimeService;
     /**
      * 获取存活的集群
      * @return 集群列表
      */
     @GetMapping("onlineClusterHosts")
-    @ResponseBody
     public ResponseVo<List<HostInfo>> getOnlineClusterHosts() {
         List<HostInfo> hosts = new ArrayList<>();
         ClusterClientManager.getInstance().getHosts().forEach((k, v) -> {
@@ -58,7 +56,6 @@ public class ClusterManagerController {
      * @return 服务列表
      */
     @GetMapping("services")
-    @ResponseBody
     public ResponseVo<List<ServiceInstance>> getServiceGroup() {
         return HttpResponseUtils.success(clusterClientProxy.getServiceGroup());
     }
@@ -68,7 +65,6 @@ public class ClusterManagerController {
      * @return 服务列表
      */
     @GetMapping("jvmGroups")
-    @ResponseBody
     public ResponseVo<List<JvmProcess>> getJvmGroup() {
         return HttpResponseUtils.success(clusterClientProxy.getJvmGroup());
     }
@@ -79,7 +75,6 @@ public class ClusterManagerController {
      * @return
      */
     @PostMapping("startServices")
-    @ResponseBody
     public ResponseSimple startService(@RequestBody List<ServiceInstance> services) {
         clusterClientProxy.startService(services);
         return HttpResponseUtils.success();
@@ -91,7 +86,6 @@ public class ClusterManagerController {
      * @return
      */
     @PostMapping("stopServices")
-    @ResponseBody
     public ResponseSimple stopService(@RequestBody List<ServiceInstance> services) {
         clusterClientProxy.stopService(services);
         return HttpResponseUtils.success();
@@ -103,7 +97,6 @@ public class ClusterManagerController {
      * @return
      */
     @PostMapping("restartServices")
-    @ResponseBody
     public ResponseSimple restartService(@RequestBody List<ServiceInstance> services) {
         clusterClientProxy.restartService(services);
         return HttpResponseUtils.success();
@@ -116,7 +109,6 @@ public class ClusterManagerController {
      * @return
      */
     @PostMapping("attach")
-    @ResponseBody
     public ResponseSimple attach(String host, String pid) {
         clusterClientProxy.attach(host, pid);
         return HttpResponseUtils.success();
@@ -128,7 +120,6 @@ public class ClusterManagerController {
      * @return
      */
     @PostMapping("deleteService")
-    @ResponseBody
     public ResponseSimple deleteService(@RequestBody List<ServiceInstance> instances) {
         if (null != instances) {
             instances.forEach(instance -> clusterClientProxy.deleteService(instance));
@@ -142,7 +133,6 @@ public class ClusterManagerController {
      * @return 服务配置
      */
     @PostMapping("serviceSetting")
-    @ResponseBody
     public ResponseVo<ServiceSetting> getServiceSetting(@RequestBody ServiceInstance instance) {
         return HttpResponseUtils.success(clusterClientProxy.getServiceSetting(instance));
     }
@@ -153,7 +143,6 @@ public class ClusterManagerController {
      * @return 服务配置
      */
     @PostMapping("saveServiceSetting")
-    @ResponseBody
     public ResponseVo<ServiceSetting> saveServiceSetting(@RequestBody ServiceSetting setting) {
         clusterClientProxy.saveServiceSetting(setting);
         return HttpResponseUtils.success();
@@ -190,8 +179,9 @@ public class ClusterManagerController {
      * @return 执行结果
      */
     @PostMapping("/importService")
-    @ResponseBody
-    public ResponseVo<String> importService(@RequestParam(required = false) String clusterHost, @RequestParam("file") MultipartFile file) {
+    public ResponseVo<String> importService(
+            @RequestParam(required = false) String clusterHost,
+            @RequestParam("file") MultipartFile file) {
         try (InputStream is = file.getInputStream()) {
             if (CommonUtils.needProxy(clusterHost)) {
                 ClusterClient client = ClusterClientManager.getInstance().getClient(clusterHost);
@@ -211,8 +201,10 @@ public class ClusterManagerController {
      * @param file base64编码的文件全路径名
      * @param response Servlet response
      */
-    @GetMapping(value="/download/{file}")
-    public void download(@RequestParam(required = false) String clusterHost, @PathVariable("file") String file, HttpServletResponse response) throws IOException {
+    @GetMapping(value="/download")
+    public void download(
+            @RequestParam(name = "clusterHost", required = false) String clusterHost,
+            @RequestParam(name = "file") String file, HttpServletResponse response) throws IOException {
         CommonUtils.setDownloadHeader(response, null);
         try (OutputStream os = response.getOutputStream()) {
             if (CommonUtils.needProxy(clusterHost)) {

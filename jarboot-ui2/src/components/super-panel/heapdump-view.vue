@@ -28,9 +28,9 @@ const subTitle = computed(() => {
   return file;
 });
 function download() {
-  const url = `/api/jarboot/cluster/manager/download/${props.data?.encrypted}?clusterHost=${props.clusterHost}`;
+  const path = encodeURIComponent(props.data?.encrypted);
+  const url = `/api/jarboot/cluster/manager/download?file=${path}&clusterHost=${props.clusterHost}`;
   CommonUtils.download(url, 'heapdump.hprof');
 }
 </script>
 
-<style scoped></style>
