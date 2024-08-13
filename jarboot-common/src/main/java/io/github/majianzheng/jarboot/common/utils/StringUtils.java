@@ -18,6 +18,7 @@ public abstract class StringUtils {
     public static final String CR = "\r";
     public static final String SLASH = "/";
     public static final String NULL_STR = "null";
+    public static final String LINE_BREAK = System.getProperty("line.separator", StringUtils.LF);
     private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
     /**

@@ -8,6 +8,7 @@ import io.github.majianzheng.jarboot.common.JarbootException;
 import io.github.majianzheng.jarboot.common.pojo.ResultCodeConst;
 import io.github.majianzheng.jarboot.common.utils.OSUtils;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
+import io.github.majianzheng.jarboot.common.utils.VersionUtils;
 import io.github.majianzheng.jarboot.entity.User;
 import io.github.majianzheng.jarboot.security.JwtTokenManager;
 import io.github.majianzheng.jarboot.service.UserService;

@@ -220,10 +220,10 @@ public class TaskUtils {
     }
 
     public static void cleanBashFile(String serverPath) {
-        File bashFile = getStartBashFile(SettingUtils.createSid(serverPath), serverPath);
-        if (bashFile.exists()) {
-            FileUtils.deleteQuietly(bashFile);
-        }
+//        File bashFile = getStartBashFile(SettingUtils.createSid(serverPath), serverPath);
+//        if (bashFile.exists()) {
+//            FileUtils.deleteQuietly(bashFile);
+//        }
     }
 
     private static File getStartBashFile(String sid, String serverPath) {
@@ -316,18 +316,25 @@ public class TaskUtils {
             if (null != envs) {
                 for (String env : envs) {
                     if (OSUtils.isWindows()) {
-                        sb.append("set ").append(env).append('\n');
+                        sb.append("set ").append(env).append(StringUtils.LINE_BREAK);
                     } else {
-                        sb.append("export ").append(env).append('\n');
+                        sb.append("export ").append(env).append(StringUtils.LINE_BREAK);
                     }
                 }
             }
             if (OSUtils.isWindows()) {
-                sb.append("\nstart \"\" ").append(command).append("\ntimeout /t 1 > NUL\necho started!\n");
+                sb.append(StringUtils.LINE_BREAK)
+                        .append("start \"\" ").append(command).append(StringUtils.LINE_BREAK)
+                        .append("timeout /t 1 > NUL").append(StringUtils.LINE_BREAK)
+                        .append("echo started!").append(StringUtils.LINE_BREAK);
             } else {
-                sb.append('\n').append(command).append(" >/dev/null &\nsleep 1\necho started!\n");
+                sb.append(StringUtils.LINE_BREAK)
+                        .append(command).append(" >/dev/null &").append(StringUtils.LINE_BREAK)
+                        .append("sleep 1").append(StringUtils.LINE_BREAK)
+                        .append("echo started!").append(StringUtils.LINE_BREAK);
             }
-            FileUtils.writeStringToFile(bashFile, sb.toString(), StandardCharsets.UTF_8);
+            logger.info("start task, bash:{}, command: {}",  bashFile.getAbsolutePath(), sb);
+            FileUtils.writeStringToFile(bashFile, sb.toString(), OSUtils.isWindows() ? "GBK" : "UTF-8");
             if (!bashFile.setExecutable(true)) {
                 logger.error("set executable failed.");
             }
@@ -342,17 +349,17 @@ public class TaskUtils {
     private static void initRunningEnv(String jdkPath, StringBuilder sb) {
         if (StringUtils.isEmpty(jdkPath)) {
             if (OSUtils.isWindows()) {
-                sb.append("set \"JAVA_CMD=javaw\"\n\n");
+                sb.append("set \"JAVA_CMD=javaw\"").append(StringUtils.LINE_BREAK).append(StringUtils.LINE_BREAK);
             } else {
-                sb.append("export JAVA_CMD=\"java\"\n\n");
+                sb.append("export JAVA_CMD=\"java\"").append(StringUtils.LINE_BREAK).append(StringUtils.LINE_BREAK);
             }
         } else {
             if (OSUtils.isWindows()) {
-                sb.append("set \"JAVA_HOME=").append(jdkPath).append("\"\n");
-                sb.append("set \"JAVA_CMD=%JAVA_HOME%/bin/javaw.exe\"\n\n");
+                sb.append("set \"JAVA_HOME=").append(jdkPath).append("\"").append(StringUtils.LINE_BREAK);
+                sb.append("set \"JAVA_CMD=%JAVA_HOME%/bin/javaw.exe\"").append(StringUtils.LINE_BREAK).append(StringUtils.LINE_BREAK);
             } else {
-                sb.append("export JAVA_HOME=\"").append(jdkPath).append("\"\n");
-                sb.append("export JAVA_CMD=\"${JAVA_HOME}/bin/java\"\n\n");
+                sb.append("export JAVA_HOME=\"").append(jdkPath).append("\"").append(StringUtils.LINE_BREAK);
+                sb.append("export JAVA_CMD=\"${JAVA_HOME}/bin/java\"").append(StringUtils.LINE_BREAK).append(StringUtils.LINE_BREAK);
             }
         }
         String selfHost = ClusterClientManager.getInstance().getSelfHost();
@@ -363,17 +370,17 @@ public class TaskUtils {
             host = selfHost;
         }
         if (OSUtils.isWindows()) {
-            sb.append("set \"JARBOOT_HOME=").append(SettingUtils.getHomePath()).append("\"\n");
-            sb.append("set \"MACHINE_CODE=").append(CommonUtils.getMachineCode()).append("\"\n");
-            sb.append("set \"SERVER_UUID=").append(SettingUtils.getUuid()).append("\"\n");
-            sb.append("set \"JARBOOT_WORKSPACE=").append(SettingUtils.getWorkspace()).append("\"\n");
-            sb.append("set \"JARBOOT_HOST=").append(host).append("\"\n");
+            sb.append("set \"JARBOOT_HOME=").append(SettingUtils.getHomePath()).append("\"").append(StringUtils.LINE_BREAK);
+            sb.append("set \"MACHINE_CODE=").append(CommonUtils.getMachineCode()).append("\"").append(StringUtils.LINE_BREAK);
+            sb.append("set \"SERVER_UUID=").append(SettingUtils.getUuid()).append("\"").append(StringUtils.LINE_BREAK);
+            sb.append("set \"JARBOOT_WORKSPACE=").append(SettingUtils.getWorkspace()).append("\"").append(StringUtils.LINE_BREAK);
+            sb.append("set \"JARBOOT_HOST=").append(host).append("\"").append(StringUtils.LINE_BREAK);
         } else {
-            sb.append("export JARBOOT_HOME=\"").append(SettingUtils.getHomePath()).append("\"\n");
-            sb.append("export MACHINE_CODE=\"").append(CommonUtils.getMachineCode()).append("\"\n");
-            sb.append("export SERVER_UUID=\"").append(SettingUtils.getUuid()).append("\"\n");
-            sb.append("export JARBOOT_WORKSPACE=\"").append(SettingUtils.getWorkspace()).append("\"\n");
-            sb.append("export JARBOOT_HOST=\"").append(host).append("\"\n");
+            sb.append("export JARBOOT_HOME=\"").append(SettingUtils.getHomePath()).append("\"").append(StringUtils.LINE_BREAK);
+            sb.append("export MACHINE_CODE=\"").append(CommonUtils.getMachineCode()).append("\"").append(StringUtils.LINE_BREAK);
+            sb.append("export SERVER_UUID=\"").append(SettingUtils.getUuid()).append("\"").append(StringUtils.LINE_BREAK);
+            sb.append("export JARBOOT_WORKSPACE=\"").append(SettingUtils.getWorkspace()).append("\"").append(StringUtils.LINE_BREAK);
+            sb.append("export JARBOOT_HOST=\"").append(host).append("\"").append(StringUtils.LINE_BREAK);
         }
     }
 
