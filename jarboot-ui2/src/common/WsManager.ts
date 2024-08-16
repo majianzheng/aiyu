@@ -227,7 +227,7 @@ class WsManager {
     WsManager.reconnect();
   };
 
-  public static ping = () => {
+  public static readonly ping = () => {
     if (WsManager.websocket && WebSocket.OPEN === WsManager.websocket.readyState) {
       WsManager.websocket.send('ping');
       WsManager.PING_HANDLER.forEach(handler => handler());
@@ -235,8 +235,9 @@ class WsManager {
     }
   };
 
-  private static reconnect() {
-    if (null !== WsManager.fd) {
+  public static reconnect() {
+    const state = WsManager.websocket?.readyState;
+    if (null !== WsManager.fd || WebSocket.OPEN === state || WebSocket.CONNECTING === state) {
       return;
     }
     msg = ElMessage({ message: 'reconnecting...', duration: 0, icon: 'IconLoading' });
@@ -246,7 +247,7 @@ class WsManager {
         return;
       }
       if (WebSocket.CONNECTING === WsManager.websocket?.readyState) {
-        //正在连接，下一周期再次查看
+        //正在连接，下一 周期再次查看
         return;
       }
       if (WebSocket.OPEN === WsManager.websocket?.readyState) {

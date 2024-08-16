@@ -1,12 +1,12 @@
 package io.github.majianzheng.jarboot.tools.daemon;
 
-import io.github.majianzheng.jarboot.api.constant.CommonConst;
 import io.github.majianzheng.jarboot.common.AnsiLog;
 import io.github.majianzheng.jarboot.common.CacheDirHelper;
 import io.github.majianzheng.jarboot.common.PidFileHelper;
 import io.github.majianzheng.jarboot.common.utils.OSUtils;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
 import io.github.majianzheng.jarboot.common.utils.VMUtils;
+import io.github.majianzheng.jarboot.tools.common.Utils;
 import org.apache.commons.io.FileUtils;
 
 import java.nio.channels.FileLock;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class ServerDaemon {
     public static void main(String[] args) {
-        String home = System.getProperty(CommonConst.JARBOOT_HOME);
+        String home = Utils.getJarbootHome();
         if (StringUtils.isEmpty(home)) {
             AnsiLog.error("JARBOOT_HOME is not set!");
             return;

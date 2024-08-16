@@ -185,9 +185,6 @@ function init() {
         }
         if ('KeyV' === event.code) {
           // 从剪贴板粘贴
-          navigator.clipboard.readText().then(text => {
-            console.info('粘贴', text);
-          });
           return false;
         }
       }

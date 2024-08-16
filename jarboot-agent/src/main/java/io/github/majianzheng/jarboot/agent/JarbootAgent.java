@@ -24,8 +24,11 @@ public class JarbootAgent {
     private static final String GET_INSTANCE = "getInstance";
 
     private static PrintStream ps = null;
-    private static final String CURRENT_DIR = getCurrentDir();
+    private static final String CURRENT_DIR;
     private static ClassLoader jarbootClassLoader = null;
+    static {
+        CURRENT_DIR = getCurrentDir();
+    }
 
     public static void premain(String args, Instrumentation inst) {
         callMain(args, inst, true);
@@ -117,15 +120,15 @@ public class JarbootAgent {
 
         ps.println("jarboot Agent start...");
 
-        CodeSource codeSource = JarbootAgent.class.getProtectionDomain().getCodeSource();
         File coreJarFile;
+        String componentDir = CURRENT_DIR + File.separator + CommonConst.COMPONENTS_NAME;
         try {
-            coreJarFile = new File(CURRENT_DIR + File.separator + CommonConst.COMPONENTS_NAME, JARBOOT_CORE_JAR);
+            coreJarFile = new File(componentDir, JARBOOT_CORE_JAR);
             if (!coreJarFile.exists()) {
-                ps.println("Can not find jarboot-core jar file." + coreJarFile.getPath());
+                ps.println("Can not find jarboot-core.jar file." + componentDir);
             }
         } catch (Throwable e) {
-            ps.println("Can not find jar file from" + codeSource.getLocation());
+            ps.println("Can not find jar file from " + componentDir);
             e.printStackTrace(ps);
             return;
         }
@@ -182,7 +185,11 @@ public class JarbootAgent {
 
     private static String getCurrentDir() {
         //分别尝试从系统属性和环境变量中获取
-        String homePath = System.getProperty(CommonConst.JARBOOT_HOME, System.getenv(CommonConst.JARBOOT_HOME));
+        String homePath = System.getenv(CommonConst.JARBOOT_HOME);
+        if (null == homePath || homePath.isEmpty()) {
+            homePath = System.getProperty(CommonConst.JARBOOT_HOME);
+        }
+
         if (null != homePath && !homePath.isEmpty()) {
             if (null == System.getProperty(CommonConst.JARBOOT_HOME, null)) {
                 //将环境变量中的设置

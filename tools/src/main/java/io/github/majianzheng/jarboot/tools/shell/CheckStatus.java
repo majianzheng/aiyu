@@ -14,8 +14,8 @@ import java.util.Map;
  */
 public class CheckStatus {
     public static void main(String[] args) {
-        if (StringUtils.isEmpty(System.getProperty(CommonConst.JARBOOT_HOME))) {
-            AnsiLog.error("JARBOOT_HOME is not set!");
+        if (StringUtils.isEmpty(System.getenv(CommonConst.JARBOOT_HOME))) {
+            AnsiLog.error("JARBOOT_HOME env is not set!");
             return;
         }
         String daemonPid = PidFileHelper.getDaemonPid();

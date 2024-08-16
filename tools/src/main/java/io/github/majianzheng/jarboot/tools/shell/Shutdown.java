@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class Shutdown {
     public static void main(String[] args) {
-        if (StringUtils.isEmpty(System.getProperty(CommonConst.JARBOOT_HOME))) {
+        if (StringUtils.isEmpty(System.getenv(CommonConst.JARBOOT_HOME))) {
             AnsiLog.error("JARBOOT_HOME is not set!");
             return;
         }

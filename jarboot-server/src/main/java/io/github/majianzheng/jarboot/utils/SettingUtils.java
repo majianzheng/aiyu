@@ -15,6 +15,7 @@ import io.github.majianzheng.jarboot.service.UserService;
 import io.jsonwebtoken.io.Encoders;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -27,7 +28,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
 
 /**
  * @author majianzheng
@@ -145,6 +148,26 @@ public class SettingUtils {
         } else {
             logger.error("文件不存在 {}", toolsJar);
             System.exit(-1);
+        }
+        checkVersionAndCopy();
+    }
+
+    private static void checkVersionAndCopy() {
+        File jarFile = FileUtils.getFile(agentJar);
+        File userAgentJarFile = getUserAgentJarFile();
+        if (userAgentJarFile.exists()) {
+            String userAgentVer = getAgentJarVersion(userAgentJarFile);
+            String agentVer = getAgentJarVersion(jarFile);
+            if (!Objects.equals(userAgentVer, agentVer)) {
+                try {
+                    if (!userAgentJarFile.getParentFile().exists()) {
+                        FileUtils.forceMkdir(userAgentJarFile.getParentFile());
+                    }
+                    FileUtils.copyFile(jarFile, userAgentJarFile);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
         }
     }
 
@@ -375,15 +398,61 @@ public class SettingUtils {
      * @return 参数
      */
     public static String getAgentStartOption(String userDir, String serviceName, String sid) {
+        File userAgentJarFile = getUserAgentJarFile();
+        String agentPath = userAgentJarFile.getAbsolutePath();
+        if (!userAgentJarFile.exists()) {
+            // agent jar不存在，则从jar包中拷贝
+            File agentJarFile = FileUtils.getFile(agentJar);
+            try {
+                if (!userAgentJarFile.getParentFile().exists()) {
+                    FileUtils.forceMkdir(userAgentJarFile.getParentFile());
+                }
+                FileUtils.copyFile(agentJarFile, userAgentJarFile);
+            } catch (Exception e) {
+                logger.error("Copy agent jar error!", e);
+                agentPath = String.join(
+                        File.separator,
+                        CommonUtils.getHomeEnv(), CommonConst.COMPONENTS_NAME, CommonConst.AGENT_JAR_NAME);
+            }
+        }
         return new StringBuilder("-javaagent:")
-                .append(CommonUtils.getHomeEnv())
-                .append(File.separator)
-                .append(CommonConst.COMPONENTS_NAME)
-                .append(File.separator)
-                .append(CommonConst.AGENT_JAR_NAME)
+                .append(agentPath)
                 .append('=')
                 .append(getAgentArgs(userDir, serviceName, sid))
                 .toString();
+    }
+
+    private static File getUserAgentJarFile() {
+        String base = "/tmp";
+        if (OSUtils.isWindows()) {
+            base = System.getenv("ProgramData");
+            if (StringUtils.isEmpty(base)) {
+                base = "C:\\ProgramData";
+            }
+        }
+        return FileUtils.getFile(base, "jarboot", CommonConst.AGENT_JAR_NAME);
+    }
+
+    private static String getAgentJarVersion(File agentJarFile) {
+        final String resource = "META-INF/MANIFEST.MF";
+        try (JarFile jarFile = new JarFile(agentJarFile)){
+            ZipEntry entry = jarFile.getEntry(resource);
+            if (null == entry) {
+                return null;
+            }
+            try(InputStream is = jarFile.getInputStream(entry)) {
+                List<String> lines = IOUtils.readLines(is, StandardCharsets.UTF_8);
+                final String beginPrefix = "Implementation-Version: ";
+                for (String line : lines) {
+                    if (line.startsWith(beginPrefix)) {
+                        return line.substring(beginPrefix.length());
+                    }
+                }
+            }
+        } catch (IOException e) {
+            logger.error("Read agent jar version error!{}", e.getMessage(), e);
+        }
+        return StringUtils.EMPTY;
     }
 
     public static String getAgentJar() {
@@ -391,7 +460,7 @@ public class SettingUtils {
     }
 
     private static String getAgentArgs(String userDir, String serviceName, String sid) {
-        final String args = new StringBuilder(64)
+        final String args = new StringBuilder()
                 .append(port)
                 .append(StringUtils.CR)
                 .append(serviceName)

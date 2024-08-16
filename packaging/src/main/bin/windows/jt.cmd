@@ -8,6 +8,8 @@ set JARBOOT_HOME=%~dp0
 set JARBOOT_HOME=%JARBOOT_HOME:~0,-13%
 set "JAVA=%JAVA_HOME%\bin\java.exe"
 
+cd "%JARBOOT_HOME%"
+
 :init
 @REM Decide how to startup depending on the version of windows
 
@@ -41,8 +43,8 @@ goto Win9xApp
 
 :endInit
 
-set CLASS_PATH=%JARBOOT_HOME%\components\jarboot-tools.jar
-set "VM_OPT=-DJARBOOT_HOME=%JARBOOT_HOME% -Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=500"
+set CLASS_PATH=components\jarboot-tools.jar
+set "VM_OPT=-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=500"
 
 set COMMAND="%JAVA%" %VM_OPT% -jar "%CLASS_PATH%" %CMD_LINE_ARGS%
 

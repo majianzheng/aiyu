@@ -3,15 +3,15 @@ package io.github.majianzheng.jarboot;
 import io.github.majianzheng.jarboot.api.constant.CommonConst;
 import io.github.majianzheng.jarboot.api.exception.JarbootRunException;
 import io.github.majianzheng.jarboot.cluster.ClusterClientManager;
-import io.github.majianzheng.jarboot.common.AnsiLog;
 import io.github.majianzheng.jarboot.common.CacheDirHelper;
 import io.github.majianzheng.jarboot.common.PidFileHelper;
-import io.github.majianzheng.jarboot.common.utils.StringUtils;
 import io.github.majianzheng.jarboot.common.utils.VMUtils;
 import io.github.majianzheng.jarboot.common.utils.VersionUtils;
 import io.github.majianzheng.jarboot.service.TaskWatchService;
 import io.github.majianzheng.jarboot.utils.SettingUtils;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ConfigurableBootstrapContext;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringApplicationRunListener;
@@ -35,26 +35,19 @@ public class AppEnvironment implements SpringApplicationRunListener {
     }
     @Override
     public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext, ConfigurableEnvironment environment) {
+        final Logger logger = LoggerFactory.getLogger(AppEnvironment.class);
         //初始化工作目录
         homePath = environment.getProperty(CommonConst.JARBOOT_HOME);
         if (null == homePath || homePath.isEmpty()) {
             homePath = System.getenv(CommonConst.JARBOOT_HOME);
             if (null == homePath) {
-                AnsiLog.error("获取JARBOOT_HOME失败！");
+                logger.error("获取JARBOOT_HOME失败！");
                 System.exit(-1);
             }
         }
 
         homePath = FileUtils.getFile(homePath).getAbsolutePath();
-        //检查安装路径是否存在空格
-        if (StringUtils.containsWhitespace(homePath)) {
-            AnsiLog.error("Jarboot所在目录的全路径中存在空格！");
-            System.exit(-1);
-        }
-
-        if (null == System.getProperty(CommonConst.JARBOOT_HOME, null)) {
-            System.setProperty(CommonConst.JARBOOT_HOME, homePath);
-        }
+        System.setProperty(CommonConst.JARBOOT_HOME, homePath);
         final String ver = "v" + VersionUtils.version;
         System.setProperty("application.version", ver);
         //derby数据库驱动的日志文件位置
@@ -74,7 +67,7 @@ public class AppEnvironment implements SpringApplicationRunListener {
             }
             PidFileHelper.writeServerPid();
         } catch (Exception e) {
-            AnsiLog.error(e);
+            logger.error(e.getMessage(), e);
             System.exit(-1);
         }
     }
@@ -92,10 +85,11 @@ public class AppEnvironment implements SpringApplicationRunListener {
     @Override
     public void failed(ConfigurableApplicationContext context, Throwable exception) {
         if (null != this.lock) {
+            final Logger logger = LoggerFactory.getLogger(AppEnvironment.class);
             try {
                 this.lock.release();
             } catch (Exception e) {
-                AnsiLog.error(e);
+                logger.error(e.getMessage(), e);
             }
         }
     }

@@ -14,7 +14,6 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -29,17 +28,12 @@ public class TaskUtils {
 
     /** 任务调度线程池 */
     private static final ScheduledExecutorService TASK_EXECUTOR;
-    /** 是否使用nohup启动服务 */
-    private static final boolean USE_NOHUP;
 
     static {
         //根据CPU核心数计算线程池CoreSize，最小为4，防止为1时造成阻塞
         int coreSize = Math.max(Runtime.getRuntime().availableProcessors(), 4);
         TASK_EXECUTOR = Executors.newScheduledThreadPool(coreSize,
                 JarbootThreadFactory.createThreadFactory("jarboot-task-pool"));
-        USE_NOHUP = (!Boolean.getBoolean(CommonConst.DOCKER) &&
-                (OSUtils.isLinux() || OSUtils.isMac()) &&
-                FileUtils.getFile("/usr/bin/nohup").exists());
     }
 
     /**
@@ -88,11 +82,13 @@ public class TaskUtils {
                 .append(SettingUtils.getAgentStartOption(setting.getUserDir(), setting.getName(), sid))
                 .append(StringUtils.SPACE);
         if (CommonConst.SHELL_TYPE.equals(setting.getApplicationType())) {
-            cmdBuilder.append("-Xms5m -Xmx15m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 ");
+            cmdBuilder.append("-Xms50m -Xmx150m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 ");
             cmdBuilder
                     .append("-jar")
                     .append(StringUtils.SPACE)
+                    .append('"')
                     .append(getShellJar())
+                    .append('"')
                     .append(StringUtils.SPACE)
                     .append("-c")
                     .append(StringUtils.SPACE)
@@ -105,7 +101,8 @@ public class TaskUtils {
             }
             if (StringUtils.isBlank(setting.getCommand())) {
                 //获取启动的jar文件
-                cmdBuilder.append(CommonConst.ARG_JAR).append(SettingUtils.getJarPath(serverPath));
+                cmdBuilder.append(CommonConst.ARG_JAR)
+                        .append('"').append(SettingUtils.getJarPath(serverPath)).append('"');
             } else {
                 cmdBuilder.append(setting.getCommand());
             }
@@ -120,9 +117,6 @@ public class TaskUtils {
         // 工作目录
         String workHome = getServiceWorkHome(setting);
         String javaCmd = OSUtils.isWindows() ? "\"%JAVA_CMD%\"" : "\"${JAVA_CMD}\"";
-        if (USE_NOHUP) {
-            javaCmd = "nohup " + javaCmd;
-        }
         cmdBuilder.insert(0, javaCmd);
         String cmd = cmdBuilder.toString();
         String jdkPath = getJdkPath(setting, serverPath);
@@ -183,18 +177,17 @@ public class TaskUtils {
 
     public static void execServiceOfflineShell(ServiceSetting setting) {
         String javaCmd = OSUtils.isWindows() ? "\"%JAVA_CMD%\" " : "\"${JAVA_CMD}\" ";
-        if (USE_NOHUP) {
-            javaCmd = "nohup " + javaCmd;
-        }
         String name = setting.getName() + CommonConst.POST_EXCEPTION_TASK_SUFFIX;
         StringBuilder cmdBuilder = new StringBuilder(javaCmd)
-                .append("-Xms5m -Xmx15m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 ")
+                .append("-Xms50m -Xmx150m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 ")
                 // Java agent
                 .append(SettingUtils.getAgentStartOption(setting.getUserDir(), name, setting.getSid()))
                 .append(StringUtils.SPACE)
                 .append("-jar")
                 .append(StringUtils.SPACE)
+                .append('"')
                 .append(getShellJar())
+                .append('"')
                 .append(StringUtils.SPACE)
                 .append("-c")
                 .append(StringUtils.SPACE)
@@ -220,10 +213,10 @@ public class TaskUtils {
     }
 
     public static void cleanBashFile(String serverPath) {
-//        File bashFile = getStartBashFile(SettingUtils.createSid(serverPath), serverPath);
-//        if (bashFile.exists()) {
-//            FileUtils.deleteQuietly(bashFile);
-//        }
+        File bashFile = getStartBashFile(SettingUtils.createSid(serverPath), serverPath);
+        if (bashFile.exists()) {
+            FileUtils.deleteQuietly(bashFile);
+        }
     }
 
     private static File getStartBashFile(String sid, String serverPath) {
@@ -322,6 +315,15 @@ public class TaskUtils {
                     }
                 }
             }
+            if (StringUtils.isNotEmpty(workHome)) {
+                if (OSUtils.isWindows()) {
+                    sb.append("set \"WORK_HOME=").append(workHome).append('"').append(StringUtils.LINE_BREAK)
+                            .append("cd \"").append("%WORK_HOME%").append('"').append(StringUtils.LINE_BREAK);
+                } else {
+                    sb.append("export WORK_HOME=\"").append(workHome).append('"').append(StringUtils.LINE_BREAK)
+                            .append("cd \"").append("$WORK_HOME").append('"').append(StringUtils.LINE_BREAK);
+                }
+            }
             if (OSUtils.isWindows()) {
                 sb.append(StringUtils.LINE_BREAK)
                         .append("start \"\" ").append(command).append(StringUtils.LINE_BREAK)
@@ -333,13 +335,12 @@ public class TaskUtils {
                         .append("sleep 1").append(StringUtils.LINE_BREAK)
                         .append("echo started!").append(StringUtils.LINE_BREAK);
             }
-            logger.info("start task, bash:{}, command: {}",  bashFile.getAbsolutePath(), sb);
             FileUtils.writeStringToFile(bashFile, sb.toString(), OSUtils.isWindows() ? "GBK" : "UTF-8");
             if (!bashFile.setExecutable(true)) {
                 logger.error("set executable failed.");
             }
             String bash = bashFile.getAbsolutePath();
-            List<String> cmd = OSUtils.isWindows() ? Collections.singletonList(bash) : Arrays.asList("sh", bash);
+            List<String> cmd = OSUtils.isWindows() ? Collections.singletonList(bash) : Arrays.asList("bash", bash);
             return new ProcessBuilder(cmd).directory(toCurrentDir(workHome)).start();
         } catch (Exception e) {
             throw new JarbootException(e.getMessage(), e);
@@ -355,10 +356,10 @@ public class TaskUtils {
             }
         } else {
             if (OSUtils.isWindows()) {
-                sb.append("set \"JAVA_HOME=").append(jdkPath).append("\"").append(StringUtils.LINE_BREAK);
+                sb.append("set \"JAVA_HOME=").append(jdkPath).append('"').append(StringUtils.LINE_BREAK);
                 sb.append("set \"JAVA_CMD=%JAVA_HOME%/bin/javaw.exe\"").append(StringUtils.LINE_BREAK).append(StringUtils.LINE_BREAK);
             } else {
-                sb.append("export JAVA_HOME=\"").append(jdkPath).append("\"").append(StringUtils.LINE_BREAK);
+                sb.append("export JAVA_HOME=\"").append(jdkPath).append('"').append(StringUtils.LINE_BREAK);
                 sb.append("export JAVA_CMD=\"${JAVA_HOME}/bin/java\"").append(StringUtils.LINE_BREAK).append(StringUtils.LINE_BREAK);
             }
         }
@@ -370,17 +371,17 @@ public class TaskUtils {
             host = selfHost;
         }
         if (OSUtils.isWindows()) {
-            sb.append("set \"JARBOOT_HOME=").append(SettingUtils.getHomePath()).append("\"").append(StringUtils.LINE_BREAK);
-            sb.append("set \"MACHINE_CODE=").append(CommonUtils.getMachineCode()).append("\"").append(StringUtils.LINE_BREAK);
-            sb.append("set \"SERVER_UUID=").append(SettingUtils.getUuid()).append("\"").append(StringUtils.LINE_BREAK);
-            sb.append("set \"JARBOOT_WORKSPACE=").append(SettingUtils.getWorkspace()).append("\"").append(StringUtils.LINE_BREAK);
-            sb.append("set \"JARBOOT_HOST=").append(host).append("\"").append(StringUtils.LINE_BREAK);
+            sb.append("set \"JARBOOT_HOME=").append(SettingUtils.getHomePath()).append('"').append(StringUtils.LINE_BREAK);
+            sb.append("set \"MACHINE_CODE=").append(CommonUtils.getMachineCode()).append('"').append(StringUtils.LINE_BREAK);
+            sb.append("set \"SERVER_UUID=").append(SettingUtils.getUuid()).append('"').append(StringUtils.LINE_BREAK);
+            sb.append("set \"JARBOOT_WORKSPACE=").append(SettingUtils.getWorkspace()).append('"').append(StringUtils.LINE_BREAK);
+            sb.append("set \"JARBOOT_HOST=").append(host).append('"').append(StringUtils.LINE_BREAK);
         } else {
-            sb.append("export JARBOOT_HOME=\"").append(SettingUtils.getHomePath()).append("\"").append(StringUtils.LINE_BREAK);
-            sb.append("export MACHINE_CODE=\"").append(CommonUtils.getMachineCode()).append("\"").append(StringUtils.LINE_BREAK);
-            sb.append("export SERVER_UUID=\"").append(SettingUtils.getUuid()).append("\"").append(StringUtils.LINE_BREAK);
-            sb.append("export JARBOOT_WORKSPACE=\"").append(SettingUtils.getWorkspace()).append("\"").append(StringUtils.LINE_BREAK);
-            sb.append("export JARBOOT_HOST=\"").append(host).append("\"").append(StringUtils.LINE_BREAK);
+            sb.append("export JARBOOT_HOME=\"").append(SettingUtils.getHomePath()).append('"').append(StringUtils.LINE_BREAK);
+            sb.append("export MACHINE_CODE=\"").append(CommonUtils.getMachineCode()).append('"').append(StringUtils.LINE_BREAK);
+            sb.append("export SERVER_UUID=\"").append(SettingUtils.getUuid()).append('"').append(StringUtils.LINE_BREAK);
+            sb.append("export JARBOOT_WORKSPACE=\"").append(SettingUtils.getWorkspace()).append('"').append(StringUtils.LINE_BREAK);
+            sb.append("export JARBOOT_HOST=\"").append(host).append('"').append(StringUtils.LINE_BREAK);
         }
     }
 

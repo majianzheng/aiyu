@@ -82,18 +82,6 @@ public class JarbootClientCli implements Subscriber<TaskLifecycleEvent> {
 
     private void login() throws IOException {
         AnsiLog.println("Login to Jarboot server: {}", this.host);
-        if (StringUtils.isEmpty(username) && null != System.console()) {
-            username = System.console().readLine("username:");
-        }
-        if (StringUtils.isEmpty(password) && null != System.console()) {
-            password = new String(System.console().readPassword("password:"));
-        }
-        //登录认证
-        runtimeInfo = ClientProxy
-                .Factory
-                .createClientProxy(host, username, password)
-                .getRuntimeInfo();
-        AnsiLog.println("Login success, jarboot server version: {}, cluster:{}", runtimeInfo.getVersion(), StringUtils.isNotEmpty(runtimeInfo.getHost()));
         terminal = TerminalBuilder
                 .builder()
                 .name("jarboot client terminal")
@@ -107,6 +95,23 @@ public class JarbootClientCli implements Subscriber<TaskLifecycleEvent> {
                 .terminal(terminal)
                 .option(LineReader.Option.ERASE_LINE_ON_FINISH, OSUtils.isWindows())
                 .build();
+
+        if (StringUtils.isEmpty(username)) {
+            username = lineReader.readLine("username:");
+        }
+        if (StringUtils.isEmpty(password)) {
+            password = lineReader.readLine("password:");
+            if (StringUtils.isEmpty(password)) {
+                password = lineReader.readLine("password:");
+            }
+        }
+        //登录认证
+        runtimeInfo = ClientProxy
+                .Factory
+                .createClientProxy(host, username, password)
+                .getRuntimeInfo();
+        AnsiLog.println("Login success, jarboot server version: {}, cluster:{}",
+                runtimeInfo.getVersion(), StringUtils.isNotEmpty(runtimeInfo.getHost()));
     }
 
     protected void run() {

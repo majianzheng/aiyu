@@ -98,18 +98,24 @@ async function reload() {
 async function visibilitychange() {
   if (document.visibilityState === 'visible') {
     // 这里可以执行唤醒后的操作
-    const curUser = await OAuthService.getCurrentUser();
-    if (StringUtil.isEmpty(curUser?.username)) {
-      // 登录认证过期
+    try {
+      const curUser = await OAuthService.getCurrentUser();
+      if (StringUtil.isEmpty(curUser?.username)) {
+        // 登录认证过期
+        location.reload();
+        return;
+      }
+      user.setCurrentUser(curUser);
+    } catch (e) {
       location.reload();
       return;
     }
-    user.setCurrentUser(curUser);
     const curTimestamp = Date.now();
     if (curTimestamp - basic.latestWeak > 10000) {
       await reload();
     }
     basic.latestWeak = curTimestamp;
+    WsManager.reconnect();
     WsManager.ping();
   } else {
     basic.latestWeak = Date.now();

@@ -75,8 +75,8 @@ echo "jarboot will start......"
 $JAVA ${JAVA_OPT} jarboot.jarboot >/dev/null &
 echo "jarboot is started，you can check the ${JARBOOT_HOME}/logs/jarboot.log"
 echo "Starting jarboot server daemon..."
-TOOL_JAR="${JARBOOT_HOME}/components/jarboot-tools.jar io.github.majianzheng.jarboot.tools.daemon.ServerDaemon"
-DAEMON_VM="-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 -DJARBOOT_HOME=$JARBOOT_HOME"
+TOOL_JAR="components/jarboot-tools.jar io.github.majianzheng.jarboot.tools.daemon.ServerDaemon"
+DAEMON_VM="-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=500"
 $JAVA $DAEMON_VM -cp ${TOOL_JAR} jarboot.daemon >/dev/null &
 
 echo "daemon started."

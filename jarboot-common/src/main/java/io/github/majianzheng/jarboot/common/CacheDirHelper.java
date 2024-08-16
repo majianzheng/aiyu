@@ -179,7 +179,7 @@ public class CacheDirHelper {
     }
 
     private static String getJarbootHome() {
-        return System.getProperty(CommonConst.JARBOOT_HOME);
+        return System.getProperty(CommonConst.JARBOOT_HOME, System.getenv(CommonConst.JARBOOT_HOME));
     }
 
     private CacheDirHelper() {}
