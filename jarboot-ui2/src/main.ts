@@ -20,7 +20,7 @@ import './assets/main.less';
 
 const i18n = createI18n({
   globalInjection: true,
-  locale: localStorage.getItem('locale') || 'zh-CN',
+  locale: localStorage.getItem('locale') ?? 'zh-CN',
   legacy: false,
   messages: {
     'zh-CN': zh, // 中文语言包

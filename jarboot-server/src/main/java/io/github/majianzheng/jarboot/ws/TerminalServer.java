@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @ServerEndpoint("/jarboot/main/terminal/ws")
 @RestController
+@SuppressWarnings({"java:S1181"})
 public class TerminalServer {
     private static final Logger logger = LoggerFactory.getLogger(TerminalServer.class);
     private static final Map<String, SessionProxy> SESSION_PROXY_MAP = new ConcurrentHashMap<>(16);

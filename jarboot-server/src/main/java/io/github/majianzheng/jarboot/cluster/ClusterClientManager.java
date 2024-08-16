@@ -35,7 +35,7 @@ import java.util.concurrent.*;
  * 集群配置
  * @author mazheng
  */
-@SuppressWarnings({"squid:S2274", "PrimitiveArrayArgumentToVarargsMethod"})
+@SuppressWarnings({"squid:S2274", "java:S6437", "java:S2095", "java:S2093", "PrimitiveArrayArgumentToVarargsMethod"})
 public class ClusterClientManager {
     private static final Logger logger = LoggerFactory.getLogger(ClusterClientManager.class);
     private static final String NOTE_PREFIX = "#";

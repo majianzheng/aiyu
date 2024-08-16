@@ -117,7 +117,6 @@ function onImport() {
     CommonNotice.info(message);
     try {
       const clusterHost = props.lastClickedNode?.host || '';
-      //await ClusterManager.importService(file, clusterHost);
       const path = `.cache/temp/${file.name.replace('.zip', '')}`;
       await uploadStore.upload(file, 'service', '', path, clusterHost, fileInfo => console.info('导入完成', fileInfo));
     } finally {

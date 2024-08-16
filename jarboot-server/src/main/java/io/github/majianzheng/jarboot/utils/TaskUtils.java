@@ -305,25 +305,7 @@ public class TaskUtils {
         StringBuilder sb = new StringBuilder();
         try {
             initRunningEnv(jdkPath, sb);
-            String[] envs = parseEnv(environment);
-            if (null != envs) {
-                for (String env : envs) {
-                    if (OSUtils.isWindows()) {
-                        sb.append("set ").append(env).append(StringUtils.LINE_BREAK);
-                    } else {
-                        sb.append("export ").append(env).append(StringUtils.LINE_BREAK);
-                    }
-                }
-            }
-            if (StringUtils.isNotEmpty(workHome)) {
-                if (OSUtils.isWindows()) {
-                    sb.append("set \"WORK_HOME=").append(workHome).append('"').append(StringUtils.LINE_BREAK)
-                            .append("cd \"").append("%WORK_HOME%").append('"').append(StringUtils.LINE_BREAK);
-                } else {
-                    sb.append("export WORK_HOME=\"").append(workHome).append('"').append(StringUtils.LINE_BREAK)
-                            .append("cd \"").append("$WORK_HOME").append('"').append(StringUtils.LINE_BREAK);
-                }
-            }
+            initEnv(environment, workHome, sb);
             if (OSUtils.isWindows()) {
                 sb.append(StringUtils.LINE_BREAK)
                         .append("start \"\" ").append(command).append(StringUtils.LINE_BREAK)
@@ -344,6 +326,28 @@ public class TaskUtils {
             return new ProcessBuilder(cmd).directory(toCurrentDir(workHome)).start();
         } catch (Exception e) {
             throw new JarbootException(e.getMessage(), e);
+        }
+    }
+
+    private static void initEnv(String environment, String workHome, StringBuilder sb) {
+        String[] envs = parseEnv(environment);
+        if (null != envs) {
+            for (String env : envs) {
+                if (OSUtils.isWindows()) {
+                    sb.append("set ").append(env).append(StringUtils.LINE_BREAK);
+                } else {
+                    sb.append("export ").append(env).append(StringUtils.LINE_BREAK);
+                }
+            }
+        }
+        if (StringUtils.isNotEmpty(workHome)) {
+            if (OSUtils.isWindows()) {
+                sb.append("set \"WORK_HOME=").append(workHome).append('"').append(StringUtils.LINE_BREAK)
+                        .append("cd \"").append("%WORK_HOME%").append('"').append(StringUtils.LINE_BREAK);
+            } else {
+                sb.append("export WORK_HOME=\"").append(workHome).append('"').append(StringUtils.LINE_BREAK)
+                        .append("cd \"").append("$WORK_HOME").append('"').append(StringUtils.LINE_BREAK);
+            }
         }
     }
 

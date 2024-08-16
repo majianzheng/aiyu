@@ -31,9 +31,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @ServerEndpoint("/jarboot/upload/ws")
 @RestController
+@SuppressWarnings({"java:S3776", "java:S2696"})
 public class UploadFileServer {
     private static final Logger logger = LoggerFactory.getLogger(UploadFileServer.class);
-    private static final long INTERVAL_UPDATE_THRESHOLD = 160 * 1024 * 1024;
+    private static final long INTERVAL_UPDATE_THRESHOLD = 160L * 1024 * 1024;
     private static final String EVENT_STATUS = "status";
     private static final String EVENT_PROGRESS = "progress";
     private static final String EVENT_SEND = "send";
@@ -74,8 +75,8 @@ public class UploadFileServer {
         long totalSize = Long.parseLong(CommonUtils.getSessionParam("totalSize", session));
         String baseDir = CommonUtils.getSessionParam("baseDir", session);
         String dstPath = CommonUtils.getSessionParam("dstPath", session);
-        String sendCountOnce = CommonUtils.getSessionParam("sendCountOnce", session);
-        this.sendCountOnce = Long.parseLong(sendCountOnce);
+        String sendCountOnceStr = CommonUtils.getSessionParam("sendCountOnce", session);
+        this.sendCountOnce = Long.parseLong(sendCountOnceStr);
         this.intervalUpdate = totalSize < INTERVAL_UPDATE_THRESHOLD;
         // home、service、 workspace
         String uploadMode = CommonUtils.getSessionParam("uploadMode", session);

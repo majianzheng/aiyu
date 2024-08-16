@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @ServerEndpoint(CommonConst.MAIN_WS_CONTEXT)
 @RestController
+@SuppressWarnings({"java:S2696"})
 public class WebSocketMainServer {
     private static final Logger logger = LoggerFactory.getLogger(WebSocketMainServer.class);
     private static final ConcurrentHashMap<String, SessionOperator> SESSIONS = new ConcurrentHashMap<>(32);

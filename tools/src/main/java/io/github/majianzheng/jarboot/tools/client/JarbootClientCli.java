@@ -29,6 +29,7 @@ import java.util.List;
  * 客户端命令行工具
  * @author jianzhengma
  */
+@SuppressWarnings({"java:S106", "java:S135"})
 public class JarbootClientCli implements Subscriber<TaskLifecycleEvent> {
     private String host;
     private String username;

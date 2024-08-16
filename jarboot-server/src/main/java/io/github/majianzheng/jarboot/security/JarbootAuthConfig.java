@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
+@SuppressWarnings({"java:S6830"})
 public class JarbootAuthConfig {
     private static final String TOKEN_BASED_AUTH_ENTRY_POINT = "/api/jarboot/auth/**";
 

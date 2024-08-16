@@ -153,10 +153,8 @@ class WsManager {
     const key = hasSplit ? body : body.substring(0, index);
     const handle = WsManager.LOADING_MAP.get(key);
     WsManager.LOADING_MAP.delete(key);
-    if (hasSplit) {
-      handle && handle.close();
-    } else {
-      handle && handle.close();
+    handle && handle.close();
+    if (!hasSplit) {
       const duration = 0;
       const message = body.substring(index + 1);
       WsManager.LOADING_MAP.set(key, ElMessage({ message, icon: 'IconLoading', key, duration }));

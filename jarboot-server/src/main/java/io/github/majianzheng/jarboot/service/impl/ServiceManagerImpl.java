@@ -26,7 +26,6 @@ import io.github.majianzheng.jarboot.utils.*;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -48,9 +47,9 @@ public class ServiceManagerImpl implements ServiceManager, Subscriber<ServiceOff
     private static final String STARTED_MSG = "\033[96;1m%s\033[0m started cost \033[91;1m%.3f\033[0m second.\033[5m✨\033[0m";
     private static final String STOPPED_MSG = "\033[96;1m%s\033[0m stopped cost \033[91;1m%.3f\033[0m second.";
 
-    @Autowired
+    @Resource
     private TaskRunCache taskRunCache;
-    @Autowired
+    @Resource
     private AbstractEventRegistry eventRegistry;
     @Resource(name = "taskExecutorService")
     private ExecutorService executorService;

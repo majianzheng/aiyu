@@ -6,6 +6,7 @@ package io.github.majianzheng.jarboot.client;
  */
 public class FileOperator {
     private final ClientProxy clientProxy;
+    private static final String BASE_API = "/api/jarboot/file-manager/";
 
     /**
      * 服务管理客户端构造
@@ -27,5 +28,13 @@ public class FileOperator {
      */
     public FileOperator(ClientProxy proxy) {
         this.clientProxy = proxy;
+    }
+
+    public void delete(String path) {
+        this.clientProxy.delete(BASE_API + "file/delete" + "?path=" + path);
+    }
+
+    public void addDirectory(String path) {
+        this.clientProxy.postJson(BASE_API + "directory", path);
     }
 }

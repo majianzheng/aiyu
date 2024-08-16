@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
  * 客户端请求代理
  * @author majianzheng
  */
-@SuppressWarnings({"unused", "java:S3740", "unchecked", "rawtypes"})
+@SuppressWarnings({"unused", "java:S3740", "java:S3398", "unchecked", "rawtypes"})
 public class ClientProxy implements AbstractEventRegistry {
     private static final Logger logger = LoggerFactory.getLogger(ClientProxy.class);
     private static final Map<String, WsClient> SOCKETS = new ConcurrentHashMap<>(16);

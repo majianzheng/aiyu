@@ -576,10 +576,10 @@ public abstract class StringUtils {
     }
 
     public static Properties splitArrayElementsIntoProperties(String[] array, String delimiter, String charsToDelete) {
+        Properties result = new Properties();
         if(null == array || 0 == array.length) {
-            return null;
+            return result;
         } else {
-            Properties result = new Properties();
             String[] var4 = array;
             int var5 = array.length;
 

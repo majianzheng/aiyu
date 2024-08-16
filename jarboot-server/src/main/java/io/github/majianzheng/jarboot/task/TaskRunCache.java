@@ -20,7 +20,6 @@ import org.apache.commons.io.FileUtils;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -41,7 +40,7 @@ public class TaskRunCache {
     /** 需要排除的工作空间里的目录 */
     @Value("${jarboot.services.exclude-dirs:bin,lib,conf,plugins,plugin}")
     private String excludeDirs;
-    @Autowired
+    @Resource
     private AbstractEventRegistry eventRegistry;
     @Resource
     private Scheduler scheduler;

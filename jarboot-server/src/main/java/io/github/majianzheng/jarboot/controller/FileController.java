@@ -56,8 +56,8 @@ public class FileController {
      * 下载文件
      * @param path 文件
      * @param clusterHost 集群host
-     * @param response
-     * @throws IOException
+     * @param response 响应
+     * @throws IOException IO异常
      */
     @PostMapping("file/download")
     public void download(
@@ -118,7 +118,7 @@ public class FileController {
      * 删除文件
      * @param clusterHost 集群host
      * @param path 文件相对于工作目录的路径
-     * @return
+     * @return 执行结果
      */
     @DeleteMapping("file/delete")
     public ResponseVo<String> deleteFile(
@@ -138,7 +138,7 @@ public class FileController {
      * @param clusterHost 集群host
      * @param path 文件相对于工作目录的路径
      * @param content 文件内容
-     * @return
+     * @return 执行结果
      */
     @PostMapping("text")
     public ResponseVo<String> writeFile(
@@ -158,7 +158,7 @@ public class FileController {
      * @param clusterHost 集群host
      * @param path 文件相对于工作目录的路径
      * @param content 文件内容
-     * @return
+     * @return 执行结果
      */
     @PostMapping("text/create")
     public ResponseVo<String> newFile(
@@ -177,7 +177,7 @@ public class FileController {
      * 创建文件夹
      * @param clusterHost 集群host
      * @param file 文件相对于工作目录的路径
-     * @return
+     * @return 执行结果
      */
     @PostMapping("directory")
     public ResponseVo<String> addDirectory(

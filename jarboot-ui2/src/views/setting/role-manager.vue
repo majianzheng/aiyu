@@ -122,4 +122,3 @@ async function save() {
   }
 }
 </script>
-<style scoped></style>

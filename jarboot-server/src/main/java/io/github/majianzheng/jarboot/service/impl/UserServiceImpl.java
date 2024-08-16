@@ -13,7 +13,6 @@ import io.github.majianzheng.jarboot.service.UserService;
 import io.github.majianzheng.jarboot.utils.PasswordEncoderUtil;
 import io.github.majianzheng.jarboot.utils.SettingUtils;
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
@@ -106,13 +105,11 @@ public class UserServiceImpl implements UserService {
                 user = new User();
                 user.setUsername(AuthConst.JARBOOT_USER);
             } else {
-                throw new JarbootException("User:" + username + " is not exist!");
+                throw new JarbootException(String.format("User:%s is not exist!", username));
             }
         }
-        if (!AuthConst.JARBOOT_USER.equals(currentLoginUser)) {
-            if (!PasswordEncoderUtil.matches(oldPassword, user.getPassword())) {
-                throw new JarbootException("Password or username is not correct!");
-            }
+        if (!AuthConst.JARBOOT_USER.equals(currentLoginUser) && !PasswordEncoderUtil.matches(oldPassword, user.getPassword())) {
+            throw new JarbootException("Password or username is not correct!");
         }
         user.setPassword(PasswordEncoderUtil.encode(password));
         userDao.save(user);

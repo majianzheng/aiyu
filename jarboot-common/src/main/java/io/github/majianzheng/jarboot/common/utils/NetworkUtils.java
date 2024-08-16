@@ -17,6 +17,7 @@ import java.util.Random;
  * 以下代码，有一小部分摘自开源项目Arthas
  * @author majianzheng
  */
+@SuppressWarnings({"java:S3776", "java:S1874"})
 public class NetworkUtils {
     public static final int PORT_RANGE_MIN = 1024;
     private static final int MAX_TIMEOUT = 3000;

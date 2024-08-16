@@ -13,11 +13,11 @@ import io.github.majianzheng.jarboot.security.JwtTokenManager;
 import io.github.majianzheng.jarboot.service.UserService;
 import io.github.majianzheng.jarboot.utils.SettingUtils;
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.List;
@@ -32,9 +32,9 @@ import java.util.stream.Stream;
 @RequestMapping(value = CommonConst.USER_CONTEXT)
 @RestController
 public class UserController {
-    @Autowired
+    @Resource
     private UserService userService;
-    @Autowired
+    @Resource
     private JwtTokenManager jwtTokenManager;
 
     /**
@@ -48,7 +48,6 @@ public class UserController {
      * @return 执行结果
      */
     @PostMapping
-    @ResponseBody
     public ResponseSimple createUser(String username, String fullName, String password, String roles, @RequestParam(required = false) String userDir, @RequestParam(required = false) String avatar) {
         userService.createUser(username, fullName, password, roles, userDir, avatar);
         return HttpResponseUtils.success();
@@ -64,7 +63,6 @@ public class UserController {
      * @return 执行结果
      */
     @PostMapping("/update")
-    @ResponseBody
     public ResponseSimple updateUser(String username, String fullName, String roles, @RequestParam(required = false) String userDir, @RequestParam(required = false) String avatar) {
         userService.updateUser(username, fullName, roles, userDir, avatar);
         return HttpResponseUtils.success();
@@ -76,7 +74,6 @@ public class UserController {
      * @return 执行结果
      */
     @DeleteMapping
-    @ResponseBody
     public ResponseSimple deleteUser(Long id) {
         userService.deleteUser(id);
         return HttpResponseUtils.success();
@@ -91,7 +88,6 @@ public class UserController {
      * @return 执行结果
      */
     @PutMapping
-    @ResponseBody
     public ResponseSimple updateUserPassword(String username, String oldPassword, String password, HttpServletRequest request) {
         String currentLoginUser = getCurrentLoginName(request);
         //只有ADMIN和自己可修改
@@ -109,7 +105,6 @@ public class UserController {
      * @return 用户信息
      */
     @GetMapping
-    @ResponseBody
     public ResponseVo<User> findUserByUsername(String username) {
         User user = userService.findUserByUsername(username);
         return HttpResponseUtils.success(user);
@@ -124,7 +119,6 @@ public class UserController {
      * @return 用户列表
      */
     @GetMapping(value="/getUsers")
-    @ResponseBody
     public ResponseVo<PagedList<User>> getUsers(String username, String role, int pageNo, int pageSize) {
         return HttpResponseUtils.success(userService.getUsers(username, role, pageNo, pageSize));
     }
@@ -134,7 +128,6 @@ public class UserController {
      * @return 用户目录列表
      */
     @GetMapping(value="/userDirs")
-    @ResponseBody
     public ResponseVo<List<String>> getUserDirs() {
         File workspace = FileUtils.getFile(SettingUtils.getWorkspace());
         List<String> userDirs = Stream.of(Objects.requireNonNull(workspace.listFiles()))

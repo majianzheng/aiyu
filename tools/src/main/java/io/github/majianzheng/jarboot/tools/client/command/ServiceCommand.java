@@ -65,7 +65,6 @@ public class ServiceCommand extends AbstractClientCommand {
     }
 
     @Override
-    public void cancel() {
-
+    public void cancel() {  // default implementation ignored
     }
 }

@@ -24,6 +24,7 @@ import java.util.List;
  * @author majianzheng
  */
 @Component
+@SuppressWarnings({"java:S6437"})
 public class JwtTokenManager {
     @Value("${jarboot.token.expire.seconds:7776000}")
     private long expireSeconds;

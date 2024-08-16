@@ -200,5 +200,3 @@ onMounted(() => {
     </template>
   </el-drawer>
 </template>
-
-<style scoped lang="less"></style>

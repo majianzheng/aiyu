@@ -133,5 +133,3 @@ onMounted(resize);
     </template>
   </two-sides-pro>
 </template>
-
-<style scoped lang="less"></style>

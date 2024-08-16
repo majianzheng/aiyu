@@ -151,6 +151,9 @@ export function canEdit(filename: string): boolean {
     if (index > 0) {
       const ext = filename.substring(index + 1);
       info = CodeMirror?.findModeByExtension(ext);
+      if (!info && (filename.endsWith('.cmd') || filename.endsWith('.bat'))) {
+        return true;
+      }
     }
   }
   return !!info;

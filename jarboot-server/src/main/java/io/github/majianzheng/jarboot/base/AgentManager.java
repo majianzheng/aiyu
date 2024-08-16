@@ -84,7 +84,7 @@ public class AgentManager {
             client.setSetting(setting);
             ServiceOnlineEvent event = new ServiceOnlineEvent(setting);
             NotifyReactor.getInstance().publishEvent(event);
-            boolean needNotifyStatus = (null == latch && ClientState.OFFLINE.equals(client.getState()));
+            boolean needNotifyStatus = ClientState.OFFLINE.equals(client.getState());
             if (needNotifyStatus && !SettingPropConst.SCHEDULE_CRON.equals(setting.getScheduleType())) {
                 MessageUtils.upgradeStatus(sid, CommonConst.RUNNING);
             }

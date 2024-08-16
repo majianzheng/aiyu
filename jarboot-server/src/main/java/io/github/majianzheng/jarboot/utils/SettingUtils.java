@@ -8,7 +8,6 @@ import io.github.majianzheng.jarboot.common.JarbootException;
 import io.github.majianzheng.jarboot.common.pojo.ResultCodeConst;
 import io.github.majianzheng.jarboot.common.utils.OSUtils;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
-import io.github.majianzheng.jarboot.common.utils.VersionUtils;
 import io.github.majianzheng.jarboot.entity.User;
 import io.github.majianzheng.jarboot.security.JwtTokenManager;
 import io.github.majianzheng.jarboot.service.UserService;
@@ -496,12 +495,12 @@ public class SettingUtils {
     public static String getJarPath(String servicePath) {
         File dir = FileUtils.getFile(servicePath);
         if (!dir.isDirectory() || !dir.exists()) {
-            throw new JarbootException("未找到服务" + dir.getName() + "的可执行jar包路径");
+            throw new JarbootException(String.format("未找到服务%s的可执行jar包路径", dir.getName()));
         }
         Collection<File> jarList = FileUtils.listFiles(dir, new String[]{CommonConst.JAR_FILE_EXT}, false);
         if (CollectionUtils.isEmpty(jarList)) {
             logger.error("在{}未找到{}服务的jar包", servicePath, dir.getPath());
-            throw new JarbootException("未找到服务" + dir.getName() + "的可执行jar包");
+            throw new JarbootException(String.format("未找到服务%s的可执行jar包", dir.getName()));
         }
         if (jarList.size() > 1) {
             String msg = String.format("在服务%s目录找到了多个jar文件，请配置启动命令！", dir.getName());
@@ -511,7 +510,7 @@ public class SettingUtils {
             File jarFile = jarList.iterator().next();
             return jarFile.getAbsolutePath().replace(SettingUtils.getHomePath(), CommonUtils.getHomeEnv());
         } else {
-            throw new JarbootException("未找到服务" + dir.getName() + "的可执行jar包");
+            throw new JarbootException(String.format("未找到服务%s的可执行jar包", dir.getName()));
         }
     }
 

@@ -10,10 +10,9 @@ import io.github.majianzheng.jarboot.service.ServerRuntimeService;
 import io.github.majianzheng.jarboot.utils.SettingUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
@@ -32,13 +31,12 @@ import java.util.zip.ZipEntry;
  * @author mazheng
  */
 @RequestMapping(value = CommonConst.SERVER_RUNTIME_CONTEXT)
-@Controller
+@RestController
 public class ServerRuntimeController {
-    @Autowired
+    @Resource
     private ServerRuntimeService serverRuntimeService;
 
     @GetMapping
-    @ResponseBody
     public ServerRuntimeInfo getServerRuntimeInfo() {
         return serverRuntimeService.getServerRuntimeInfo();
     }
@@ -50,7 +48,8 @@ public class ServerRuntimeController {
 
         try (OutputStream os = response.getOutputStream()){
             // 初始化临时目录
-            final String[] dirs = new String[]{"bin" + File.separator + "windows", CommonConst.COMPONENTS_NAME + File.separator + "lib", "plugins" + File.separator + "agent"};
+            final String windows = "windows";
+            final String[] dirs = new String[]{"bin" + File.separator + windows, CommonConst.COMPONENTS_NAME + File.separator + "lib", "plugins" + File.separator + "agent"};
             for (String dir : dirs) {
                 FileUtils.forceMkdir(FileUtils.getFile(tempDir, dir));
             }
@@ -61,8 +60,8 @@ public class ServerRuntimeController {
                 File dstFile = FileUtils.getFile(tempDir, "bin", bashFile + ".sh");
                 FileUtils.copyFile(srcFile, dstFile);
                 // 拷贝windows脚本到bin/windows目录
-                File winFile = FileUtils.getFile(SettingUtils.getHomePath(), "bin", "windows", bashFile + ".cmd");
-                File winDstFile = FileUtils.getFile(tempDir, "bin", "windows", bashFile + ".cmd");
+                File winFile = FileUtils.getFile(SettingUtils.getHomePath(), "bin", windows, bashFile + ".cmd");
+                File winDstFile = FileUtils.getFile(tempDir, "bin", windows, bashFile + ".cmd");
                 FileUtils.copyFile(winFile, winDstFile);
             }
             File commonSrcFile = FileUtils.getFile(SettingUtils.getHomePath(), "bin", "common.sh");
@@ -108,7 +107,7 @@ public class ServerRuntimeController {
         try (JarFile jarFile = new JarFile(file)){
             ZipEntry entry = jarFile.getEntry(resource);
             if (null == entry) {
-                return null;
+                return new String[0];
             }
             StringBuilder pathStr = new StringBuilder();
             boolean started = false;

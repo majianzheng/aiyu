@@ -13,6 +13,7 @@ import java.nio.channels.FileLock;
 /**
  * @author majianzheng
  */
+@SuppressWarnings({"java:S2095"})
 public class CacheDirHelper {
     private static final String PID_DIR = "pid";
     private static final String UPLOAD_DIR = "upload-server";
