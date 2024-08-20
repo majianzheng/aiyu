@@ -76,7 +76,12 @@ public class ServerDaemon {
         // 启动startup.sh
         String [] cmd = OSUtils.isWindows() ? new String[]{"bin/windows/startup.cmd"} : new String[]{"sh", "bin/startup.sh"};
         try {
-            Runtime.getRuntime().exec(cmd, null, FileUtils.getFile(home)).waitFor();
+            Process process = Runtime.getRuntime().exec(cmd, null, FileUtils.getFile(home));
+            if (OSUtils.isWindows()) {
+                process.getOutputStream().write('\r');
+                process.getOutputStream().flush();
+            }
+            process.waitFor(1, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) {

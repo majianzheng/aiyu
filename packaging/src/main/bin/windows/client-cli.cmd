@@ -11,7 +11,7 @@ set JARBOOT_HOME=%JARBOOT_HOME:~0,-13%
 cd "%JARBOOT_HOME%"
 
 set "TOOL_JAR=components/jarboot-tools.jar io.github.majianzheng.jarboot.tools.client.JarbootClientCli"
-set "DAEMON_VM=-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=500"
+set "DAEMON_VM=-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=5000"
 set "CLIENT_CMD="%JAVA%" %DAEMON_VM% -cp %TOOL_JAR% %*"
 
 %CLIENT_CMD%

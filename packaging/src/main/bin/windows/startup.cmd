@@ -13,8 +13,7 @@ cd "%JARBOOT_HOME%"
 set "SERVER=components\jarboot-server.jar"
 
 rem JVM Configuration
-set "JARBOOT_JVM_OPTS=-Xms512m -Xmx1g -XX:+UseG1GC -XX:MaxGCPauseMillis=500 -XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError -XX:-UseLargePages"
-set JARBOOT_JVM_OPTS=%JARBOOT_JVM_OPTS% -XX:HeapDumpPath="logs\java_heapdump.hprof"
+set "JARBOOT_JVM_OPTS=-Xms512m -Xmx1g -XX:+UseG1GC -XX:MaxGCPauseMillis=5000 -XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=logs\java_heapdump.hprof"
 
 set JARBOOT_OPTS=-Djdk.attach.allowAttachSelf=true -Dloader.path="components\lib,plugins\server" -Dfile.encoding=UTF-8
 
@@ -26,7 +25,7 @@ start "" %COMMAND%
 echo Jarboot server started.
 
 set "TOOL_JAR=components/jarboot-tools.jar io.github.majianzheng.jarboot.tools.daemon.ServerDaemon"
-set "DAEMON_VM=-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=500
+set "DAEMON_VM=-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=5000
 set "DAEMON_CMD="%JAVA%" %DAEMON_VM% -cp %TOOL_JAR% jarboot.daemon %*"
 
 echo Starting jarboot daemon...

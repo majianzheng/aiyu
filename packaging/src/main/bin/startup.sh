@@ -48,12 +48,12 @@ cd "${JARBOOT_HOME}"
 #===========================================================================================
 # JVM Configuration
 #===========================================================================================
-JAVA_OPT="${JAVA_OPT} -Xms512m -Xmx1g -XX:+UseG1GC -XX:MaxGCPauseMillis=500"
+JAVA_OPT="${JAVA_OPT} -Xms512m -Xmx1g -XX:+UseG1GC -XX:MaxGCPauseMillis=5000"
 JAVA_OPT="${JAVA_OPT} -XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=logs/java_heapdump.hprof"
 JAVA_OPT="${JAVA_OPT} -XX:-UseLargePages"
 
 JAVA_MAJOR_VERSION=$($JAVA -version 2>&1 | sed -E -n 's/.* version "([0-9]*).*$/\1/p')
-if [[ "$JAVA_MAJOR_VERSION" -ge "9" ]] ; then
+if [ "$JAVA_MAJOR_VERSION" -ge "9" ] ; then
   JAVA_OPT="${JAVA_OPT} -Xlog:gc*:file=logs/jarboot_gc.log:time,tags:filecount=10,filesize=102400"
 else
   JAVA_OPT="${JAVA_OPT} -Djava.ext.dirs=${JAVA_HOME}/jre/lib/ext:${JAVA_HOME}/lib/ext"
@@ -76,7 +76,7 @@ $JAVA ${JAVA_OPT} jarboot.jarboot >/dev/null &
 echo "jarboot is started，you can check the ${JARBOOT_HOME}/logs/jarboot.log"
 echo "Starting jarboot server daemon..."
 TOOL_JAR="components/jarboot-tools.jar io.github.majianzheng.jarboot.tools.daemon.ServerDaemon"
-DAEMON_VM="-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=500"
+DAEMON_VM="-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=5000"
 $JAVA $DAEMON_VM -cp ${TOOL_JAR} jarboot.daemon >/dev/null &
 
 echo "daemon started."
