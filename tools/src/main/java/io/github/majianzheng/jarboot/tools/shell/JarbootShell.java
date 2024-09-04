@@ -64,12 +64,16 @@ public class JarbootShell {
     }
 
     private void initArgs() {
-        if (null == this.args || this.args.length <= 0) {
+        if (null == this.args || this.args.length == 0) {
             return;
         }
         HashSet<String> optionHash = new HashSet<>();
-        for (String arg : this.args) {
 
+        for (String arg : this.args) {
+            if (null != this.command) {
+                setField(arg);
+                continue;
+            }
             switch (arg) {
                 case "-pid":
                 case "--pid":
