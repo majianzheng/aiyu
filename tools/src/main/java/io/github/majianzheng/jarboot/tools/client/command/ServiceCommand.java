@@ -1,6 +1,7 @@
 package io.github.majianzheng.jarboot.tools.client.command;
 
 import io.github.majianzheng.jarboot.api.cmd.annotation.*;
+import io.github.majianzheng.jarboot.api.constant.CommonConst;
 import io.github.majianzheng.jarboot.api.constant.TaskLifecycle;
 import io.github.majianzheng.jarboot.api.event.JarbootEvent;
 import io.github.majianzheng.jarboot.api.event.Subscriber;
@@ -8,8 +9,10 @@ import io.github.majianzheng.jarboot.api.event.TaskLifecycleEvent;
 import io.github.majianzheng.jarboot.api.pojo.ServiceInstance;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 
 /**
  * list command
@@ -17,9 +20,15 @@ import java.util.concurrent.CountDownLatch;
  */
 @Name("service")
 @Summary("service operation. ig. service start demo-service")
-@Description("Example:\n" +
-        "  service -h 127.0.0.1:9899 start demo-server\n" +
+@Description("Usage:\n" +
+        "-a [flag, all service]\n" +
+        "arg1 [action start,stop or restart]\n" +
+        "arg2 [service name, use ',' split if multi service, cluster host can use '@' set host]\n" +
+        "Example:\n" +
+        "  service start demo-server@192.168.1.100:9899,test-server@192.168.1.101:9899,other\n" +
         "  service stop demo-service\n" +
+        "  service -a stop\n" +
+        "  service -a start\n" +
         "  service restart demo-service\n")
 public class ServiceCommand extends AbstractClientCommand implements Subscriber<TaskLifecycleEvent> {
     private static final String ACTION_START = "start";
@@ -27,15 +36,9 @@ public class ServiceCommand extends AbstractClientCommand implements Subscriber<
     private static final String ACTION_RESTART = "restart";
 
     private String action;
-    private String serviceName;
-    private String host;
+    private List<String> serviceNames;
+    private Boolean all;
     private CountDownLatch latch;
-
-    @Option(shortName = "h", longName = "host")
-    @Description("Cluster host")
-    public void setHost(String host) {
-        this.host = host;
-    }
 
     @Argument(argName = "action", index = 0)
     @Description("action, input start stop restart or get.")
@@ -43,22 +46,27 @@ public class ServiceCommand extends AbstractClientCommand implements Subscriber<
         this.action = action;
     }
 
-    @Argument(argName = "name", index = 1)
-    @Description("service name")
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
+    @Argument(argName = "name", index = 1, required = false)
+    @Description("service names")
+    public void setServiceNames(String serviceNames) {
+        this.serviceNames = Arrays.asList(serviceNames.split(","));
+    }
+    @Option(longName = "all", shortName = "a", flag = true)
+    @Description("all service")
+    public void setAll(Boolean all) {
+        this.all = all;
     }
     @Override
     public void run() {
-        List<ServiceInstance> service = new ArrayList<>();
-        ServiceInstance instance = new ServiceInstance();
-        instance.setHost(host);
-        instance.setName(serviceName);
-        service.add(instance);
+        List<ServiceInstance> service = getServiceList();
+        if (null == service || service.isEmpty()) {
+            printHelp();
+            return;
+        }
         client.registerSubscriber(this);
-        final String tips = "Service " + serviceName + " " + action;
+        final String tips = "Service " + String.join(",", serviceNames) + " " + action;
         try {
-            latch = new CountDownLatch(1);
+            latch = new CountDownLatch(service.size());
             switch (action) {
                 case ACTION_START:
                     client.startService(service);
@@ -119,5 +127,38 @@ public class ServiceCommand extends AbstractClientCommand implements Subscriber<
     @Override
     public Class<? extends JarbootEvent> subscribeType() {
         return TaskLifecycleEvent.class;
+    }
+
+    private List<ServiceInstance> getServiceList() {
+        if (Boolean.TRUE.equals(all)) {
+            this.serviceNames = new ArrayList<>();
+            List<ServiceInstance> list = this.client.getServiceGroup();
+            List<ServiceInstance> services = new ArrayList<>();
+            wrapperList(list, services);
+            return services;
+        }
+        return serviceNames.stream().map(name -> {
+            ServiceInstance instance = new ServiceInstance();
+            if (clusterMode) {
+                int index = name.indexOf("@");
+                if (index > 0) {
+                    instance.setHost(name.substring(index + 1).trim());
+                    name = name.substring(0, index);
+                }
+            }
+            instance.setName(name);
+            return instance;
+        }).collect(Collectors.toList());
+    }
+
+    private void wrapperList(List<ServiceInstance> list, List<ServiceInstance> rows) {
+        list.forEach(service -> {
+            if (CommonConst.NODE_ROOT == service.getNodeType() || CommonConst.NODE_GROUP == service.getNodeType()) {
+                wrapperList(service.getChildren(), rows);
+            } else {
+                serviceNames.add(service.getName());
+                rows.add(service);
+            }
+        });
     }
 }

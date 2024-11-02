@@ -3,7 +3,7 @@
 if not exist "%JAVA_HOME%\bin\java.exe" echo Please set the JAVA_HOME variable in your environment, We need java(x64)! jdk8 or later is better! & EXIT /B 1
 
 setlocal enabledelayedexpansion
-
+chcp 65001
 set JARBOOT_HOME=%~dp0
 set JARBOOT_HOME=%JARBOOT_HOME:~0,-13%
 set "JAVA=%JAVA_HOME%\bin\java.exe"
@@ -44,7 +44,7 @@ goto Win9xApp
 :endInit
 
 set CLASS_PATH=components\jarboot-tools.jar
-set "VM_OPT=-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=5000"
+set "VM_OPT=-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=5000 -Dfile.encoding=UTF-8"
 
 set COMMAND="%JAVA%" %VM_OPT% -jar "%CLASS_PATH%" %CMD_LINE_ARGS%
 

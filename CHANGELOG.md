@@ -1,3 +1,13 @@
+## 3.1.3（11，2024）
+client-cli新增deploy命令
+### 新特性
+- client-cli新增deploy命令
+- client-cli支持操作系统内置命令
+- 升级spring-boot版本修复部分安全告警
+### bug修复
+- 偏好设置，系统名称设置中文后重启后乱码
+- 集群模式时client-cli部分功能异常问题
+
 ## 3.1.2（8，2024）
 紧急bug修复
 ### 新特性

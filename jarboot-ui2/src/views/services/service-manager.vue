@@ -329,7 +329,6 @@ onUnmounted(() => {
 @import '@/assets/main.less';
 .server-mgr {
   width: 100%;
-  height: 100%;
   padding: 2px 0;
   .server-side {
     display: flex;

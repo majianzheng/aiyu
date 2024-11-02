@@ -115,7 +115,7 @@ async function visibilitychange() {
       await reload();
     }
     basic.latestWeak = curTimestamp;
-    WsManager.reconnect();
+    WsManager.initWebsocket();
     WsManager.ping();
   } else {
     basic.latestWeak = Date.now();
@@ -170,8 +170,8 @@ onMounted(() => {
 <template>
   <main>
     <header>
-      <img alt="Jarboot logo" class="logo" :src="state.logoUrl" />
-      <div class="wrapper">
+      <img alt="Jarboot logo" class="logo" :class="{ mobile: basic.mobileDevice }" :src="state.logoUrl" />
+      <div class="wrapper" v-if="!basic.mobileDevice">
         <nav>
           <a v-for="(menu, i) in basic.menus" :key="i" :class="{ 'router-link-exact-active': isActive(menu) }" @click="goTo(menu)">{{
             $t(menu.module as string)
@@ -202,7 +202,7 @@ onMounted(() => {
                 <svg-icon v-else icon="icon-panda" style="width: 26px; height: 26px" />
               </el-avatar>
               <div class="user-name">
-                <span>{{ user.fullName || user.username }}</span>
+                <span v-if="!basic.mobileDevice">{{ user.fullName || user.username }}</span>
                 <icon-pro icon="ArrowDown" class="el-icon--right"></icon-pro>
               </div>
             </div>
@@ -225,6 +225,9 @@ onMounted(() => {
       </transition>
       <component :is="Component" :key="route.path" v-if="!route.meta.keepAlive" />
     </router-view>
+    <div v-if="basic.mobileDevice">
+      <bottom-nav></bottom-nav>
+    </div>
     <modify-user-dialog v-model:visible="state.dialog" :reset-password="state.resetPassword" :username="user.username"></modify-user-dialog>
   </main>
 </template>
@@ -233,9 +236,13 @@ header {
   display: flex;
   height: 50px;
   border-bottom: 1px solid var(--el-border-color);
+  z-index: 1000;
   .logo {
     height: 38px;
     margin: 6px 15px;
+    &.mobile {
+      margin: 6px 0 6px 5px;
+    }
   }
   nav {
     font-size: 16px;

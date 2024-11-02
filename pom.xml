@@ -59,7 +59,7 @@
 		<sonar.exclusions>file:**/generated-sources/**,**/test/**</sonar.exclusions>
 
 		<!-- dependency version -->
-		<spring.version>2.7.10</spring.version>
+		<spring.version>2.7.18</spring.version>
 		<bytekit.version>0.0.5</bytekit.version>
 		<commons-io.version>2.14.0</commons-io.version>
 		<jjwt.version>0.11.2</jjwt.version>
@@ -71,8 +71,9 @@
 		<commons-logging.version>1.2</commons-logging.version>
 		<jline.version>3.25.1</jline.version>
 		<jansi.version>2.4.1</jansi.version>
+		<progressbar.version>0.10.0</progressbar.version>
 		<juniversalchardet.version>1.0.3</juniversalchardet.version>
-		<logback.version>1.4.12</logback.version>
+		<logback.version>1.4.14</logback.version>
 		<tomcat.version>11.0.0-m17</tomcat.version>
 
 		<!-- plugin version -->
@@ -235,6 +236,11 @@
 				<groupId>com.googlecode.juniversalchardet</groupId>
 				<artifactId>juniversalchardet</artifactId>
 				<version>${juniversalchardet.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>me.tongfei</groupId>
+				<artifactId>progressbar</artifactId>
+				<version>${progressbar.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

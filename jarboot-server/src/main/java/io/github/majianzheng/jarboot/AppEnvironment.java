@@ -65,7 +65,7 @@ public class AppEnvironment implements SpringApplicationRunListener {
             if (null == this.lock) {
                 throw new JarbootRunException("Jarboot server is already started!");
             }
-            PidFileHelper.writeServerPid();
+            FileUtils.deleteQuietly(CacheDirHelper.getServerPidFile());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             System.exit(-1);
@@ -78,6 +78,7 @@ public class AppEnvironment implements SpringApplicationRunListener {
         SettingUtils.init(context, homePath);
         TaskWatchService taskWatchService = context.getBean(TaskWatchService.class);
         taskWatchService.init();
+        PidFileHelper.writeServerPid();
         // 集群配置初始化
         ClusterClientManager.getInstance().init();
     }

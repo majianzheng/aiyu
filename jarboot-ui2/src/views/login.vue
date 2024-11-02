@@ -20,7 +20,40 @@
         </div>
       </div>
     </div>
-    <div class="login-form">
+    <div v-if="basic.mobileDevice" class="login-form">
+      <div class="internal-sys-tip">
+        <div>{{ $t('INTERNAL_SYS_TIP') }}</div>
+        <div>{{ $t('INTERNAL_SYS_TIP1') }}</div>
+      </div>
+      <el-form ref="loginFormRef" :model="loginForm" status-icon :rules="rules" label-width="0" size="large">
+        <el-form-item label="" prop="username">
+          <el-input
+            v-model="loginForm.username"
+            prefix-icon="User"
+            :placeholder="$t('USER_NAME')"
+            @keydown.enter="submitForm(loginFormRef)"
+            clearable
+            autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="" prop="password">
+          <el-input
+            v-model="loginForm.password"
+            prefix-icon="Lock"
+            :placeholder="$t('PASSWORD')"
+            @keydown.enter="submitForm(loginFormRef)"
+            clearable
+            show-password
+            type="password"
+            autocomplete="off" />
+        </el-form-item>
+        <el-form-item>
+          <el-button :loading="loading" class="login-button" type="primary" @click="submitForm(loginFormRef)">
+            {{ $t('LOGIN') }}
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div v-else class="login-form">
       <div class="login-header">{{ $t('LOGIN') }}</div>
       <div class="internal-sys-tip">
         <div>{{ $t('INTERNAL_SYS_TIP') }}</div>
@@ -61,11 +94,12 @@
 import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import type { FormInstance } from 'element-plus';
 import CommonUtils from '@/common/CommonUtils';
-import { useUserStore } from '@/stores';
+import { useBasicStore, useUserStore } from '@/stores';
 import { DOCS_URL } from '@/common/CommonConst';
 
 const loginFormRef = ref<FormInstance>();
 const bgRef = ref();
+const basic = useBasicStore();
 
 const loginForm = reactive({
   username: '',
@@ -197,6 +231,14 @@ body {
   }
   .login-button {
     width: 100%;
+  }
+}
+@media screen and (max-width: 850px) {
+  .login-form {
+    width: 80%;
+    position: absolute;
+    right: 10%;
+    top: 20%;
   }
 }
 </style>

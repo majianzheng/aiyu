@@ -4,9 +4,11 @@ import io.github.majianzheng.jarboot.api.cmd.annotation.Description;
 import io.github.majianzheng.jarboot.api.cmd.annotation.Name;
 import io.github.majianzheng.jarboot.api.cmd.annotation.Summary;
 import io.github.majianzheng.jarboot.api.pojo.ServerRuntimeInfo;
+import io.github.majianzheng.jarboot.client.ClientProxy;
 import io.github.majianzheng.jarboot.client.ClusterOperator;
 import io.github.majianzheng.jarboot.common.AnsiLog;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
+import org.jline.reader.LineReader;
 import org.jline.terminal.Terminal;
 
 /**
@@ -14,9 +16,13 @@ import org.jline.terminal.Terminal;
  * @author majianzheng
  */
 public abstract class AbstractClientCommand {
+    protected String loginHost;
     protected String name;
     protected ClusterOperator client;
     protected Terminal terminal;
+    protected ClientProxy proxy;
+    protected LineReader lineReader;
+    protected boolean clusterMode;
     protected ServerRuntimeInfo runtimeInfo;
 
     public String getName() {
@@ -35,6 +41,21 @@ public abstract class AbstractClientCommand {
         this.terminal = terminal;
     }
 
+    public void setClientProxy(ClientProxy proxy) {
+        this.proxy = proxy;
+    }
+
+    public void setLoginHost(String loginHost) {
+        this.loginHost = loginHost;
+    }
+
+    public void setLineReader(LineReader lineReader) {
+        this.lineReader = lineReader;
+    }
+
+    public void setClusterMode(boolean clusterMode) {
+        this.clusterMode = clusterMode;
+    }
     public void setRuntimeInfo(ServerRuntimeInfo runtimeInfo) {
         this.runtimeInfo = runtimeInfo;
     }

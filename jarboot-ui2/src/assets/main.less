@@ -26,7 +26,6 @@ body {
 }
 .__container-wrapper {
   position: fixed;
-  height: 100vh;
 }
 @side-width: 320px;
 @tree-icon-size: 1.18em;
@@ -93,6 +92,12 @@ body {
   -moz-user-select: none;
   -o-user-select: none;
   user-select: none;
+}
+
+.mobile-drawer {
+  z-index: 1;
+  height: calc(100vh - 105px);
+  top: 60px;
 }
 
 //全局滚动条样式

@@ -4,6 +4,7 @@ import io.github.majianzheng.jarboot.api.cmd.annotation.Description;
 import io.github.majianzheng.jarboot.api.cmd.annotation.Name;
 import io.github.majianzheng.jarboot.api.cmd.annotation.Summary;
 import io.github.majianzheng.jarboot.api.pojo.HostInfo;
+import io.github.majianzheng.jarboot.api.pojo.ServerRuntimeInfo;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
 import io.github.majianzheng.jarboot.text.ui.TableElement;
 import io.github.majianzheng.jarboot.text.util.RenderUtil;
@@ -20,6 +21,7 @@ import java.util.List;
 public class InfoCommand extends AbstractClientCommand {
     @Override
     public void run() {
+        ServerRuntimeInfo runtimeInfo = proxy.getRuntimeInfo();
         TableElement table = new TableElement();
         table.rightCellPadding(1).rightCellPadding(1);
         table.row(true, "NAME", "DESCRIPTION");

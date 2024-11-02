@@ -4,9 +4,12 @@ import io.github.majianzheng.jarboot.api.cmd.annotation.Argument;
 import io.github.majianzheng.jarboot.api.cmd.annotation.Description;
 import io.github.majianzheng.jarboot.api.cmd.annotation.Name;
 import io.github.majianzheng.jarboot.api.cmd.annotation.Summary;
+import io.github.majianzheng.jarboot.common.utils.OSUtils;
+import io.github.majianzheng.jarboot.common.utils.StringUtils;
 import io.github.majianzheng.jarboot.text.ui.TableElement;
 import io.github.majianzheng.jarboot.text.util.RenderUtil;
 import io.github.majianzheng.jarboot.tools.client.ClientCommandBuilder;
+import io.github.majianzheng.jarboot.tools.client.InnerConsole;
 
 import java.util.Map;
 
@@ -27,9 +30,17 @@ public class ClientHelpCommand extends AbstractClientCommand {
     }
     @Override
     public void run() {
+        if (StringUtils.isEmpty(cmd)) {
+            showAll();
+            return;
+        }
         Class<?> definition = ClientCommandBuilder.getCommandDefineClass(cmd);
         if (null == definition) {
-            showAll();
+            if (OSUtils.isWindows()) {
+                InnerConsole.getInstance().exec("help " + cmd);
+            } else {
+                InnerConsole.getInstance().exec("man " + cmd);
+            }
         } else {
             showCommandHelp(definition);
         }

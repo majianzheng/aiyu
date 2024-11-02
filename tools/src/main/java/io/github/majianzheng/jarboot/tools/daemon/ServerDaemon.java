@@ -30,21 +30,20 @@ public class ServerDaemon {
                 AnsiLog.error("守护进程(PID: {})已在运行中!", PidFileHelper.getDaemonPid());
                 return;
             }
-            daemon();
+            FileUtils.deleteQuietly(CacheDirHelper.getDaemonPidFile());
+            daemon(daemonLock);
         } catch (Exception e) {
             AnsiLog.error(e);
-            return;
         }
-        startup(home);
     }
 
-    private static void daemon() {
+    private static void daemon(FileLock daemonLock) {
         if (OSUtils.isWindows()) {
             // 初始化托盘
             AnsiLog.info("Windows 托盘应用初始化...");
         }
         // 等待启动
-        final int maxWaitSec = 30;
+        final int maxWaitSec = 60;
         boolean prepared = false;
         for (int i = 0; i < maxWaitSec; ++i) {
             prepared = isPrepared();
@@ -66,6 +65,8 @@ public class ServerDaemon {
         try (FileLock lock = CacheDirHelper.singleInstanceLock()) {
             if (lock != null) {
                 lock.release();
+                daemonLock.release();
+                startup(Utils.getJarbootHome());
             }
         } catch (Exception e) {
             AnsiLog.error(e);

@@ -12,10 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -37,8 +34,8 @@ public class PropertyFileUtils {
         if (null == file || !file.isFile() || !file.exists()) {
             return properties;
         }
-        try (FileInputStream fis = FileUtils.openInputStream(file)) {
-            properties.load(fis);
+        try (FileInputStream fis = FileUtils.openInputStream(file);Reader reader = new InputStreamReader(fis, StandardCharsets.UTF_8)) {
+            properties.load(reader);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }

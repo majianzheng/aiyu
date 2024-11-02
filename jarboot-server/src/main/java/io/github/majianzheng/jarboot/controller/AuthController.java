@@ -4,7 +4,6 @@ import io.github.majianzheng.jarboot.api.constant.CommonConst;
 import io.github.majianzheng.jarboot.cluster.ClusterClientManager;
 import io.github.majianzheng.jarboot.common.JarbootException;
 import io.github.majianzheng.jarboot.common.pojo.ResponseVo;
-import io.github.majianzheng.jarboot.common.pojo.ResultCodeConst;
 import io.github.majianzheng.jarboot.common.utils.HttpResponseUtils;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
 import io.github.majianzheng.jarboot.constant.AuthConst;
@@ -46,22 +45,11 @@ public class AuthController {
 
     /**
      * 获取当前登录的用户
-     * @param request Http请求
      * @return 结果
      */
     @GetMapping(value="/getCurrentUser")
-    public ResponseVo<User> getCurrentUser(HttpServletRequest request) {
-        String token;
-        try {
-            token = resolveToken(request);
-            if (StringUtils.isEmpty(token)) {
-                return HttpResponseUtils.error(ResultCodeConst.NOT_LOGIN_ERROR, "当前未登录");
-            }
-        } catch (Exception e) {
-            return HttpResponseUtils.error(ResultCodeConst.NOT_LOGIN_ERROR, "当前未登录: " + e.getMessage());
-        }
-
-        Authentication authentication = jwtTokenManager.getAuthentication(token);
+    public ResponseVo<User> getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByUsername(authentication.getName());
         return HttpResponseUtils.success(user);
     }
@@ -121,8 +109,11 @@ public class AuthController {
 
     private String getToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AuthConst.AUTHORIZATION_HEADER);
-        if (!StringUtils.isBlank(bearerToken) && bearerToken.startsWith(AuthConst.TOKEN_PREFIX)) {
-            return bearerToken.substring(7);
+        if (!StringUtils.isBlank(bearerToken)) {
+            if (bearerToken.startsWith(AuthConst.TOKEN_PREFIX)) {
+                bearerToken = bearerToken.substring(AuthConst.TOKEN_PREFIX.length());
+            }
+            return bearerToken;
         }
         return request.getParameter(AuthConst.ACCESS_TOKEN);
     }

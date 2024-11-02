@@ -144,11 +144,11 @@ public class CacheDirHelper {
         }
     }
 
-    static File getServerPidFile() {
+    public static File getServerPidFile() {
         return FileUtils.getFile(getJarbootHome(), CACHE_DIR, "jarboot.pid");
     }
 
-    static File getDaemonPidFile() {
+    public static File getDaemonPidFile() {
         return FileUtils.getFile(getJarbootHome(), CACHE_DIR, "daemon.pid");
     }
 

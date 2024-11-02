@@ -1,14 +1,13 @@
 package io.github.majianzheng.jarboot.tools.client;
 
 import io.github.majianzheng.jarboot.api.cmd.annotation.Summary;
-import io.github.majianzheng.jarboot.api.pojo.ServerRuntimeInfo;
-import io.github.majianzheng.jarboot.client.ClusterOperator;
 import io.github.majianzheng.jarboot.common.AnsiLog;
 import io.github.majianzheng.jarboot.common.utils.CommandCliParser;
+import io.github.majianzheng.jarboot.common.utils.OSUtils;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
 import io.github.majianzheng.jarboot.tools.client.command.*;
-import org.jline.terminal.Terminal;
 
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,10 +23,11 @@ public class ClientCommandBuilder {
         CMDS.put("service", ServiceCommand.class);
         CMDS.put("help", ClientHelpCommand.class);
         CMDS.put("info", InfoCommand.class);
+        CMDS.put("deploy", DeployCommand.class);
     }
     private ClientCommandBuilder() {}
 
-    public static AbstractClientCommand build(String commandLine, ClusterOperator client, Terminal terminal, ServerRuntimeInfo runtimeInfo) {
+    public static AbstractClientCommand build(String commandLine, JarbootClientCli cli) {
         int p = commandLine.indexOf(' ');
         String name;
         String args;
@@ -42,15 +42,19 @@ public class ClientCommandBuilder {
         AbstractClientCommand command = null;
         Class<? extends AbstractClientCommand> cls = CMDS.getOrDefault(name, null);
         if (null == cls) {
-            AnsiLog.error("Command not found: {}", name);
+            InnerConsole.getInstance().exec(commandLine);
             return null;
         }
 
         try {
             command = cls.getConstructor().newInstance();
-            command.setClient(client);
-            command.setTerminal(terminal);
-            command.setRuntimeInfo(runtimeInfo);
+            command.setClient(cli.client);
+            command.setTerminal(cli.terminal);
+            command.setClientProxy(cli.proxy);
+            command.setLoginHost(cli.host);
+            command.setLineReader(cli.lineReader);
+            command.setClusterMode(StringUtils.isNotEmpty(cli.runtimeInfo.getHost()));
+            command.setRuntimeInfo(cli.runtimeInfo);
             //设置命令名
             command.setName(name);
             //处理命令参数

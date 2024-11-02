@@ -961,4 +961,19 @@ public abstract class StringUtils {
         }
         return text.substring(pos + after.length());
     }
+
+    /**
+     * Returns the string with ellipsis if it is longer than targetLength
+     *
+     * @param str           the string
+     * @param targetLength  the target length
+     * @return the string with ellipsis
+     */
+    public static String ellipsis(String str, int targetLength) {
+        String result = str;
+        if (str.length() > targetLength) {
+            result = str.substring(0, targetLength - 2) + "...";
+        }
+        return result;
+    }
 }

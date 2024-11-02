@@ -43,17 +43,24 @@ export const useBasicStore = defineStore({
     jdk: '',
     dev: false,
     machineCode: '',
-    innerHeight: window.innerHeight,
+    innerHeight: window.innerHeight - 52,
     innerWidth: window.innerWidth,
     menus: [] as MenuItem[],
     subNameMap: new Map(),
     latestWeak: Date.now(),
+    mobileDevice: CommonUtils.isMobileDevice(),
   }),
   actions: {
     async update() {
-      this.$patch({ innerHeight: window.innerHeight, innerWidth: window.innerWidth });
+      const mobileDevice = CommonUtils.isMobileDevice();
+      let innerHeight = window.innerHeight;
+      if (mobileDevice) {
+        innerHeight = innerHeight - 52;
+      }
+      this.$patch({ innerHeight, innerWidth: innerWidth, mobileDevice });
     },
     async init() {
+      await this.update();
       const info = await Request.get<ServerRuntimeInfo>(`/api/jarboot/public/serverRuntime`, {});
       const productName = await Request.get<string>('/jarboot/preferences/productName', {});
       document.title = productName;

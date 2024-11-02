@@ -1,6 +1,6 @@
 <template>
   <div class="version-title" v-show="store.version">
-    <el-button link icon="Help" type="primary" @click="state.dialog = true">{{ $t('HELP') }}</el-button>
+    <el-button link icon="Service" type="primary" @click="state.dialog = true">{{ $t('HELP') }}</el-button>
     <el-dialog v-model="state.dialog" :title="$t('HELP')" width="680px">
       <el-form label-suffix=":" label-width="auto">
         <el-form-item :label="$t('SYS_VER')">

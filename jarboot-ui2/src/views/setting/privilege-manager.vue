@@ -72,9 +72,7 @@ async function treeData() {
   const privilegeList: Privilege[] = (await PrivilegeService.getPrivilegeByRole(state.currentRow.role)) || [];
   const privilegeMap = { ...DEFAULT_PRIVILEGE } as any;
   privilegeList.forEach(privilege => (privilegeMap[privilege.authCode] = privilege.permission));
-  const data = parseTree(routesConfig, privilegeMap);
-  console.info('>>>>', data, routesConfig, privilegeList, privilegeMap);
-  state.data = data;
+  state.data = parseTree(routesConfig, privilegeMap);
 }
 async function changePermission(row: any, value: boolean) {
   if (SYS_ROLE === row.role) {

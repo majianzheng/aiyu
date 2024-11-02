@@ -25,11 +25,7 @@ public class SessionProxy {
         URI clientUri = client.getRequestURI();
         int index = targetClusterHost.indexOf(':');
         String host = targetClusterHost.substring(0, index);
-        String accessClusterHost = CommonUtils.getSessionParam(AuthConst.ACCESS_CLUSTER_HOST, client);
         String query = clientUri.getQuery();
-        if (StringUtils.isEmpty(accessClusterHost)) {
-            query += String.format("&%s=%s", AuthConst.ACCESS_CLUSTER_HOST, accessClusterHost);
-        }
         int port = Integer.parseInt(targetClusterHost.substring(index + 1));
         try {
             URI uri = new URI(clientUri.getScheme(),

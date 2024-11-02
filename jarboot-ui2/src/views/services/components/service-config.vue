@@ -14,6 +14,7 @@ const props = defineProps<{
   showEdit: boolean;
   clusterHost?: string;
 }>();
+
 const defaultSetting: ServerSetting = {
   host: '',
   name: '',
@@ -109,7 +110,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-drawer destroy-on-close size="50%" :title="state.isNew ? $t('CREATE') : $t('MODIFY')" @close="onCloseEdit" v-model="state.showEdit">
+  <el-drawer
+    destroy-on-close
+    :size="basic.mobileDevice ? '100%' : '50%'"
+    :title="state.isNew ? $t('CREATE') : $t('MODIFY')"
+    @close="onCloseEdit"
+    v-model="state.showEdit">
     <el-form ref="configRef" size="small" :rules="rules" :model="state.form" label-width="auto" label-position="right" status-icon>
       <el-form-item :label="$t('NAME')" prop="name">
         <el-input v-model="state.form.name" auto-complete="off" auto-correct="off" auto-capitalize="off"></el-input>
@@ -191,9 +197,15 @@ onMounted(() => {
           :cluster-host="state.form.host"
           :row-tools="rowTools"></file-manager>
       </el-form-item>
+      <el-form-item v-if="basic.mobileDevice">
+        <div style="display: flex; justify-content: center; width: 100%">
+          <el-button size="small" @click="showEdit = false">{{ $t('CANCEL') }}</el-button>
+          <el-button size="small" type="primary" @click="saveConfig">{{ $t('SAVE') }}</el-button>
+        </div>
+      </el-form-item>
     </el-form>
     <template #footer>
-      <div style="flex: auto">
+      <div style="flex: auto" v-if="!basic.mobileDevice">
         <el-button size="small" @click="showEdit = false">{{ $t('CANCEL') }}</el-button>
         <el-button size="small" type="primary" @click="saveConfig">{{ $t('SAVE') }}</el-button>
       </div>

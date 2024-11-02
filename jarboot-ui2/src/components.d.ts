@@ -9,6 +9,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AvatarCutter: typeof import('./components/avatar-cutter/avatar-cutter.vue')['default']
     Banner: typeof import('./components/super-panel/banner.vue')['default']
+    BottomNav: typeof import('./components/bottom-nav.vue')['default']
     CodeMirror: typeof import('./components/editor/code-mirror.vue')['default']
     Console: typeof import('./components/console/console.vue')['default']
     CronEditor: typeof import('./components/cron-editor/index.vue')['default']
@@ -48,6 +49,7 @@ declare module '@vue/runtime-core' {
     ElResult: typeof import('element-plus/es')['ElResult']
     ElRow: typeof import('element-plus/es')['ElRow']
     ElSelect: typeof import('element-plus/es')['ElSelect']
+    ElSpace: typeof import('element-plus/es')['ElSpace']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']

@@ -31,13 +31,14 @@ import java.util.List;
  */
 @SuppressWarnings({"java:S106", "java:S135"})
 public class JarbootClientCli implements Subscriber<TaskLifecycleEvent> {
-    private String host;
-    private String username;
-    private String password;
-    private Terminal terminal;
-    private LineReader lineReader;
-    private ClusterOperator client;
-    private ServerRuntimeInfo runtimeInfo;
+    String host;
+    String username;
+    String password;
+    Terminal terminal;
+    LineReader lineReader;
+    ClientProxy proxy;
+    ClusterOperator client;
+    ServerRuntimeInfo runtimeInfo;
     private String bash;
 
     @Option(shortName = "h", longName = "host")
@@ -75,6 +76,8 @@ public class JarbootClientCli implements Subscriber<TaskLifecycleEvent> {
                 clientCli.host = "127.0.0.1:9899";
             }
         }
+        System.setProperty("jline.WindowsTerminal.input.encoding", "UTF-8");
+        System.setProperty("jline.WindowsTerminal.output.encoding", "UTF-8");
         //登录
         clientCli.login();
         //开始执行
@@ -107,16 +110,17 @@ public class JarbootClientCli implements Subscriber<TaskLifecycleEvent> {
             }
         }
         //登录认证
-        runtimeInfo = ClientProxy
+        proxy = ClientProxy
                 .Factory
-                .createClientProxy(host, username, password)
-                .getRuntimeInfo();
+                .createClientProxy(host, username, password);
+        runtimeInfo = proxy.getRuntimeInfo();
         AnsiLog.println("Login success, jarboot server version: {}, cluster:{}",
                 runtimeInfo.getVersion(), StringUtils.isNotEmpty(runtimeInfo.getHost()));
     }
 
     protected void run() {
-        //test
+        InnerConsole.getInstance().init(lineReader);
+
         client = new ClusterOperator(this.host, null, null);
         client.registerSubscriber(this);
         if (StringUtils.isNotEmpty(bash)) {
@@ -135,7 +139,7 @@ public class JarbootClientCli implements Subscriber<TaskLifecycleEvent> {
                 continue;
             }
             // 打印出用户输入的内容
-            AbstractClientCommand command = ClientCommandBuilder.build(inputLine, client, terminal, runtimeInfo);
+            AbstractClientCommand command = ClientCommandBuilder.build(inputLine, this);
             if (null != command) {
                 command.run();
             }
@@ -151,7 +155,7 @@ public class JarbootClientCli implements Subscriber<TaskLifecycleEvent> {
                 if (StringUtils.isEmpty(command)) {
                     continue;
                 }
-                AbstractClientCommand cmd = ClientCommandBuilder.build(command, client, terminal, runtimeInfo);
+                AbstractClientCommand cmd = ClientCommandBuilder.build(command, this);
                 if (null != cmd) {
                     cmd.run();
                 }

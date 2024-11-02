@@ -22,6 +22,7 @@ export default [
       keepAlive: true,
       module: 'SERVICES_MGR',
       code: 'SERVICES_MGR',
+      icon: 'HomeFilled',
     },
   },
   {
@@ -32,6 +33,7 @@ export default [
       keepAlive: true,
       module: 'ONLINE_DEBUG',
       code: 'ONLINE_DEBUG',
+      icon: 'icon-debug',
     },
   },
   {
@@ -43,6 +45,7 @@ export default [
       menu: true,
       module: 'TOOLS',
       code: 'TOOLS',
+      icon: 'icon-terminal',
     },
     children: [
       {
@@ -78,6 +81,7 @@ export default [
       menu: true,
       module: 'SETTING',
       code: 'SETTING',
+      icon: 'Setting',
     },
     children: [
       {

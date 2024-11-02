@@ -5,9 +5,11 @@ import io.github.majianzheng.jarboot.api.constant.CommonConst;
 import io.github.majianzheng.jarboot.api.event.Subscriber;
 import io.github.majianzheng.jarboot.api.event.TaskLifecycleEvent;
 import io.github.majianzheng.jarboot.api.pojo.HostInfo;
+import io.github.majianzheng.jarboot.api.pojo.ServerRuntimeInfo;
 import io.github.majianzheng.jarboot.api.pojo.ServiceInstance;
 import io.github.majianzheng.jarboot.api.pojo.ServiceSetting;
 import io.github.majianzheng.jarboot.client.utlis.ResponseUtils;
+import io.github.majianzheng.jarboot.common.utils.HttpUtils;
 import io.github.majianzheng.jarboot.common.utils.JsonUtils;
 
 import java.util.List;
@@ -66,6 +68,13 @@ public class ClusterOperator {
         final String api = CommonConst.CLUSTER_MGR_CONTEXT + "/restartServices";
         JsonNode response = this.clientProxy.postJson(api, service);
         ResponseUtils.checkResponse(api, response);
+    }
+
+    public String getUserDir() {
+        final String api = CommonConst.AUTH_CONTEXT + "/getCurrentUser";
+        JsonNode response = this.clientProxy.get(api);
+        JsonNode data = ResponseUtils.parseResult(response, api);
+        return data.get("userDir").asText("");
     }
 
     public void deleteService(List<ServiceInstance> service) {

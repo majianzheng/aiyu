@@ -222,6 +222,10 @@ public class ClientProxy implements AbstractEventRegistry {
         String token = getToken();
         HashMap<String, String> header = new HashMap<>(8);
         header.put("Authorization", token);
+        if (StringUtils.isNotEmpty(runtimeInfo.getHost())) {
+            // 集群模式
+            header.put("Access-Cluster-Host", runtimeInfo.getHost());
+        }
         header.put("Accept", "*/*");
         header.put("Content-Type", "application/json;charset=UTF-8");
         return header;

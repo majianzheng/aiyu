@@ -4,7 +4,7 @@ export default {
 
   //Tab标题
   SERVICES_MGR: 'Services',
-  ONLINE_DEBUG: 'Online Diagnose',
+  ONLINE_DEBUG: 'Diagnose',
   AUTH_CONTROL: 'Authority Control',
   PLUGINS: 'Plugins',
   SETTING: 'Setting',
@@ -12,8 +12,8 @@ export default {
   MENU_DOCS: "User's guide",
   TERMINAL: 'Terminal',
   TOOLS: 'Tool',
-  FILE_MGR: 'File manager',
-  PREFERENCES_CONFIG: 'Preferences config',
+  FILE_MGR: 'File',
+  PREFERENCES_CONFIG: 'Preferences',
 
   //服务管理
   ONE_KEY_START: 'Start All',
@@ -141,7 +141,7 @@ export default {
   UPLOAD_BUTTON: 'Click to Upload',
 
   //全局配置界面
-  SYSTEM_SETTING: 'System setting',
+  SYSTEM_SETTING: 'System',
   SERVERS_PATH: 'Workspace',
   DEFAULT_VM_OPT: 'Default VM options',
   AUTO_START_AFTER_INIT: 'Auto start after jarboot started',
@@ -183,9 +183,9 @@ export default {
   INPUT_FULL_NAME: 'Please input your full name!',
   INPUT_ROLE: 'Please input role!',
   PWD_NOT_MATCH: 'The two passwords that you entered do not match!',
-  USER_LIST: 'User List',
-  ROLE_MGR: 'Role Management',
-  PRIVILEGE_MGR: 'Privilege Management',
+  USER_LIST: 'User',
+  ROLE_MGR: 'Role',
+  PRIVILEGE_MGR: 'Privilege',
   ROLE: 'Role',
   BIND_ROLE: 'Binding roles',
   DELETE_USER: `Do you want to delete this user({user})?`,
