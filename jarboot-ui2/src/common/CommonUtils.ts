@@ -6,7 +6,6 @@ import type { I18n, Locale } from 'vue-i18n';
  * @author majianzheng
  */
 export default class CommonUtils {
-  private static readonly HOME_PREFIX = '/jarboot/';
   private static readonly TOKEN_PREFIX = 'Bearer ';
   public static readonly ACCESS_TOKEN = 'accessToken';
   private static t: any;
@@ -44,19 +43,6 @@ export default class CommonUtils {
     return token;
   }
 
-  public static storeToken(token: string) {
-    if (0 !== token.indexOf(CommonUtils.TOKEN_PREFIX)) {
-      token = CommonUtils.TOKEN_PREFIX + token;
-    }
-    localStorage.setItem(TOKEN_KEY, token);
-  }
-
-  public static storeCurrentHost(host: string) {
-    if (host) {
-      localStorage.setItem(ACCESS_CLUSTER_HOST, host);
-    }
-  }
-
   public static getCurrentHost() {
     return localStorage.getItem(ACCESS_CLUSTER_HOST) ?? '';
   }
@@ -76,24 +62,9 @@ export default class CommonUtils {
     return token;
   }
 
-  public static getHeaderWithToken(params?: Map<string, string>): Headers {
-    const header = new Headers();
-    if (params) {
-      params.forEach((value, key) => header.set(key, value));
-    }
-    header.set('Authorization', CommonUtils.getToken());
-    return header;
-  }
-
   public static exportServer(name: string, clusterHost: string): void {
     const a = document.createElement('a');
-    const token = CommonUtils.getRawToken();
-    const host = CommonUtils.getCurrentHost();
-    let url = `/api/jarboot/cluster/manager/exportService?name=${name}&${CommonUtils.ACCESS_TOKEN}=${token}&clusterHost=${clusterHost}`;
-    if (host) {
-      url += `&${ACCESS_CLUSTER_HOST}=${host}`;
-    }
-    a.href = url;
+    a.href = `/api/jarboot/cluster/manager/exportService?name=${name}&clusterHost=${clusterHost}`;
     a.click();
     a.remove();
   }
@@ -114,12 +85,6 @@ export default class CommonUtils {
     const xhr = new XMLHttpRequest();
     //GET请求,请求路径url,async(是否异步)
     xhr.open(method, url, true);
-    //设置请求头参数
-    xhr.setRequestHeader('Authorization', CommonUtils.getToken());
-    const host = CommonUtils.getCurrentHost();
-    if (host) {
-      xhr.setRequestHeader(ACCESS_CLUSTER_HOST, host);
-    }
     //设置响应类型为 blob
     xhr.responseType = 'blob';
     //关键部分

@@ -103,8 +103,6 @@ export const useUserStore = defineStore({
     },
     async login(username: string, password: string) {
       const user: any = await OAuthService.login(username, password);
-      CommonUtils.storeToken(user.accessToken);
-      CommonUtils.storeCurrentHost(user.host);
       this.$patch({ ...user });
       await router.push('/');
     },

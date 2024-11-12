@@ -1,5 +1,3 @@
-import CommonUtils from '@/common/CommonUtils';
-import { ACCESS_CLUSTER_HOST } from '@/common/CommonConst';
 import type { UploadFileInfo } from '@/types';
 import CommonNotice from '@/common/CommonNotice';
 import { defer } from 'lodash';
@@ -85,7 +83,6 @@ export default class FileUploadClient {
     if (null == this.websocket) {
       let query = `filename=${encodeURIComponent(this.filename)}&sendCountOnce=${this.sendCountOnce}`;
       query += `&totalSize=${this.totalSize}&dstPath=${encodeURIComponent(this.dstPath)}`;
-      const clusterHost = CommonUtils.getCurrentHost();
       if (this.relativePath) {
         query += `&relativePath=${encodeURIComponent(this.relativePath)}`;
       }
@@ -98,10 +95,7 @@ export default class FileUploadClient {
       if (this.baseDir) {
         query += `&baseDir=${encodeURIComponent(this.baseDir)}`;
       }
-      if (clusterHost) {
-        query += `&${ACCESS_CLUSTER_HOST}=${clusterHost}`;
-      }
-      query += `&${CommonUtils.ACCESS_TOKEN}=${CommonUtils.getRawToken()}`;
+
       const protocol = 'https:' === window.location.protocol ? 'wss' : 'ws';
       const url = `${protocol}://${this.getDefaultHost()}/jarboot/upload/ws?${query}`;
 

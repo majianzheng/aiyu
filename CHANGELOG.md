@@ -1,9 +1,12 @@
 ## 3.1.3（11，2024）
-client-cli新增deploy命令
+client-cli新增deploy命令，支持操作系统内置命令；新增操作日志
 ### 新特性
 - client-cli新增deploy命令
 - client-cli支持操作系统内置命令
 - 升级spring-boot版本修复部分安全告警
+- 新增操作日志，启停服务、修改配置均会记录到操作日志
+- API接口权限校验增强
+- token存放到cookie
 ### bug修复
 - 偏好设置，系统名称设置中文后重启后乱码
 - 集群模式时client-cli部分功能异常问题

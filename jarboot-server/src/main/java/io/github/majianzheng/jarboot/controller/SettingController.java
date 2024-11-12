@@ -4,6 +4,8 @@ import io.github.majianzheng.jarboot.api.constant.CommonConst;
 import io.github.majianzheng.jarboot.api.pojo.SystemSetting;
 import io.github.majianzheng.jarboot.api.pojo.ServiceSetting;
 import io.github.majianzheng.jarboot.base.AgentManager;
+import io.github.majianzheng.jarboot.common.annotation.EnableAuditLog;
+import io.github.majianzheng.jarboot.common.annotation.PrivilegeCheck;
 import io.github.majianzheng.jarboot.common.pojo.ResponseVo;
 import io.github.majianzheng.jarboot.common.pojo.ResponseSimple;
 import io.github.majianzheng.jarboot.api.service.SettingService;
@@ -41,6 +43,8 @@ public class SettingController {
      * @param setting 服务配置
      */
     @PostMapping(value="/serviceSetting")
+    @PrivilegeCheck("SERVICES_MGR")
+    @EnableAuditLog("修改服务配置")
     public ResponseSimple submitServerSetting(@RequestBody ServiceSetting setting) {
         settingService.submitServiceSetting(setting);
         return HttpResponseUtils.success();
@@ -62,6 +66,7 @@ public class SettingController {
      * @return 提交结果
      */
     @PostMapping(value="/globalSetting")
+    @EnableAuditLog("修改系统设置")
     public ResponseSimple submitGlobalSetting(@RequestBody SystemSetting setting) {
         settingService.saveSetting(setting);
         return HttpResponseUtils.success();
@@ -87,6 +92,8 @@ public class SettingController {
      * @return 执行结果
      */
     @PostMapping(value="/vmoptions")
+    @PrivilegeCheck("SERVICES_MGR")
+    @EnableAuditLog("保存服务的JVM配置")
     public ResponseSimple saveVmOptions(String serviceName, String file, String content) {
         settingService.saveVmOptions(serviceName, file, content);
         return HttpResponseUtils.success();
@@ -95,9 +102,11 @@ public class SettingController {
     /**
      * 增加信任主机
      * @param host 主机
-     * @return
+     * @return 结果
      */
     @PostMapping(value="/trustedHost")
+    @PrivilegeCheck("TRUSTED_HOSTS")
+    @EnableAuditLog("添加白名单")
     public ResponseSimple addTrustedHost(String host) {
         SettingUtils.addTrustedHost(host);
         AgentManager.getInstance().addTrustedHost(host);
@@ -107,10 +116,12 @@ public class SettingController {
     /**
      * 移除信任主机
      * @param host 主机
-     * @return
-     * @throws IOException
+     * @return 结果
+     * @throws IOException 删除文件异常
      */
     @DeleteMapping(value="/trustedHost")
+    @PrivilegeCheck("TRUSTED_HOSTS")
+    @EnableAuditLog("删除白名单")
     public ResponseSimple removeTrustedHost(String host) throws IOException {
         SettingUtils.removeTrustedHost(host);
         return HttpResponseUtils.success();

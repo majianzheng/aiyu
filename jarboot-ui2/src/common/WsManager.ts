@@ -1,8 +1,7 @@
 import Logger from '@/common/Logger';
 import StringUtil from '@/common/StringUtil';
 import { MSG_EVENT } from '@/common/EventConst';
-import { ACCESS_CLUSTER_HOST, PROTOCOL_SPLIT } from '@/common/CommonConst';
-import CommonUtils from '@/common/CommonUtils';
+import { PROTOCOL_SPLIT } from '@/common/CommonConst';
 import { ElMessage } from 'element-plus';
 import type { FuncCode } from '@/common/EventConst';
 import type { MsgData, MsgReq } from '@/types';
@@ -123,15 +122,10 @@ class WsManager {
         return;
       }
     }
-    const token = `${CommonUtils.ACCESS_TOKEN}=${CommonUtils.getRawToken()}`;
     const protocol = 'https:' === window.location.protocol ? 'wss' : 'ws';
-    let url = import.meta.env.DEV
-      ? `${protocol}://${window.location.hostname}:9899/jarboot/main/service/ws?${token}`
-      : `${protocol}://${window.location.host}/jarboot/main/service/ws?${token}`;
-    const host = CommonUtils.getCurrentHost();
-    if (host) {
-      url += `&${ACCESS_CLUSTER_HOST}=${host}`;
-    }
+    const url = import.meta.env.DEV
+      ? `${protocol}://${window.location.hostname}:9899/jarboot/main/service/ws`
+      : `${protocol}://${window.location.host}/jarboot/main/service/ws`;
     WsManager.websocket = new WebSocket(url);
     WsManager.websocket.onmessage = WsManager.onMessage;
     WsManager.websocket.onopen = WsManager.onOpen;

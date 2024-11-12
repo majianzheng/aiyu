@@ -27,7 +27,6 @@
         <el-upload
           ref="iconUploadRef"
           :action="FAVICON_URL"
-          :headers="header"
           :show-file-list="false"
           v-model:file-list="formData.iconFile"
           accept="image/x-icon,image/png"
@@ -59,7 +58,6 @@ import { onMounted, reactive, ref, watch } from 'vue';
 import type { UploadInstance, UploadUserFile } from 'element-plus';
 import { useBasicStore } from '@/stores';
 import CommonNotice from '@/common/CommonNotice';
-import CommonUtils from '@/common/CommonUtils';
 import StringUtil from '@/common/StringUtil';
 import { FAVICON_URL, LOGO_URL } from '@/common/CommonConst';
 import Request from '@/common/Request';
@@ -76,7 +74,6 @@ const formData = reactive({
   iconUrl: FAVICON_URL,
   logoUrl: LOGO_URL,
 });
-let header = CommonUtils.getHeaderWithToken();
 
 watch(
   () => formData.iconFile,
@@ -201,7 +198,6 @@ function save() {
 }
 
 onMounted(async () => {
-  header = CommonUtils.getHeaderWithToken();
   basic.productName = await Request.get<string>('/jarboot/preferences/productName', {});
   formData.productName = basic.productName;
 });

@@ -1,6 +1,8 @@
 package io.github.majianzheng.jarboot.controller;
 
 import io.github.majianzheng.jarboot.api.constant.CommonConst;
+import io.github.majianzheng.jarboot.common.annotation.EnableAuditLog;
+import io.github.majianzheng.jarboot.common.annotation.PrivilegeCheck;
 import io.github.majianzheng.jarboot.common.pojo.ResponseVo;
 import io.github.majianzheng.jarboot.common.utils.HttpResponseUtils;
 import io.github.majianzheng.jarboot.entity.Privilege;
@@ -28,6 +30,8 @@ public class PrivilegeController {
      * @return 执行结果
      */
     @PutMapping
+    @PrivilegeCheck(value = "PRIVILEGE_MGR")
+    @EnableAuditLog("修改权限")
     public ResponseVo<String> savePrivilege(String role, String authCode, Boolean permission) {
         privilegeService.savePrivilege(role, authCode, permission);
         return HttpResponseUtils.success();

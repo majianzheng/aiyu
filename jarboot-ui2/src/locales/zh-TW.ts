@@ -145,7 +145,7 @@ export default {
   SERVERS_PATH: '工作空間',
   DEFAULT_VM_OPT: '默認的VM參數',
   AUTO_START_AFTER_INIT: 'jarboot啟動后自動啟動服務',
-  TRUSTED_HOSTS: '信任的服務器',
+  TRUSTED_HOSTS: '白名單',
   EMPTY_INPUT_MSG: '輸入的內容为空！',
   DELETE_HOST_MSG: '是否要删除信任的服務器？',
   MAX_START_TIME: '服務啟動最长等待时间（毫秒）',

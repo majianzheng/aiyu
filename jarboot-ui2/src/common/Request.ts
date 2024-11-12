@@ -2,7 +2,6 @@ import axios from 'axios';
 import CommonUtils from './CommonUtils';
 import router from '../router';
 import CommonNotice from '@/common/CommonNotice';
-import { ACCESS_CLUSTER_HOST } from '@/common/CommonConst';
 import Logger from '@/common/Logger';
 import type { AxiosProgressEvent } from 'axios';
 
@@ -126,16 +125,6 @@ export default class Request {
 
     // 请求拦截器，塞入token以便鉴权
     http.interceptors.request.use(request => {
-      const token = CommonUtils.getToken();
-      if (request.headers) {
-        if (token.length) {
-          request.headers['Authorization'] = token;
-        }
-        const host = CommonUtils.getCurrentHost();
-        if (host) {
-          request.headers[ACCESS_CLUSTER_HOST] = host;
-        }
-      }
       return request;
     });
   }

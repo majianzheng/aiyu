@@ -5,16 +5,24 @@ import io.github.majianzheng.jarboot.cluster.ClusterClientManager;
 import io.github.majianzheng.jarboot.common.utils.NetworkUtils;
 import io.github.majianzheng.jarboot.common.utils.OSUtils;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
+import io.github.majianzheng.jarboot.constant.AuthConst;
 import io.jsonwebtoken.lang.Collections;
 import org.apache.commons.io.FileUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.websocket.Session;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -127,6 +135,73 @@ public class CommonUtils {
             }
         }
         return genMachineCodeByMacAddr(addrList);
+    }
+
+    public static String getToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (AuthConst.TOKEN_COOKIE_NAME.equals(cookie.getName())) {
+                    String token = cookie.getValue();
+                    if (token.startsWith(AuthConst.TOKEN_PREFIX)) {
+                        token = token.substring(AuthConst.TOKEN_PREFIX.length());
+                    }
+                    return token;
+                }
+            }
+        }
+        String bearerToken = request.getHeader(AuthConst.AUTHORIZATION_HEADER);
+        if (!StringUtils.isBlank(bearerToken)) {
+            if (bearerToken.startsWith(AuthConst.TOKEN_PREFIX)) {
+                return bearerToken.substring(AuthConst.TOKEN_PREFIX.length());
+            }
+            return bearerToken;
+        }
+        String jwt = request.getParameter(AuthConst.ACCESS_TOKEN);
+        if (!StringUtils.isBlank(jwt)) {
+            return jwt;
+        }
+        return null;
+    }
+
+    public static String getAccessClusterHost(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (AuthConst.CLUSTER_COOKIE_NAME.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        String accessClusterHost = request.getHeader(AuthConst.ACCESS_CLUSTER_HOST);
+        if (StringUtils.isEmpty(accessClusterHost)) {
+            accessClusterHost = request.getParameter(AuthConst.ACCESS_CLUSTER_HOST);
+        }
+        return accessClusterHost;
+    }
+
+    /**
+     * 获取当前登录的用户名
+     * @return 用户名
+     */
+    public static String getLoginUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (null == authentication) {
+            return StringUtils.EMPTY;
+        }
+        return authentication.getName();
+    }
+
+    /**
+     * 获取当前登录的角色
+     * @return 角色列表
+     */
+    public static Set<String> getLoginRoles() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (null == authentication) {
+            return new HashSet<>();
+        }
+        return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
     }
 
     public static String getHomeEnv() {

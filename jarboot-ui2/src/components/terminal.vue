@@ -19,10 +19,8 @@ import { WebLinksAddon } from 'xterm-addon-web-links';
 import { Unicode11Addon } from 'xterm-addon-unicode11';
 import { SerializeAddon } from 'xterm-addon-serialize';
 import { SearchAddon } from 'xterm-addon-search';
-import CommonUtils from '@/common/CommonUtils';
 import { debounce, floor } from 'lodash';
 import { useUserStore } from '@/stores';
-import { ACCESS_CLUSTER_HOST } from '@/common/CommonConst';
 
 //单个字符宽高： width: 8 height: 16
 const props = defineProps<{
@@ -94,17 +92,12 @@ function createSocket() {
   if (termOption.websocket) {
     return termOption.websocket;
   }
-  const token = `${CommonUtils.ACCESS_TOKEN}=${CommonUtils.getRawToken()}`;
   let query = `col=${getCol()}&row=${getRow()}&userDir=${userStore.userDir}`;
-  const clusterHost = CommonUtils.getCurrentHost();
-  if (clusterHost) {
-    query += `&${ACCESS_CLUSTER_HOST}=${clusterHost}`;
-  }
   if (props.host) {
     query += `&clusterHost=${props.host}`;
   }
   const protocol = 'https:' === window.location.protocol ? 'wss' : 'ws';
-  const url = `${protocol}://${getDefaultHost()}/jarboot/main/terminal/ws?${token}&${query}`;
+  const url = `${protocol}://${getDefaultHost()}/jarboot/main/terminal/ws?${query}`;
   console.info('terminal connect to ' + url);
   termOption.websocket = new WebSocket(url);
   termOption.websocket.onopen = () => {
@@ -166,7 +159,7 @@ function init() {
   termOption.term.focus();
   termOption.term.attachCustomKeyEventHandler(event => {
     if (event.type === 'keydown') {
-      let ctl = false;
+      let ctl;
       if (window.navigator.userAgent.includes('Mac OS')) {
         ctl = event.metaKey;
       } else {

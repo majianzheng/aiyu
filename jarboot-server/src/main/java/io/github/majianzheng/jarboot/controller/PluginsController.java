@@ -2,6 +2,7 @@ package io.github.majianzheng.jarboot.controller;
 
 import io.github.majianzheng.jarboot.api.constant.CommonConst;
 import io.github.majianzheng.jarboot.api.pojo.PluginInfo;
+import io.github.majianzheng.jarboot.common.annotation.EnableAuditLog;
 import io.github.majianzheng.jarboot.common.pojo.ResponseVo;
 import io.github.majianzheng.jarboot.common.utils.HttpResponseUtils;
 import io.github.majianzheng.jarboot.service.PluginsService;
@@ -28,6 +29,7 @@ public class PluginsController {
      * @return 执行结果
      */
     @PostMapping
+    @EnableAuditLog("上传插件")
     public ResponseVo<String> uploadPlugin(@RequestParam("file") MultipartFile file,
                                            @RequestParam("type") String type) {
         pluginsService.uploadPlugin(file, type);
@@ -50,6 +52,7 @@ public class PluginsController {
      * @return 执行结果
      */
     @DeleteMapping
+    @EnableAuditLog("移除插件")
     public ResponseVo<String> removePlugin(String type, String filename) {
         pluginsService.removePlugin(type, filename);
         return HttpResponseUtils.success();

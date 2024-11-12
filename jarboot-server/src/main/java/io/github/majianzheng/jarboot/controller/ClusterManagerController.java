@@ -2,9 +2,12 @@ package io.github.majianzheng.jarboot.controller;
 
 import io.github.majianzheng.jarboot.api.constant.CommonConst;
 import io.github.majianzheng.jarboot.api.pojo.*;
+import io.github.majianzheng.jarboot.audit.ServiceInstanceFormat;
 import io.github.majianzheng.jarboot.cluster.ClusterClient;
 import io.github.majianzheng.jarboot.cluster.ClusterClientManager;
 import io.github.majianzheng.jarboot.cluster.ClusterClientProxy;
+import io.github.majianzheng.jarboot.common.annotation.EnableAuditLog;
+import io.github.majianzheng.jarboot.common.annotation.PrivilegeCheck;
 import io.github.majianzheng.jarboot.common.pojo.ResponseSimple;
 import io.github.majianzheng.jarboot.common.pojo.ResponseVo;
 import io.github.majianzheng.jarboot.common.utils.HttpResponseUtils;
@@ -27,6 +30,7 @@ import java.util.List;
  */
 @RequestMapping(value = CommonConst.CLUSTER_MGR_CONTEXT)
 @RestController
+@PrivilegeCheck(value = {"SERVICES_MGR", "ONLINE_DEBUG"})
 public class ClusterManagerController {
     @Resource
     private ClusterClientProxy clusterClientProxy;
@@ -75,6 +79,7 @@ public class ClusterManagerController {
      * @return 执行结果
      */
     @PostMapping("startServices")
+    @EnableAuditLog(value = "启动服务", argsFormat = ServiceInstanceFormat.class)
     public ResponseSimple startService(@RequestBody List<ServiceInstance> services) {
         clusterClientProxy.startService(services);
         return HttpResponseUtils.success();
@@ -86,6 +91,7 @@ public class ClusterManagerController {
      * @return 执行结果
      */
     @PostMapping("stopServices")
+    @EnableAuditLog(value = "停止服务", argsFormat = ServiceInstanceFormat.class)
     public ResponseSimple stopService(@RequestBody List<ServiceInstance> services) {
         clusterClientProxy.stopService(services);
         return HttpResponseUtils.success();
@@ -97,6 +103,7 @@ public class ClusterManagerController {
      * @return 执行结果
      */
     @PostMapping("restartServices")
+    @EnableAuditLog(value = "重启服务", argsFormat = ServiceInstanceFormat.class)
     public ResponseSimple restartService(@RequestBody List<ServiceInstance> services) {
         clusterClientProxy.restartService(services);
         return HttpResponseUtils.success();
@@ -109,6 +116,7 @@ public class ClusterManagerController {
      * @return 执行结果
      */
     @PostMapping("attach")
+    @EnableAuditLog("attach进程")
     public ResponseSimple attach(String host, String pid) {
         clusterClientProxy.attach(host, pid);
         return HttpResponseUtils.success();
@@ -120,6 +128,7 @@ public class ClusterManagerController {
      * @return 执行结果
      */
     @PostMapping("deleteService")
+    @EnableAuditLog(value = "删除服务", argsFormat = ServiceInstanceFormat.class)
     public ResponseSimple deleteService(@RequestBody List<ServiceInstance> instances) {
         if (null != instances) {
             instances.forEach(instance -> clusterClientProxy.deleteService(instance));
@@ -143,6 +152,7 @@ public class ClusterManagerController {
      * @return 服务配置
      */
     @PostMapping("saveServiceSetting")
+    @EnableAuditLog(value = "保存服务配置", argsFormat = ServiceInstanceFormat.class)
     public ResponseVo<ServiceSetting> saveServiceSetting(@RequestBody ServiceSetting setting) {
         clusterClientProxy.saveServiceSetting(setting);
         return HttpResponseUtils.success();
@@ -157,6 +167,7 @@ public class ClusterManagerController {
      * @throws IOException IO 异常
      */
     @GetMapping(value="/exportService")
+    @EnableAuditLog("导出服务")
     public void exportService(
             @RequestParam(required = false) String clusterHost,
             @RequestParam String name,
@@ -179,6 +190,7 @@ public class ClusterManagerController {
      * @return 执行结果
      */
     @PostMapping("/importService")
+    @EnableAuditLog("导入服务")
     public ResponseVo<String> importService(
             @RequestParam(required = false) String clusterHost,
             @RequestParam("file") MultipartFile file) {
@@ -202,6 +214,7 @@ public class ClusterManagerController {
      * @param response Servlet response
      */
     @GetMapping(value="/download")
+    @EnableAuditLog("从服务器下载文件")
     public void download(
             @RequestParam(name = "clusterHost", required = false) String clusterHost,
             @RequestParam(name = "file") String file, HttpServletResponse response) throws IOException {

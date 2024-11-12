@@ -5,6 +5,8 @@ import io.github.majianzheng.jarboot.api.pojo.JvmProcess;
 import io.github.majianzheng.jarboot.api.pojo.ServiceInstance;
 import io.github.majianzheng.jarboot.api.pojo.ServiceSetting;
 import io.github.majianzheng.jarboot.api.service.ServiceManager;
+import io.github.majianzheng.jarboot.common.annotation.EnableAuditLog;
+import io.github.majianzheng.jarboot.common.annotation.PrivilegeCheck;
 import io.github.majianzheng.jarboot.common.pojo.ResponseVo;
 import io.github.majianzheng.jarboot.common.pojo.ResponseSimple;
 import io.github.majianzheng.jarboot.common.pojo.ResultCodeConst;
@@ -23,6 +25,7 @@ import java.util.List;
  */
 @RequestMapping(value = CommonConst.SERVICE_MGR_CONTEXT)
 @RestController
+@PrivilegeCheck(value = {"SERVICES_MGR", "ONLINE_DEBUG"})
 public class ServiceMgrController {
     @Resource
     private ServiceManager serviceManager;
@@ -39,7 +42,7 @@ public class ServiceMgrController {
 
     /**
      * 获取服务组列表
-     * @return
+     * @return 服务组
      */
     @GetMapping("/groups")
     public ResponseVo<ServiceInstance> getServiceGroup() {
@@ -48,7 +51,7 @@ public class ServiceMgrController {
 
     /**
      * 获取JVM组列表
-     * @return
+     * @return JVM组
      */
     @GetMapping("/jvmGroups")
     public ResponseVo<JvmProcess> getJvmGroup() {
@@ -61,6 +64,7 @@ public class ServiceMgrController {
      * @return 执行结果
      */
     @PostMapping(value="/startService")
+    @EnableAuditLog("启动服务")
     public ResponseSimple startServer(@RequestBody List<String> services) {
         serviceManager.startService(services);
         return HttpResponseUtils.success();
@@ -72,6 +76,7 @@ public class ServiceMgrController {
      * @return 执行结果
      */
     @PostMapping(value="/stopService")
+    @EnableAuditLog("停止服务")
     public ResponseSimple stopServer(@RequestBody List<String> services) {
         serviceManager.stopService(services);
         return HttpResponseUtils.success();
@@ -83,6 +88,7 @@ public class ServiceMgrController {
      * @return 执行结果
      */
     @PostMapping(value="/restartService")
+    @EnableAuditLog("重启服务")
     public ResponseSimple restartServer(@RequestBody List<String> services) {
         serviceManager.restartService(services);
         return HttpResponseUtils.success();
@@ -91,9 +97,10 @@ public class ServiceMgrController {
     /**
      * 启动单个服务
      * @param setting 服务配置
-     * @return
+     * @return 结果
      */
     @PostMapping(value="/startSingleService")
+    @EnableAuditLog("启动单个服务")
     public ResponseSimple startSingleService(@RequestBody ServiceSetting setting) {
         serviceManager.startSingleService(setting);
         return HttpResponseUtils.success();
@@ -102,9 +109,10 @@ public class ServiceMgrController {
     /**
      * 停止单个服务
      * @param setting 服务配置
-     * @return
+     * @return 结果
      */
     @PostMapping(value="/stopSingleService")
+    @EnableAuditLog("停止单个服务")
     public ResponseSimple stopSingleService(@RequestBody ServiceSetting setting) {
         serviceManager.stopSingleService(setting);
         return HttpResponseUtils.success();
@@ -140,6 +148,7 @@ public class ServiceMgrController {
      * @return 执行结果
      */
     @GetMapping(value="/attach")
+    @EnableAuditLog("attach进程")
     public ResponseSimple attach(String pid) {
         serviceManager.attach(pid);
         return HttpResponseUtils.success();
@@ -151,6 +160,7 @@ public class ServiceMgrController {
      * @return 执行结果
      */
     @DeleteMapping(value="/service")
+    @EnableAuditLog("删除服务")
     public ResponseSimple deleteServer(String serviceName) {
         serviceManager.deleteService(serviceName);
         return HttpResponseUtils.success();

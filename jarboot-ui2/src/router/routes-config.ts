@@ -150,6 +150,16 @@ export default [
           code: 'TRUSTED_HOSTS',
         },
       },
+      {
+        path: 'audit',
+        name: 'audit',
+        component: () => import('@/views/setting/audit-log.vue'),
+        meta: {
+          module: '系统管理',
+          icon: 'Notebook',
+          code: '日志记录',
+        },
+      },
     ],
   },
 ];

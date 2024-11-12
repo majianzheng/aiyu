@@ -3,6 +3,7 @@ package io.github.majianzheng.jarboot.controller;
 import io.github.majianzheng.jarboot.api.pojo.FileNode;
 import io.github.majianzheng.jarboot.cluster.ClusterClient;
 import io.github.majianzheng.jarboot.cluster.ClusterClientManager;
+import io.github.majianzheng.jarboot.common.annotation.EnableAuditLog;
 import io.github.majianzheng.jarboot.common.pojo.ResponseVo;
 import io.github.majianzheng.jarboot.common.pojo.ResponseSimple;
 import io.github.majianzheng.jarboot.common.utils.HttpResponseUtils;
@@ -37,6 +38,7 @@ public class FileController {
      * @return 执行结果
      */
     @PostMapping("file")
+    @EnableAuditLog("上传文件")
     public ResponseSimple upload(
             @RequestParam("file") MultipartFile file,
             @RequestParam(required = false) String clusterHost,
@@ -60,6 +62,7 @@ public class FileController {
      * @throws IOException IO异常
      */
     @PostMapping("file/download")
+    @EnableAuditLog("下载文件")
     public void download(
             @RequestParam("path") String path,
             @RequestParam(required = false) String clusterHost,
@@ -121,6 +124,7 @@ public class FileController {
      * @return 执行结果
      */
     @DeleteMapping("file/delete")
+    @EnableAuditLog("删除文件")
     public ResponseVo<String> deleteFile(
             @RequestParam(required = false) String clusterHost,
             @RequestParam("path") String path) {
@@ -141,6 +145,7 @@ public class FileController {
      * @return 执行结果
      */
     @PostMapping("text")
+    @EnableAuditLog("写文件")
     public ResponseVo<String> writeFile(
             @RequestParam(required = false) String clusterHost,
             @RequestParam("path") String path,
@@ -161,6 +166,7 @@ public class FileController {
      * @return 执行结果
      */
     @PostMapping("text/create")
+    @EnableAuditLog("创建文本文件")
     public ResponseVo<String> newFile(
             @RequestParam(required = false) String clusterHost,
             @RequestParam("path") String path,
@@ -180,6 +186,7 @@ public class FileController {
      * @return 执行结果
      */
     @PostMapping("directory")
+    @EnableAuditLog("创建文件夹")
     public ResponseVo<String> addDirectory(
             @RequestParam(required = false) String clusterHost,
             @RequestParam("path") String file) {

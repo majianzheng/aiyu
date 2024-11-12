@@ -1,6 +1,8 @@
 package io.github.majianzheng.jarboot.controller;
 
 
+import io.github.majianzheng.jarboot.common.annotation.EnableAuditLog;
+import io.github.majianzheng.jarboot.common.annotation.PrivilegeCheck;
 import io.github.majianzheng.jarboot.utils.SettingUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -28,7 +30,7 @@ public class PreferencesController {
      * 获取资源文件
      * @param file 文件名
      * @param response response
-     * @throws IOException
+     * @throws IOException io异常
      */
     @GetMapping("/image/{file}")
     public void getBasicConfigImage(@PathVariable("file") String file, HttpServletResponse response) throws IOException {
@@ -45,9 +47,11 @@ public class PreferencesController {
      * 更新资源
      * @param fileName 文件名
      * @param file 文件
-     * @throws IOException
+     * @throws IOException io异常
      */
     @PostMapping("/image/{fileName}")
+    @PrivilegeCheck(value = "PREFERENCES_CONFIG")
+    @EnableAuditLog("更新LOGO或图标")
     public void updateBasicConfigImage(
             @PathVariable("fileName") String fileName,
             @RequestParam("file") MultipartFile file) throws IOException {
@@ -72,6 +76,8 @@ public class PreferencesController {
      * @return {@link ResponseVo}
      */
     @PutMapping("/productName")
+    @PrivilegeCheck(value = "PREFERENCES_CONFIG")
+    @EnableAuditLog("设置产品名称")
     public ResponseVo<String> setProductName(String productName) {
         SettingUtils.setProductName(productName);
         return HttpResponseUtils.success();

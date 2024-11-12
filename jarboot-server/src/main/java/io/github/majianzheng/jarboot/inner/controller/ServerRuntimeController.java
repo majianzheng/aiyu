@@ -95,7 +95,7 @@ public class ServerRuntimeController {
         for (String fileName : parseFiles) {
             File file = FileUtils.getFile(SettingUtils.getHomePath(), CommonConst.COMPONENTS_NAME, fileName);
             String[] paths = getJarDependenceFiles(file);
-            if (null != paths) {
+            if (paths.length > 0) {
                 dependencies.addAll(Arrays.asList(paths));
             }
         }

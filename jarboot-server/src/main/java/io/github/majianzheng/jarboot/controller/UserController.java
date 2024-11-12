@@ -1,6 +1,8 @@
 package io.github.majianzheng.jarboot.controller;
 
 import io.github.majianzheng.jarboot.api.constant.CommonConst;
+import io.github.majianzheng.jarboot.common.annotation.EnableAuditLog;
+import io.github.majianzheng.jarboot.common.annotation.PrivilegeCheck;
 import io.github.majianzheng.jarboot.common.pojo.PagedList;
 import io.github.majianzheng.jarboot.common.pojo.ResponseVo;
 import io.github.majianzheng.jarboot.common.pojo.ResponseSimple;
@@ -48,6 +50,8 @@ public class UserController {
      * @return 执行结果
      */
     @PostMapping
+    @PrivilegeCheck(value = "USER_LIST")
+    @EnableAuditLog("创建用户")
     public ResponseSimple createUser(String username, String fullName, String password, String roles, @RequestParam(required = false) String userDir, @RequestParam(required = false) String avatar) {
         userService.createUser(username, fullName, password, roles, userDir, avatar);
         return HttpResponseUtils.success();
@@ -63,6 +67,7 @@ public class UserController {
      * @return 执行结果
      */
     @PostMapping("/update")
+    @EnableAuditLog("修改用户")
     public ResponseSimple updateUser(String username, String fullName, String roles, @RequestParam(required = false) String userDir, @RequestParam(required = false) String avatar) {
         userService.updateUser(username, fullName, roles, userDir, avatar);
         return HttpResponseUtils.success();
@@ -74,6 +79,8 @@ public class UserController {
      * @return 执行结果
      */
     @DeleteMapping
+    @PrivilegeCheck(value = "USER_LIST")
+    @EnableAuditLog("删除用户")
     public ResponseSimple deleteUser(Long id) {
         userService.deleteUser(id);
         return HttpResponseUtils.success();
@@ -88,6 +95,7 @@ public class UserController {
      * @return 执行结果
      */
     @PutMapping
+    @EnableAuditLog("修改密码")
     public ResponseSimple updateUserPassword(String username, String oldPassword, String password, HttpServletRequest request) {
         String currentLoginUser = getCurrentLoginName(request);
         //只有ADMIN和自己可修改
