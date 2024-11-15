@@ -3,6 +3,7 @@ package io.github.majianzheng.jarboot.ws;
 import io.github.majianzheng.jarboot.common.utils.AesUtils;
 import io.github.majianzheng.jarboot.common.utils.JsonUtils;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
+import io.github.majianzheng.jarboot.config.WsConfigurator;
 import io.github.majianzheng.jarboot.dao.FileUploadProgressDao;
 import io.github.majianzheng.jarboot.entity.FileUploadProgress;
 import io.github.majianzheng.jarboot.service.ServerRuntimeService;
@@ -29,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 文件上传服务
  * @author mazheng
  */
-@ServerEndpoint("/jarboot/upload/ws")
+@ServerEndpoint(value = "/jarboot/upload/ws", configurator = WsConfigurator.class)
 @RestController
 @SuppressWarnings({"java:S3776", "java:S2696"})
 public class UploadFileServer {

@@ -6,6 +6,7 @@ import io.github.majianzheng.jarboot.api.exception.JarbootRunException;
 import io.github.majianzheng.jarboot.common.notify.AbstractEventRegistry;
 import io.github.majianzheng.jarboot.common.notify.NotifyReactor;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
+import io.github.majianzheng.jarboot.config.WsConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ import java.util.concurrent.Executor;
 /**
  * @author majianzheng
  */
-@ServerEndpoint("/jarboot/event/ws")
+@ServerEndpoint(value = "/jarboot/event/ws", configurator = WsConfigurator.class)
 @Component
 public class JarbootEventServer implements AbstractEventRegistry {
     private static final Logger logger = LoggerFactory.getLogger(JarbootEventServer.class);

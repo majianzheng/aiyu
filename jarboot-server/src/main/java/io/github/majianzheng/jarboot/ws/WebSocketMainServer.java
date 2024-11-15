@@ -4,6 +4,7 @@ import io.github.majianzheng.jarboot.api.constant.CommonConst;
 import io.github.majianzheng.jarboot.api.event.JarbootEvent;
 import io.github.majianzheng.jarboot.api.event.Subscriber;
 import io.github.majianzheng.jarboot.cluster.ClusterClientManager;
+import io.github.majianzheng.jarboot.config.WsConfigurator;
 import io.github.majianzheng.jarboot.dao.UserDao;
 import io.github.majianzheng.jarboot.event.FromOtherClusterServerMessageEvent;
 import io.github.majianzheng.jarboot.common.notify.DefaultPublisher;
@@ -26,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 向浏览器推送消息
  * @author majianzheng
  */
-@ServerEndpoint(CommonConst.MAIN_WS_CONTEXT)
+@ServerEndpoint(value = CommonConst.MAIN_WS_CONTEXT, configurator = WsConfigurator.class)
 @RestController
 @SuppressWarnings({"java:S2696"})
 public class WebSocketMainServer {

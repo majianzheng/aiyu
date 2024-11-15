@@ -3,7 +3,6 @@ package io.github.majianzheng.jarboot.ws;
 import io.github.majianzheng.jarboot.common.JarbootException;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
 import io.github.majianzheng.jarboot.constant.AuthConst;
-import io.github.majianzheng.jarboot.utils.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +25,7 @@ public class SessionProxy {
         int index = targetClusterHost.indexOf(':');
         String host = targetClusterHost.substring(0, index);
         String query = clientUri.getQuery();
+        query = parseQuery(client, query);
         int port = Integer.parseInt(targetClusterHost.substring(index + 1));
         try {
             URI uri = new URI(clientUri.getScheme(),
@@ -38,6 +38,20 @@ public class SessionProxy {
         } catch (Exception e) {
             throw new JarbootException(e);
         }
+    }
+
+    private String parseQuery(Session session, String query) {
+        // 从Session的UserProperties中获取Cookie
+        String accessClusterHost = (String) session.getUserProperties().get(AuthConst.ACCESS_CLUSTER_HOST);
+        String token = (String) session.getUserProperties().get(AuthConst.ACCESS_TOKEN);
+        final String prefix = StringUtils.isEmpty(query) ? StringUtils.EMPTY : "&";
+        if (StringUtils.isNotEmpty(token) && !query.contains(AuthConst.ACCESS_TOKEN)) {
+            query += (prefix + AuthConst.ACCESS_TOKEN + "=" + token);
+        }
+        if (StringUtils.isNotEmpty(accessClusterHost) && !query.contains(AuthConst.ACCESS_CLUSTER_HOST)) {
+            query += (prefix + AuthConst.ACCESS_CLUSTER_HOST + "=" + accessClusterHost);
+        }
+        return query;
     }
 
     public void proxyOnText(String message) {

@@ -16,6 +16,7 @@ import java.util.Map;
  * 控制台终端
  * @author mazheng
  */
+@SuppressWarnings({"java:S106", "java:S2274", "java:S3776", "java:S1170"})
 public class InnerConsole {
     private static final InnerConsole CONSOLE = new InnerConsole();
     private Process process;
