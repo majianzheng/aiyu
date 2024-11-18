@@ -30,6 +30,12 @@
         <el-form-item v-if="store.dev" label="DEV">
           <span>{{ store.dev ? $t('YES') : $t('NO') }}</span>
         </el-form-item>
+        <el-form-item label="Git">
+          <div>
+            <div><el-link href="https://github.com/majianzheng/jarboot">https://github.com/majianzheng/jarboot</el-link></div>
+            <div><el-link href="https://gitee.com/majz0908/jarboot">https://gitee.com/majz0908/jarboot</el-link></div>
+          </div>
+        </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="state.dialog = false">{{ $t('CLOSE') }}</el-button>
