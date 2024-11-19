@@ -25,7 +25,7 @@ start "" %COMMAND%
 echo Jarboot server started.
 
 set "TOOL_JAR=components/jarboot-tools.jar io.github.majianzheng.jarboot.tools.daemon.ServerDaemon"
-set "DAEMON_VM=-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=5000
+set "DAEMON_VM=-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=5000 -Djava.io.tmpdir=.cache
 set "DAEMON_CMD="%JAVA%" %DAEMON_VM% -cp %TOOL_JAR% jarboot.daemon %*"
 
 echo Starting jarboot daemon...

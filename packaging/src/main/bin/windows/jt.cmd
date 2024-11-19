@@ -44,7 +44,7 @@ goto Win9xApp
 :endInit
 
 set CLASS_PATH=components\jarboot-tools.jar
-set "VM_OPT=-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=5000 -Dfile.encoding=UTF-8"
+set "VM_OPT=-Xms50m -Xmx100m -XX:+UseG1GC -XX:MaxGCPauseMillis=5000 -Dfile.encoding=UTF-8 -Djava.io.tmpdir=.cache"
 
 set COMMAND="%JAVA%" %VM_OPT% -jar "%CLASS_PATH%" %CMD_LINE_ARGS%
 

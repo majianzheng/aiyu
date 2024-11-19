@@ -2,6 +2,7 @@ package io.github.majianzheng.jarboot.utils;
 
 import io.github.majianzheng.jarboot.base.AgentManager;
 import io.github.majianzheng.jarboot.cluster.ClusterClientManager;
+import io.github.majianzheng.jarboot.common.CacheDirHelper;
 import io.github.majianzheng.jarboot.common.JarbootException;
 import io.github.majianzheng.jarboot.common.JarbootThreadFactory;
 import io.github.majianzheng.jarboot.common.utils.OSUtils;
@@ -82,8 +83,10 @@ public class TaskUtils {
                 .append(SettingUtils.getAgentStartOption(setting.getUserDir(), setting.getName(), sid))
                 .append(StringUtils.SPACE);
         if (CommonConst.SHELL_TYPE.equals(setting.getApplicationType())) {
-            cmdBuilder.append("-Xms50m -Xmx150m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 ");
+            String cacheDir = CacheDirHelper.getCacheDir().getAbsolutePath();
             cmdBuilder
+                    .append("-Xms50m -Xmx150m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 ")
+                    .append("-Djava.io.tmpdir=\"").append(cacheDir).append("\" ")
                     .append("-jar")
                     .append(StringUtils.SPACE)
                     .append('"')
