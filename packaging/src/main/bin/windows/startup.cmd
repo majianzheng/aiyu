@@ -15,7 +15,7 @@ set "SERVER=components\jarboot-server.jar"
 rem JVM Configuration
 set "JARBOOT_JVM_OPTS=-Xms512m -Xmx1g -XX:+UseG1GC -XX:MaxGCPauseMillis=5000 -XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=logs\java_heapdump.hprof"
 
-set JARBOOT_OPTS=-Djdk.attach.allowAttachSelf=true -Dloader.path="components\lib,plugins\server" -Dfile.encoding=UTF-8
+set JARBOOT_OPTS=-Djdk.attach.allowAttachSelf=true -Dloader.path="components\lib,plugins\server" -Dfile.encoding=UTF-8 -Djava.io.tmpdir=.cache
 
 set COMMAND="%JAVA%" %JARBOOT_JVM_OPTS% %JARBOOT_OPTS% -jar "%SERVER%" jarboot.jarboot %*
 

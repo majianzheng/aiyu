@@ -8,4 +8,4 @@ spring:
         - classpath:/static/
 server:
   tomcat:
-    basedir: packaging/target/jarboot-bin/jarboot/logs/tmp
+    basedir: packaging/target/jarboot-bin/jarboot/.cache/tmp

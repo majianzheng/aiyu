@@ -97,7 +97,6 @@ public class WebSocketMainServer {
         } else {
             ClusterClientManager.getInstance().execClusterFunc(event);
         }
-        logger.info("处理客户端的消息：{}", message);
     }
 
     /**

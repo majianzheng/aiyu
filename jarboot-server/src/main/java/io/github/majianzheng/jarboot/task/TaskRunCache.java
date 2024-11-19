@@ -21,6 +21,7 @@ import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -316,10 +317,19 @@ public class TaskRunCache {
         }
     }
 
+
+    @Scheduled(cron = "0 0 0/1 * * ?")
+    public void clean() {
+        logger.info("Auto clean cache start...");
+        cleanPidFiles();
+        CacheDirHelper.clean();
+        logger.info("Auto clean cache finished.");
+    }
+
     @PostConstruct
     public void init() {
-        //清理无效的pid文件
-        this.cleanPidFiles();
+        //清理缓存文件
+        clean();
 
         if (StringUtils.isBlank(excludeDirs)) {
             return;

@@ -47,6 +47,10 @@ public class AppEnvironment implements SpringApplicationRunListener {
         }
 
         homePath = FileUtils.getFile(homePath).getAbsolutePath();
+        String cache = homePath + File.separator + ".cache";
+        System.setProperty("pty4j.tmpdir", cache);
+        System.setProperty("java.io.tmpdir", cache);
+        System.setProperty("java.tmp.dir", cache);
         System.setProperty(CommonConst.JARBOOT_HOME, homePath);
         final String ver = "v" + VersionUtils.version;
         System.setProperty("application.version", ver);

@@ -11,11 +11,13 @@ import io.github.majianzheng.jarboot.api.pojo.ServerRuntimeInfo;
 import io.github.majianzheng.jarboot.client.ClientProxy;
 import io.github.majianzheng.jarboot.client.ClusterOperator;
 import io.github.majianzheng.jarboot.common.AnsiLog;
+import io.github.majianzheng.jarboot.common.CacheDirHelper;
 import io.github.majianzheng.jarboot.common.utils.BannerUtils;
 import io.github.majianzheng.jarboot.common.utils.CommandCliParser;
 import io.github.majianzheng.jarboot.common.utils.OSUtils;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
 import io.github.majianzheng.jarboot.tools.client.command.AbstractClientCommand;
+import io.github.majianzheng.jarboot.tools.common.Utils;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
@@ -66,6 +68,10 @@ public class JarbootClientCli implements Subscriber<TaskLifecycleEvent> {
     }
 
     public static void main(String[] args) throws IOException {
+        System.setProperty("jline.WindowsTerminal.input.encoding", "UTF-8");
+        System.setProperty("jline.WindowsTerminal.output.encoding", "UTF-8");
+        Utils.getJarbootHome();
+        CacheDirHelper.clean();
         BannerUtils.print();
         JarbootClientCli clientCli = new JarbootClientCli();
         CommandCliParser commandCliParser = new CommandCliParser(args, clientCli);
@@ -76,8 +82,6 @@ public class JarbootClientCli implements Subscriber<TaskLifecycleEvent> {
                 clientCli.host = "127.0.0.1:9899";
             }
         }
-        System.setProperty("jline.WindowsTerminal.input.encoding", "UTF-8");
-        System.setProperty("jline.WindowsTerminal.output.encoding", "UTF-8");
         //登录
         clientCli.login();
         //开始执行

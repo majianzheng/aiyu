@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author majianzheng
@@ -134,7 +136,7 @@ public class CacheDirHelper {
             }
         }
         //启动时清理temp文件
-        File tempDir = FileUtils.getFile(CACHE_DIR, TEMP_DIR);
+        File tempDir = FileUtils.getFile(cacheDir, TEMP_DIR);
         if (tempDir.exists()) {
             FileUtils.deleteQuietly(tempDir);
         }
@@ -150,6 +152,56 @@ public class CacheDirHelper {
 
     public static File getDaemonPidFile() {
         return FileUtils.getFile(getJarbootHome(), CACHE_DIR, "daemon.pid");
+    }
+
+    public static void clean() {
+        File cacheDir = FileUtils.getFile(getJarbootHome(), CACHE_DIR);
+        File[] allFiles = cacheDir.listFiles();
+        if (null == allFiles) {
+            return;
+        }
+        cleanTempFile(allFiles);
+    }
+
+    private static void cleanTempFile(File[] allFiles) {
+        // jna-103658734
+        File jnaDir = null;
+        // tomcat-docbase.9899.12142748640606892693
+        File tomcatDocBaseDir = null;
+        // tomcat.9088.9967532467414851425
+        File tomcatDir = null;
+        // jlinenative-3.25.1-2a85276cf6d59d9c-jlinenative
+        // jansi-2.4.1-d7b98e381885acbe-jansi
+        List<File> oldFiles = new ArrayList<>();
+        for (File file : allFiles) {
+            if (file.getName().startsWith("jna-")) {
+                jnaDir = compareAndGetNew(file, jnaDir, oldFiles);
+            } else if (file.getName().startsWith("tomcat-docbase.")) {
+                tomcatDocBaseDir = compareAndGetNew(file, tomcatDocBaseDir, oldFiles);
+            } else if (file.getName().startsWith("tomcat.")) {
+                tomcatDir = compareAndGetNew(file, tomcatDir, oldFiles);
+            } else if (file.getName().startsWith("jlinenative-")) {
+                FileUtils.deleteQuietly(file);
+            } else if (file.getName().startsWith("jansi-")) {
+                FileUtils.deleteQuietly(file);
+            }
+        }
+
+        oldFiles.forEach(FileUtils::deleteQuietly);
+    }
+
+    private static File compareAndGetNew(File file, File cur, List<File> oldFiles) {
+        if (null == cur) {
+            cur = file;
+        } else {
+            if (file.lastModified() > cur.lastModified()) {
+                oldFiles.add(cur);
+                cur = file;
+            } else {
+                oldFiles.add(file);
+            }
+        }
+        return cur;
     }
 
     private static FileChannel getSingleInstanceLockFileChannel(String file) {

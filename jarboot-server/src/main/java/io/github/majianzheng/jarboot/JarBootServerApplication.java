@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Spring boot main function.
@@ -12,6 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication(scanBasePackages = "io.github.majianzheng.jarboot")
 @PropertySource(value={"file:${JARBOOT_HOME}/conf/jarboot.properties"}, ignoreResourceNotFound=true)
 @EnableJpaAuditing
+@EnableScheduling
 public class JarBootServerApplication {
 
 	public static void main(String[] args) {
