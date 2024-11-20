@@ -29,6 +29,8 @@ router.afterEach(to => {
   const menu = basic.subNameMap.get(name);
   if (menu) {
     menu.subName = name;
+    menu.params = to.params;
+    menu.query = to.query;
   }
   defer(reload);
 });
@@ -140,7 +142,7 @@ const isActive = (menu: MenuItem): boolean => {
 
 const goTo = (menu: any) => {
   if (route.name !== menu.name && !isActive(menu)) {
-    router.push({ name: menu.subName || menu.name });
+    router.push({ name: menu.subName || menu.name, params: menu.params, query: menu.query });
   }
 };
 

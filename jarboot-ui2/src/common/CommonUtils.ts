@@ -1,6 +1,8 @@
 import { ACCESS_CLUSTER_HOST, TOKEN_KEY } from './CommonConst';
 import { getCurrentInstance } from 'vue';
 import type { I18n, Locale } from 'vue-i18n';
+import type {RouteLocationNormalized} from "vue-router";
+import {PAGE_LOGIN} from "@/common/route-name-constants";
 
 /**
  * @author majianzheng
@@ -60,6 +62,21 @@ export default class CommonUtils {
       token = token.substring(CommonUtils.TOKEN_PREFIX.length);
     }
     return token;
+  }
+
+  public static parseRedirectQuery(to: RouteLocationNormalized): any {
+    const query = {} as any;
+    if (to.name !== PAGE_LOGIN) {
+      // 登录成功后跳转回原登录前的界面
+      query['redirect'] = to.name;
+      if (to.query) {
+        query['redirectQuery'] = JSON.stringify(to.query);
+      }
+      if (to.params) {
+        query['redirectParams'] = JSON.stringify(to.params);
+      }
+    }
+    return query;
   }
 
   public static exportServer(name: string, clusterHost: string): void {

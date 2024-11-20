@@ -104,6 +104,21 @@ export const useUserStore = defineStore({
     async login(username: string, password: string) {
       const user: any = await OAuthService.login(username, password);
       this.$patch({ ...user });
+      const name = router.currentRoute?.value?.query['redirect'] as string;
+      if (name) {
+        const paramsStr = router.currentRoute.value.query['redirectParams'] as string;
+        let params = {};
+        if (paramsStr) {
+          params = JSON.parse(paramsStr);
+        }
+        const queryStr = router.currentRoute.value.query['redirectQuery'] as string;
+        let query = {};
+        if (queryStr) {
+          query = JSON.parse(queryStr);
+        }
+        await router.push({ name, params, query });
+        return;
+      }
       await router.push('/');
     },
     setCurrentUser(user: any) {
