@@ -81,7 +81,6 @@ public class TerminalProcess {
             logger.error("终端进程已停止！");
             return;
         }
-        logger.info("终端执行命令：{}", cmd);
         try {
             outputStream.write(cmd.getBytes());
             outputStream.flush();

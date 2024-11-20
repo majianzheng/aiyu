@@ -323,6 +323,13 @@ public class TaskRunCache {
         logger.info("Auto clean cache start...");
         cleanPidFiles();
         CacheDirHelper.clean();
+        final String[] dumps = new String[]{"classdump", "dump"};
+        for (String dump : dumps) {
+            File dumpDir = FileUtils.getFile(SettingUtils.getLogDir(), dump);
+            if (dumpDir.exists()) {
+                FileUtils.deleteQuietly(dumpDir);
+            }
+        }
         logger.info("Auto clean cache finished.");
     }
 

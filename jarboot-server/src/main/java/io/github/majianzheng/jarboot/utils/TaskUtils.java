@@ -82,8 +82,8 @@ public class TaskUtils {
                 // Java agent
                 .append(SettingUtils.getAgentStartOption(setting.getUserDir(), setting.getName(), sid))
                 .append(StringUtils.SPACE);
+        String cacheDir = CacheDirHelper.getCacheDir().getAbsolutePath();
         if (CommonConst.SHELL_TYPE.equals(setting.getApplicationType())) {
-            String cacheDir = CacheDirHelper.getCacheDir().getAbsolutePath();
             cmdBuilder
                     .append("-Xms50m -Xmx150m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 ")
                     .append("-Djava.io.tmpdir=\"").append(cacheDir).append("\" ")
@@ -100,6 +100,10 @@ public class TaskUtils {
             // jvm 配置
             String jvm = SettingUtils.getJvm(serverPath, setting.getVm());
             if (StringUtils.isNotEmpty(jvm)) {
+                final String temp = "-Djava.io.tmpdir=";
+                if (!jvm.contains(temp)) {
+                    cmdBuilder.append(temp).append("\"").append(cacheDir).append("\" ");
+                }
                 cmdBuilder.append(jvm).append(StringUtils.SPACE);
             }
             if (StringUtils.isBlank(setting.getCommand())) {

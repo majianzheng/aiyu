@@ -60,7 +60,7 @@ public class SettingUtils {
     /** Jarboot的bin文件夹路径 */
     private static String componentsDir;
     /** Jarboot的日志路径 */
-    private static String logDir;
+    private static String logDir = "logs";
     /** jarboot-agent.jar文件的路径 */
     private static String agentJar;
     private static String toolsJar;
