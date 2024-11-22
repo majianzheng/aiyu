@@ -5,6 +5,7 @@ export default {
   //Tab标题
   SERVICES_MGR: '服務管理',
   ONLINE_DEBUG: '線上診斷',
+  MONITOR: '資源監控',
   AUTH_CONTROL: '權限控制',
   PLUGINS: '挿件',
   SETTING: '設置',
@@ -230,4 +231,44 @@ export default {
   RUNTIME_INFO: '運行时信息',
   MEMORY: '內存',
   MEMORY_INFO: '当前內存分代信息展示',
+
+  // 资源监控
+  CLUSTER_HOST: '集群主機',
+  AUTO_REFRESH: '自動刷新',
+  AUTO_REFRESH_INTERVAL: '自動刷新間隔',
+  SEC: '秒',
+  MIN: '分',
+  HOUR: '小時',
+  DAY: '天',
+
+  DISK_INFO: '硬盤信息',
+  DISK_USAGE: '已用百分比',
+  DISK_FORMAT: '磁盤格式',
+  DISK_FREE: '剩餘大小',
+  DISK_USED: '已用大小',
+  DISK_TOTAL: '總大小',
+
+  PROPERTY: '屬性',
+  VALUE: '值',
+  CPU_NUM: '核心數',
+  CPU_USER: '用戶使用率',
+  CPU_SYS: '系統使用率',
+  CPU_IDLE: '當前空閑率',
+
+  MEM_TOTAL: '縂内存',
+  MEM_FREE: '剩餘内存',
+  MEM_USED: '已用内存',
+  MEM_USED_PERCENT: '使用率',
+
+  SERVER_INFO: '服務器信息',
+  SERVER_NAME: '服務器名稱',
+  OS_NAME: '操作系統',
+  OS_ARCH: '系統架構',
+
+  JVM_INFO: 'Java虛擬機信息',
+  JVM_RUNTIME_NAME: 'Java運行時名稱',
+  JVM_VERSION: 'Java版本',
+  JVM_START_TIME: '啓動時間',
+  JVM_UP_TIME: '運行時長',
+  JVM_PATH: '安裝路徑',
 };

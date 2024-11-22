@@ -2,6 +2,7 @@ package io.github.majianzheng.jarboot.common;
 
 import io.github.majianzheng.jarboot.api.constant.CommonConst;
 import io.github.majianzheng.jarboot.api.exception.JarbootRunException;
+import io.github.majianzheng.jarboot.common.utils.NetworkUtils;
 import io.github.majianzheng.jarboot.common.utils.OSUtils;
 import org.apache.commons.io.FileUtils;
 
@@ -167,9 +168,7 @@ public class CacheDirHelper {
         // jna-103658734
         File jnaDir = null;
         // tomcat-docbase.9899.12142748640606892693
-        File tomcatDocBaseDir = null;
         // tomcat.9088.9967532467414851425
-        File tomcatDir = null;
         // jlinenative-3.25.1-2a85276cf6d59d9c-jlinenative
         // jansi-2.4.1-d7b98e381885acbe-jansi
         List<File> oldFiles = new ArrayList<>();
@@ -177,9 +176,9 @@ public class CacheDirHelper {
             if (file.getName().startsWith("jna-")) {
                 jnaDir = compareAndGetNew(file, jnaDir, oldFiles);
             } else if (file.getName().startsWith("tomcat-docbase.")) {
-                tomcatDocBaseDir = compareAndGetNew(file, tomcatDocBaseDir, oldFiles);
+                cleanTomcatDir(file);
             } else if (file.getName().startsWith("tomcat.")) {
-                tomcatDir = compareAndGetNew(file, tomcatDir, oldFiles);
+                cleanTomcatDir(file);
             } else if (file.getName().startsWith("jlinenative-")) {
                 FileUtils.deleteQuietly(file);
             } else if (file.getName().startsWith("jansi-")) {
@@ -188,6 +187,21 @@ public class CacheDirHelper {
         }
 
         oldFiles.forEach(FileUtils::deleteQuietly);
+    }
+
+    private static void cleanTomcatDir(File file) {
+        String[] temp = file.getName().split("\\.");
+        if (temp.length > 1) {
+            String portStr = temp[1];
+            try {
+                int port = Integer.parseInt(portStr);
+                if (NetworkUtils.findProcessByListenPort(port) < 0) {
+                    FileUtils.deleteQuietly(file);
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+        }
     }
 
     private static File compareAndGetNew(File file, File cur, List<File> oldFiles) {

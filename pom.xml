@@ -61,7 +61,7 @@
 		<!-- dependency version -->
 		<spring.version>2.7.18</spring.version>
 		<bytekit.version>0.0.5</bytekit.version>
-		<commons-io.version>2.14.0</commons-io.version>
+		<commons-io.version>2.18.0</commons-io.version>
 		<jjwt.version>0.11.2</jjwt.version>
 		<cfr.version>0.151</cfr.version>
 		<olgn.version>3.1.19</olgn.version>
@@ -75,6 +75,7 @@
 		<juniversalchardet.version>1.0.3</juniversalchardet.version>
 		<logback.version>1.4.14</logback.version>
 		<tomcat.version>11.0.0-m17</tomcat.version>
+		<oshi-core.version>6.6.5</oshi-core.version>
 
 		<!-- plugin version -->
 		<maven-resources-version>2.6</maven-resources-version>
@@ -211,6 +212,16 @@
 				<groupId>org.jetbrains.pty4j</groupId>
 				<artifactId>pty4j</artifactId>
 				<version>${pty4j.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>net.java.dev.jna</groupId>
+						<artifactId>jna</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>net.java.dev.jna</groupId>
+						<artifactId>jna-platform</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.groovy</groupId>
@@ -242,6 +253,11 @@
 				<artifactId>progressbar</artifactId>
 				<version>${progressbar.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.github.oshi</groupId>
+				<artifactId>oshi-core</artifactId>
+				<version>${oshi-core.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -260,6 +276,11 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

@@ -2,6 +2,7 @@ import {
   FILE_MGR,
   PAGE_COMMON,
   PAGE_JVM,
+  PAGE_MONITOR,
   PAGE_PREFERENCES,
   PAGE_PRIVILEGE,
   PAGE_ROLE,
@@ -48,6 +49,17 @@ export default [
       icon: 'icon-terminal',
     },
     children: [
+      {
+        path: '/monitor',
+        name: PAGE_MONITOR,
+        component: () => import('@/views/tools/monitor.vue'),
+        meta: {
+          keepAlive: true,
+          module: 'TOOLS',
+          code: 'MONITOR',
+          icon: 'icon-monitor',
+        },
+      },
       {
         path: 'file-manager',
         name: FILE_MGR,

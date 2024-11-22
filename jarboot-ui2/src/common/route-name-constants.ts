@@ -7,6 +7,9 @@ export const PAGE_SERVICE = 'service-mgr';
 /** 在线诊断 */
 export const PAGE_JVM = 'jvm-diagnose';
 
+/** 资源监控 */
+export const PAGE_MONITOR = 'monitor';
+
 /** 工具 */
 export const TOOLS = 'tools';
 

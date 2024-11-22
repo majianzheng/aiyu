@@ -4,7 +4,7 @@ import router from '../router';
 import CommonNotice from '@/common/CommonNotice';
 import Logger from '@/common/Logger';
 import type { AxiosProgressEvent } from 'axios';
-import {PAGE_LOGIN} from "@/common/route-name-constants";
+import { PAGE_LOGIN } from '@/common/route-name-constants';
 
 const http = axios.create({
   baseURL: '',

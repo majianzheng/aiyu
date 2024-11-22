@@ -1,8 +1,8 @@
 import { ACCESS_CLUSTER_HOST, TOKEN_KEY } from './CommonConst';
 import { getCurrentInstance } from 'vue';
 import type { I18n, Locale } from 'vue-i18n';
-import type {RouteLocationNormalized} from "vue-router";
-import {PAGE_LOGIN} from "@/common/route-name-constants";
+import type { RouteLocationNormalized } from 'vue-router';
+import { PAGE_LOGIN } from '@/common/route-name-constants';
 
 /**
  * @author majianzheng

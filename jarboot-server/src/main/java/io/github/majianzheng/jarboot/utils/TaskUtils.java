@@ -127,12 +127,34 @@ public class TaskUtils {
         cmdBuilder.insert(0, javaCmd);
         String cmd = cmdBuilder.toString();
         String jdkPath = getJdkPath(setting, serverPath);
+        File bashFile = getStartBashFile(sid, serverPath);
+        initServiceEnv(setting, bashFile);
         AgentManager.getInstance()
                 .waitServiceStarted(
                         setting,
                         // 启动、等待启动完成，最长2分钟（可配置）
                         SettingUtils.getSystemSetting().getMaxStartTime(),
-                        () -> startTask(cmd, setting.getEnv(), workHome, getStartBashFile(sid, serverPath), jdkPath));
+                        () -> startTask(cmd, setting.getEnv(), workHome, bashFile, jdkPath));
+    }
+
+    private static void initServiceEnv(ServiceSetting setting, File bashFile) {
+        StringBuilder sb = new StringBuilder();
+        if (OSUtils.isWindows()) {
+            sb.append("set \"SID=").append(setting.getSid()).append('"').append(StringUtils.LINE_BREAK)
+                    .append("set \"SERVICE_NAME=").append(setting.getName()).append('"').append(StringUtils.LINE_BREAK)
+                    .append("set \"SERVICE_APP_TYPE=").append(setting.getApplicationType()).append('"').append(StringUtils.LINE_BREAK)
+                    .append("set \"SERVICE_SCH_TYPE=").append(setting.getScheduleType()).append('"').append(StringUtils.LINE_BREAK);
+        } else {
+            sb.append("export SID=\"").append(setting.getSid()).append('"').append(StringUtils.LINE_BREAK)
+                    .append("export SERVICE_NAME=\"").append(setting.getName()).append('"').append(StringUtils.LINE_BREAK)
+                    .append("export SERVICE_APP_TYPE=\"").append(setting.getApplicationType()).append('"').append(StringUtils.LINE_BREAK)
+                    .append("export SERVICE_SCH_TYPE=\"").append(setting.getScheduleType()).append('"').append(StringUtils.LINE_BREAK);
+        }
+        try {
+            FileUtils.writeStringToFile(bashFile, sb.toString(), OSUtils.isWindows() ? "GBK" : "UTF-8");
+        } catch (Exception e) {
+            logger.error("init service env error.", e);
+        }
     }
 
     private static void displayCommand(ServiceSetting setting, StringBuilder cmdBuilder, String sid) {
@@ -324,7 +346,7 @@ public class TaskUtils {
                         .append("sleep 1").append(StringUtils.LINE_BREAK)
                         .append("echo started!").append(StringUtils.LINE_BREAK);
             }
-            FileUtils.writeStringToFile(bashFile, sb.toString(), OSUtils.isWindows() ? "GBK" : "UTF-8");
+            FileUtils.writeStringToFile(bashFile, sb.toString(), OSUtils.isWindows() ? "GBK" : "UTF-8", true);
             if (!bashFile.setExecutable(true)) {
                 logger.error("set executable failed.");
             }

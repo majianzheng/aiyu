@@ -5,6 +5,7 @@ export default {
   //Tab标题
   SERVICES_MGR: '服务管理',
   ONLINE_DEBUG: '在线诊断',
+  MONITOR: '资源监控',
   AUTH_CONTROL: '权限控制',
   PLUGINS: '插件',
   SETTING: '设置',
@@ -230,4 +231,44 @@ export default {
   RUNTIME_INFO: '运行时信息',
   MEMORY: '内存',
   MEMORY_INFO: '当前内存分代信息展示',
+
+  // 资源监控
+  CLUSTER_HOST: '集群主机',
+  AUTO_REFRESH: '自动刷新',
+  AUTO_REFRESH_INTERVAL: '自动刷新间隔',
+  SEC: '秒',
+  MIN: '分',
+  HOUR: '小时',
+  DAY: '天',
+
+  DISK_INFO: '硬盘信息',
+  DISK_USAGE: '已用百分比',
+  DISK_FORMAT: '磁盘格式',
+  DISK_FREE: '剩余大小',
+  DISK_USED: '已用大小',
+  DISK_TOTAL: '总大小',
+
+  PROPERTY: '属性',
+  VALUE: '值',
+  CPU_NUM: '核心数',
+  CPU_USER: '用户使用率',
+  CPU_SYS: '系统使用率',
+  CPU_IDLE: '当前空闲率',
+
+  MEM_TOTAL: '总内存',
+  MEM_FREE: '剩余内存',
+  MEM_USED: '已用内存',
+  MEM_USED_PERCENT: '使用率',
+
+  SERVER_INFO: '服务器信息',
+  SERVER_NAME: '服务器名称',
+  OS_NAME: '操作系统',
+  OS_ARCH: '系统架构',
+
+  JVM_INFO: 'Java虚拟机信息',
+  JVM_RUNTIME_NAME: 'Java运行时名称',
+  JVM_VERSION: 'Java版本',
+  JVM_START_TIME: '启动时间',
+  JVM_UP_TIME: '运行时长',
+  JVM_PATH: '安装路径',
 };

@@ -45,5 +45,6 @@ export const DEFAULT_PRIVILEGE = {
   SERVICES_MGR: true,
   ONLINE_DEBUG: true,
   TOOLS: true,
+  MONITOR: true,
   FILE_MGR: true,
 };

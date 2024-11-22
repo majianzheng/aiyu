@@ -10,6 +10,8 @@ import io.github.majianzheng.jarboot.cluster.ClusterEventMessage;
 import io.github.majianzheng.jarboot.common.pojo.ResponseSimple;
 import io.github.majianzheng.jarboot.common.pojo.ResponseVo;
 import io.github.majianzheng.jarboot.common.utils.HttpResponseUtils;
+import io.github.majianzheng.jarboot.monitor.MonitorService;
+import io.github.majianzheng.jarboot.monitor.vo.Server;
 import io.github.majianzheng.jarboot.service.FileService;
 import io.github.majianzheng.jarboot.service.ServerRuntimeService;
 import io.github.majianzheng.jarboot.task.TaskRunCache;
@@ -47,6 +49,8 @@ public class ClusterApiController {
     private SettingService settingService;
     @Resource
     private FileService fileService;
+    @Resource
+    MonitorService monitorService;
 
     @GetMapping("/group")
     public ServiceInstance getServiceGroup() {
@@ -224,5 +228,10 @@ public class ClusterApiController {
         try (OutputStream os = response.getOutputStream()) {
             serverRuntimeService.downloadAnyFile(file, os);
         }
+    }
+
+    @GetMapping("/monitor/server")
+    public Server getServerInfo() {
+        return monitorService.getServerInfo();
     }
 }

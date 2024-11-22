@@ -14,6 +14,7 @@ import io.github.majianzheng.jarboot.common.utils.JsonUtils;
 import io.github.majianzheng.jarboot.common.utils.StringUtils;
 import io.github.majianzheng.jarboot.constant.AuthConst;
 import io.github.majianzheng.jarboot.event.FuncReceivedEvent;
+import io.github.majianzheng.jarboot.monitor.vo.Server;
 import io.github.majianzheng.jarboot.security.JwtTokenManager;
 import io.github.majianzheng.jarboot.service.impl.ServiceManagerImpl;
 import io.github.majianzheng.jarboot.utils.SettingUtils;
@@ -199,6 +200,16 @@ public class ClusterClient {
     public void downloadAnyFile(String encode, OutputStream os) {
         String url = formatUrl("/download/" + encode);
         HttpUtils.get(url, os, wrapToken());
+    }
+
+    public Server getServerInfo() {
+        String url = formatUrl("/monitor/server");
+        try {
+            return HttpUtils.getObj(url, Server.class, wrapToken());
+        } catch (Exception e) {
+            logger.error("Get server info error: {}", e.getMessage(), e);
+        }
+        return null;
     }
 
     private String wrapFileParam(String path, String content, String url) {

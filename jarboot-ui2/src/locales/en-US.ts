@@ -5,6 +5,7 @@ export default {
   //Tab标题
   SERVICES_MGR: 'Services',
   ONLINE_DEBUG: 'Diagnose',
+  MONITOR: 'Monitor',
   AUTH_CONTROL: 'Authority Control',
   PLUGINS: 'Plugins',
   SETTING: 'Setting',
@@ -231,4 +232,43 @@ export default {
   RUNTIME_INFO: 'Runtime info',
   MEMORY: 'Memory',
   MEMORY_INFO: 'Current memory info',
+
+  // 资源监控
+  CLUSTER_HOST: 'Cluster host',
+  AUTO_REFRESH: 'Auto refresh',
+  AUTO_REFRESH_INTERVAL: 'Auto refresh interval',
+  SEC: 'sec',
+  MIN: 'min',
+  HOUR: 'hour',
+  DAY: 'day',
+  DISK_INFO: 'Disk info',
+  DISK_USAGE: 'Disk usage',
+  DISK_FORMAT: 'Disk format',
+  DISK_FREE: 'free',
+  DISK_USED: 'used',
+  DISK_TOTAL: 'total',
+
+  PROPERTY: 'Property',
+  VALUE: 'Value',
+  CPU_NUM: 'CPU number',
+  CPU_USER: 'used',
+  CPU_SYS: 'system used',
+  CPU_IDLE: 'idle',
+
+  MEM_TOTAL: 'total',
+  MEM_FREE: 'free',
+  MEM_USED: 'used',
+  MEM_USED_PERCENT: 'used percent',
+
+  SERVER_INFO: 'Server info',
+  SERVER_NAME: 'Server name',
+  OS_NAME: 'OS',
+  OS_ARCH: 'Arch',
+
+  JVM_INFO: 'JVM info',
+  JVM_RUNTIME_NAME: 'Java runtime name',
+  JVM_VERSION: 'Java version',
+  JVM_START_TIME: 'Start time',
+  JVM_UP_TIME: 'Up time',
+  JVM_PATH: 'Path',
 };
