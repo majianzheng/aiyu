@@ -50,6 +50,7 @@ public class StdOutStreamReactor {
     private FileOutputStream stdoutFileStream = null;
     /** std事件订阅 */
     private final Subscriber<StdoutAppendEvent> subscriber;
+    private boolean started = false;
 
     /**
      * 标准输出流显示是否开启
@@ -126,6 +127,13 @@ public class StdOutStreamReactor {
         this.stdPrint(text);
         //更新计时
         lastStdTime = System.currentTimeMillis();
+        // 判断是否是spring应用启动完成
+        final String flag1 = "Started ";
+        final String flag2 = " in ";
+        int index = text.indexOf(flag1);
+        if (index > 0 && text.indexOf(flag2, index) > 0) {
+            started = true;
+        }
     }
 
     /**
@@ -256,10 +264,18 @@ public class StdOutStreamReactor {
      * 判定是否启动完成
      */
     private void determineStarted() {
+        if (started && null != watchFuture) {
+            handleStarted();
+            return;
+        }
         if ((System.currentTimeMillis() - lastStdTime) < startDetermineTime) {
             return;
         }
         //超过一定时间没有控制台输出，判定启动成功
+        handleStarted();
+    }
+
+    private void handleStarted() {
         consoleOutputStream.setPrintHandler(this::stdPrint);
         //通知Jarboot server启动完成
         try {

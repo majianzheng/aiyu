@@ -159,9 +159,6 @@ public class SettingUtils {
             String agentVer = getAgentJarVersion(jarFile);
             if (!Objects.equals(userAgentVer, agentVer)) {
                 try {
-                    if (!userAgentJarFile.getParentFile().exists()) {
-                        FileUtils.forceMkdir(userAgentJarFile.getParentFile());
-                    }
                     FileUtils.copyFile(jarFile, userAgentJarFile);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);

@@ -38,7 +38,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class TaskRunCache {
     private final Logger logger = LoggerFactory.getLogger(TaskRunCache.class);
-    /** 需要排除的工作空间里的目录 */
+    /**
+     * 需要排除的工作空间里的目录
+     */
     @Value("${jarboot.services.exclude-dirs:bin,lib,conf,plugins,plugin}")
     private String excludeDirs;
     @Resource
@@ -46,15 +48,22 @@ public class TaskRunCache {
     @Resource
     private Scheduler scheduler;
 
-    /** 需要排除的工作空间里的目录 */
+    /**
+     * 需要排除的工作空间里的目录
+     */
     private final HashSet<String> excludeDirSet = new HashSet<>(16);
-    /** 正在启动中的服务 */
+    /**
+     * 正在启动中的服务
+     */
     private final ConcurrentHashMap<String, Long> startingCache = new ConcurrentHashMap<>(16);
-    /** 正在停止中的服务 */
+    /**
+     * 正在停止中的服务
+     */
     private final ConcurrentHashMap<String, Long> stoppingCache = new ConcurrentHashMap<>(16);
 
     /**
      * 获取服务名称列表
+     *
      * @return 服务名称列表
      */
     public List<String> getServiceNameList(String username) {
@@ -70,6 +79,7 @@ public class TaskRunCache {
 
     /**
      * 获取服务目录列表
+     *
      * @return 服务目录
      */
     public File[] getServiceDirs(String userDir) {
@@ -122,6 +132,7 @@ public class TaskRunCache {
 
     /**
      * 获取服务列表
+     *
      * @param userDir 用户目录
      * @return 服务列表
      */
@@ -140,6 +151,7 @@ public class TaskRunCache {
 
     /**
      * 获取服务组
+     *
      * @param userDir 用户目录
      * @return 服务组
      */
@@ -326,8 +338,18 @@ public class TaskRunCache {
         final String[] dumps = new String[]{"classdump", "dump"};
         for (String dump : dumps) {
             File dumpDir = FileUtils.getFile(SettingUtils.getLogDir(), dump);
-            if (dumpDir.exists()) {
-                FileUtils.deleteQuietly(dumpDir);
+            if (dumpDir.exists() && FileUtils.deleteQuietly(dumpDir)) {
+                logger.info("Clean dump dir:{}", dumpDir.getAbsolutePath());
+            }
+        }
+        File[] files = FileUtils.getFile(SettingUtils.getLogDir()).listFiles();
+        if (null != files) {
+            final long time = System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000L;
+            for (File file : files) {
+                // 删除7天以前的日志文件
+                if (file.isFile() && file.lastModified() < time && FileUtils.deleteQuietly(file)) {
+                    logger.info("Clean log file:{}", file.getAbsolutePath());
+                }
             }
         }
         logger.info("Auto clean cache finished.");

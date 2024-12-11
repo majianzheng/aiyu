@@ -10,4 +10,4 @@ logging:
     name: ${JARBOOT_HOME}/logs/jarboot.log
 server:
   tomcat:
-    basedir: ${JARBOOT_HOME}/.cache/tmp
+    basedir: ${JARBOOT_HOME}/.cache/catalina_home

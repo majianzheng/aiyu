@@ -2,7 +2,6 @@ package io.github.majianzheng.jarboot.utils;
 
 import io.github.majianzheng.jarboot.base.AgentManager;
 import io.github.majianzheng.jarboot.cluster.ClusterClientManager;
-import io.github.majianzheng.jarboot.common.CacheDirHelper;
 import io.github.majianzheng.jarboot.common.JarbootException;
 import io.github.majianzheng.jarboot.common.JarbootThreadFactory;
 import io.github.majianzheng.jarboot.common.utils.OSUtils;
@@ -82,11 +81,9 @@ public class TaskUtils {
                 // Java agent
                 .append(SettingUtils.getAgentStartOption(setting.getUserDir(), setting.getName(), sid))
                 .append(StringUtils.SPACE);
-        String cacheDir = CacheDirHelper.getCacheDir().getAbsolutePath();
         if (CommonConst.SHELL_TYPE.equals(setting.getApplicationType())) {
             cmdBuilder
                     .append("-Xms50m -Xmx150m -XX:+UseG1GC -XX:MaxGCPauseMillis=500 ")
-                    .append("-Djava.io.tmpdir=\"").append(cacheDir).append("\" ")
                     .append("-jar")
                     .append(StringUtils.SPACE)
                     .append('"')
@@ -100,10 +97,6 @@ public class TaskUtils {
             // jvm 配置
             String jvm = SettingUtils.getJvm(serverPath, setting.getVm());
             if (StringUtils.isNotEmpty(jvm)) {
-                final String temp = "-Djava.io.tmpdir=";
-                if (!jvm.contains(temp)) {
-                    cmdBuilder.append(temp).append("\"").append(cacheDir).append("\" ");
-                }
                 cmdBuilder.append(jvm).append(StringUtils.SPACE);
             }
             if (StringUtils.isBlank(setting.getCommand())) {
@@ -139,15 +132,26 @@ public class TaskUtils {
 
     private static void initServiceEnv(ServiceSetting setting, File bashFile) {
         StringBuilder sb = new StringBuilder();
+        String catalinaHome = String.join(File.separator, SettingUtils.getHomePath(), ".cache", "catalina_home");
         if (OSUtils.isWindows()) {
             sb.append("set \"SID=").append(setting.getSid()).append('"').append(StringUtils.LINE_BREAK)
                     .append("set \"SERVICE_NAME=").append(setting.getName()).append('"').append(StringUtils.LINE_BREAK)
+                    .append("set \"USER_DIR=").append(setting.getUserDir()).append('"').append(StringUtils.LINE_BREAK)
                     .append("set \"SERVICE_APP_TYPE=").append(setting.getApplicationType()).append('"').append(StringUtils.LINE_BREAK)
+                    .append("set \"SERVICE_PRIORITY=").append(setting.getPriority()).append('"').append(StringUtils.LINE_BREAK)
+                    .append("set \"SERVICE_DAEMON=").append(setting.getDaemon()).append('"').append(StringUtils.LINE_BREAK)
+                    .append("set \"CATALINA_BASE=").append(catalinaHome).append('"').append(StringUtils.LINE_BREAK)
+                    .append("set \"CATALINA_HOME=").append(catalinaHome).append('"').append(StringUtils.LINE_BREAK)
                     .append("set \"SERVICE_SCH_TYPE=").append(setting.getScheduleType()).append('"').append(StringUtils.LINE_BREAK);
         } else {
             sb.append("export SID=\"").append(setting.getSid()).append('"').append(StringUtils.LINE_BREAK)
                     .append("export SERVICE_NAME=\"").append(setting.getName()).append('"').append(StringUtils.LINE_BREAK)
+                    .append("export USER_DIR=\"").append(setting.getUserDir()).append('"').append(StringUtils.LINE_BREAK)
                     .append("export SERVICE_APP_TYPE=\"").append(setting.getApplicationType()).append('"').append(StringUtils.LINE_BREAK)
+                    .append("export SERVICE_PRIORITY=\"").append(setting.getPriority()).append('"').append(StringUtils.LINE_BREAK)
+                    .append("export SERVICE_DAEMON=\"").append(setting.getDaemon()).append('"').append(StringUtils.LINE_BREAK)
+                    .append("export CATALINA_BASE=\"").append(catalinaHome).append('"').append(StringUtils.LINE_BREAK)
+                    .append("export CATALINA_HOME=\"").append(catalinaHome).append('"').append(StringUtils.LINE_BREAK)
                     .append("export SERVICE_SCH_TYPE=\"").append(setting.getScheduleType()).append('"').append(StringUtils.LINE_BREAK);
         }
         try {
@@ -226,6 +230,7 @@ public class TaskUtils {
         String jdkPath = SettingUtils.getJdkPath();
         Map<String, String> env = new HashMap<>(4);
         env.put("SERVICE_NAME", setting.getName());
+        env.put("SERVICE_APP_TYPE", setting.getApplicationType());
         env.put("USER_DIR", setting.getUserDir());
         env.put("SID", setting.getSid());
         String envStr = env.entrySet()
