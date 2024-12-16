@@ -375,7 +375,8 @@ jarboot$ sysprop user.home
 - QQ群已满，微信群二维码会过期，大家关注下抖音吧，关注后加入抖音的粉丝群
 - 抖音号：1077242754
 
-![抖音](https://gitee.com/majz0908/jarboot/raw/develop/doc/douyin.jpg)
+![抖音](https://gitee.com/majz0908/jarboot/raw/develop/doc/douyin.png)
+![投喂](https://gitee.com/majz0908/jarboot/raw/develop/doc/touwei.png)
 
 ## 仓库镜像
 
