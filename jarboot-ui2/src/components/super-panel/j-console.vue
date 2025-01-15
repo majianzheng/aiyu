@@ -20,7 +20,7 @@ const props = defineProps<{
   pubsub?: PublishSubmit;
   /** 唯一id */
   id: string;
-  executing?: string|null;
+  executing?: string | null;
 }>();
 
 const emit = defineEmits<{
